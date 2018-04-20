@@ -8,9 +8,7 @@
 
 #import "AssetAmountTableViewCell.h"
 
-
 #define AssetAmountfreeze  @"冻结"
-
 
 @interface AssetAmountTableViewCell()
 
@@ -53,11 +51,12 @@
     _amountLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [self.contentView addSubview:_amountLab];
     [_amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(14);
+        make.top.offset(0);
         make.right.offset(-14);
-        make.height.offset(25);
+        make.bottom.offset(0);
     }];
     
+    /*
     _freezeLab = [[UILabel alloc]init];
     _freezeLab.font = Font(12);
     _freezeLab.textAlignment = NSTextAlignmentRight;
@@ -68,6 +67,7 @@
         make.right.offset(-15);
         make.height.offset(17);
     }];
+     */
     
     _lineView = [[UIView alloc]init];
     _lineView.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
@@ -83,10 +83,9 @@
 
 - (void)setDataWithModel:(AssetAmountModel *)model;
 {
-    _titleLab.text = model.titleName;
-    _amountLab.text = model.amountTitle;
-    _freezeLab.text = [NSString stringWithFormat:@"%@ %@",AssetAmountfreeze,model.freezeAmount];
-    
+    _titleLab.text = model.currency;
+    _amountLab.text = model.balance;
+    //_freezeLab.text = [NSString stringWithFormat:@"%@ %@",AssetAmountfreeze,model.freezeAmount];
 }
 
 

@@ -18,11 +18,11 @@
 {
     if (self = [super init])
     {
-        if(![dict[@"nameTitle"] isKindOfClass:[NSNull class]]){
-            self.nameTitle = [dict objectForKey:@"nameTitle"];
+        if(![dict[@"currency"] isKindOfClass:[NSNull class]]){
+            self.currency = [dict objectForKey:@"currency"];
         }
-        if(![dict[@"subTitle"] isKindOfClass:[NSNull class]]){
-            self.subTitle = [dict objectForKey:@"subTitle"];
+        if(![dict[@"address"] isKindOfClass:[NSNull class]]){
+            self.address = [dict objectForKey:@"address"];
         }
     }
     return self;

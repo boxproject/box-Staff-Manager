@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TransferAwaitModel.h"
 
 @interface TransferRecordDetailViewController : UIViewController
+
+@property(nonatomic, strong)TransferAwaitModel *model;
 
 @end

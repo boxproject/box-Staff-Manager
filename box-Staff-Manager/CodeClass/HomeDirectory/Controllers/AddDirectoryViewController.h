@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+typedef void(^AddBlock)(NSString *currency);
 @interface AddDirectoryViewController : UIViewController
+
+@property(nonatomic,strong)NSString *currency;
+@property (nonatomic, copy) AddBlock currencyBlock;
 
 @end

@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "OrganizationModel.h"
+#import "SearchMenberModel.h"
 @interface OrganizationTableViewCell : UITableViewCell
 
-@property (nonatomic,strong) OrganizationModel *model;
+@property (nonatomic,strong) SearchMenberModel *model;
 
-- (void)setDataWithModel:(OrganizationModel *)model;
+- (void)setDataWithModel:(SearchMenberModel *)model;
 
 @end

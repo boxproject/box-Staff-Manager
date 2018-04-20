@@ -23,7 +23,6 @@
     }else{
         return [NSString stringWithFormat:@"%d:%02d", minutes, seconds];
     }
-    
 }
 
 

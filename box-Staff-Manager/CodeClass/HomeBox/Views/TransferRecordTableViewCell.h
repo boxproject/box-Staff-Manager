@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TransferRecordModel.h"
+#import "TransferAwaitModel.h"
 
 @interface TransferRecordTableViewCell : UITableViewCell
 
-@property (nonatomic,strong) TransferRecordModel *model;
+@property (nonatomic,strong) TransferAwaitModel *model;
 
-- (void)setDataWithModel:(TransferRecordModel *)model;
+- (void)setDataWithModel:(TransferAwaitModel *)model;
 
 @end

@@ -8,8 +8,10 @@
 
 #import "TransferRecordTableViewCell.h"
 
+#define TransferRecordTableViewCellTransferingAwait  @"待审批"
 #define TransferRecordTableViewCellTransfering  @"审批中"
-#define TransferRecordTableViewCellTransferStateSucceed  @"同意审批"
+#define TransferRecordTableViewCellTransferStateSucceed  @"同意审批(转账成功)"
+#define TransferRecordTableViewCellTransferStateSucceedTransfing  @"同意审批(转账中)"
 #define TransferRecordTableViewCellTransferFail  @"拒绝审批"
 
 @interface TransferRecordTableViewCell()
@@ -76,7 +78,7 @@
     [_topRightlab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(9);
         make.height.offset(19);
-        make.width.offset(100);
+        make.width.offset(130);
         make.right.offset(-15);
         
     }];
@@ -89,7 +91,7 @@
     [_bottomRightlab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_topRightlab.mas_bottom).offset(2);
         make.height.offset(17);
-        make.width.offset(100);
+        make.width.offset(150);
         make.right.offset(-15);
         
     }];
@@ -98,7 +100,7 @@
     _lineView.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
     [self.contentView addSubview:_lineView];
     [_lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.contentView.mas_bottom).offset(-1);
+        make.bottom.equalTo(self.contentView.mas_bottom).offset(0);
         make.left.offset(15);
         make.right.offset(-15);
         make.height.offset(1);
@@ -106,22 +108,31 @@
     
 }
 
-- (void)setDataWithModel:(TransferRecordModel *)model
+- (void)setDataWithModel:(TransferAwaitModel *)model
 {
-    _topLeftLab.text = model.topLeft;
-    _topRightlab.text = model.topRight;
-    switch (model.tansferStateState) {
-        case Transfering:
+    _topLeftLab.text = model.tx_info;
+    _topRightlab.text = [NSString stringWithFormat:@"-%@%@", model.amount, model.currency];
+    switch (model.progress) {
+        case ApprovalAwait:
+        {
+            _bottomRightlab.text = TransferRecordTableViewCellTransferingAwait;
+            break;
+        }
+        case Approvaling:
         {
             _bottomRightlab.text = TransferRecordTableViewCellTransfering;
             break;
         }
-        case TransferStateSucceed:
+        case ApprovalSucceed:
         {
-            _bottomRightlab.text = TransferRecordTableViewCellTransferStateSucceed;
+            if (model.arrived == 1) {
+                _bottomRightlab.text = TransferRecordTableViewCellTransferStateSucceedTransfing;
+            }else if (model.arrived == 2){
+                _bottomRightlab.text = TransferRecordTableViewCellTransferStateSucceed;
+            }
             break;
         }
-        case TransferFail:
+        case ApprovalFail:
         {
             _bottomRightlab.text = TransferRecordTableViewCellTransferFail;
             break;
@@ -129,7 +140,7 @@
         default:
             break;
     }
-    _bottomLeftLab.text = [self getElapseTimeToString:model.timeIn];
+    _bottomLeftLab.text = [self getElapseTimeToString:model.apply_at];
     
 }
 
@@ -141,10 +152,6 @@
     NSString *dateStr1=[dateformatter1 stringFromDate:date1];
     return dateStr1;
 }
-
-
-
-
 
 - (void)awakeFromNib {
     [super awakeFromNib];

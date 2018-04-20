@@ -13,17 +13,15 @@
 #import "AccountAdressViewController.h"
 #import "ScanAdressViewController.h"
 #import "ModificatePasswordViewController.h"
+#import "ModifyServerAddressViewController.h"
 
 #define HomeMeVCTitle  @"我"
 #define CellReuseIdentifier  @"HomeMe"
-#define PageSize  12
 
 @interface HomeMeViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
-@property (nonatomic,assign) NSInteger page;
-@property (nonatomic,assign) NSInteger pageSize;
 
 @end
 
@@ -35,11 +33,13 @@
     self.view.backgroundColor = kWhiteColor;
     _sourceArray = [[NSMutableArray alloc] init];
     [self createView];
+    NSString *applyer_account = [BoxDataManager sharedManager].applyer_account;
     NSDictionary *dict = @{
                            @"data":@[
+                                   @{@"titleName":@"用户名", @"subTitle":applyer_account},
                                    @{@"titleName":@"账户地址", @"subTitle":@""},
                                    @{@"titleName":@"绑定二维码", @"subTitle":@""},
-                                   @{@"titleName":@"服务器地址", @"subTitle":@"192.168.1.1"},
+                                   @{@"titleName":@"服务器地址", @"subTitle":@""},
                                    @{@"titleName":@"修改密码", @"subTitle":@""},
                                    @{@"titleName":@"关于BOX", @"subTitle":@""}
                                    ]
@@ -66,8 +66,6 @@
     }];
     [_tableView registerClass:[HomeMeTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self footerReflesh];
-    [self headerReflesh];
 }
 
 #pragma mark - createBarItem
@@ -82,30 +80,6 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
--(void)footerReflesh
-{
-    _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        self.page += 1;
-        [self requestData];
-    }];
-    
-    
-}
-
--(void)headerReflesh
-{
-    _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.page = 1;
-    }];
-}
-
--(void)requestData
-{
-    
-}
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -127,26 +101,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
+    if (indexPath.row == 1) {
         AccountAdressViewController *accountAdressVc = [[AccountAdressViewController alloc] init];
         accountAdressVc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:accountAdressVc animated:YES];
         
-    }else if(indexPath.row == 1){
+    }else if(indexPath.row == 2){
         dispatch_async(dispatch_get_main_queue(), ^{
             ScanAdressViewController *scanAdressVC = [[ScanAdressViewController alloc] init];
             UINavigationController *scanAdressNV = [[UINavigationController alloc] initWithRootViewController:scanAdressVC];
             [self presentViewController:scanAdressNV animated:NO completion:nil];
         });
         
-    }else if(indexPath.row == 2){
-        
-        
     }else if(indexPath.row == 3){
+        ModifyServerAddressViewController *modifyAdress = [[ModifyServerAddressViewController alloc] init];
+        [self.navigationController pushViewController:modifyAdress animated:YES];
+        
+    }else if(indexPath.row == 4){
         ModificatePasswordViewController *modificatePasswordVc = [[ModificatePasswordViewController alloc] init];
         [self.navigationController pushViewController:modificatePasswordVc animated:YES];
         
-    }else if(indexPath.row == 4){
+    }else if(indexPath.row == 5){
         AboutBoxViewController *aboutBoxVc = [[AboutBoxViewController alloc] init];
         aboutBoxVc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:aboutBoxVc animated:YES];

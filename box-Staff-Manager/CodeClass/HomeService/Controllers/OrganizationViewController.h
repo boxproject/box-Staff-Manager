@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SearchMenberModel.h"
 
 @interface OrganizationViewController : UIViewController
 
 @property(nonatomic, strong)NSArray *titleArr;
 @property(nonatomic, strong)NSString *currentTitle;
-@property(nonatomic, strong)NSString *superiorTitle;
-@property(nonatomic, assign)NSInteger fromService;
+@property(nonatomic, strong)SearchMenberModel *searchMenberModel;
+@property (nonatomic, strong)NSString *app_account_id;
 
 @end

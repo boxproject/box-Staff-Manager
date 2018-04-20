@@ -51,19 +51,14 @@
     
 }
 
-- (void)setDataWithModel:(OrganizationModel *)model
+- (void)setDataWithModel:(SearchMenberModel *)model
 {
-    if ([model.subTitle integerValue] == 0) {
-        _nameTitleLab.text = model.titleName;
+    if (model.employee_num > 0) {
+        _nameTitleLab.text = [NSString stringWithFormat:@"%@ (%ld)", model.account, model.employee_num];
     }else{
-        NSString *subTitle = [NSString stringWithFormat:@" (%@)",model.subTitle];
-        NSString *titleStr = [NSString stringWithFormat:@"%@%@", model.titleName, subTitle];
-        _nameTitleLab.text = titleStr;
+        _nameTitleLab.text = model.account;
     }
-    
 }
-
-
 
 - (void)awakeFromNib {
     [super awakeFromNib];

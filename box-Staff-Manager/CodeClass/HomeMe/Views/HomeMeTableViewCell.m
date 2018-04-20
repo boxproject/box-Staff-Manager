@@ -79,7 +79,7 @@
 
 - (void)setDataWithModel:(HomeMeModel *)model row:(NSInteger)row
 {
-    if (row == 2) {
+    if (row == 0) {
         _titleLab.text = model.titleName;
         _subTitleLab.text = model.subTitle;
         _subTitleLab.hidden = NO;

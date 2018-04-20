@@ -33,33 +33,7 @@
     _sourceArray = [[NSMutableArray alloc] init];
     [self createTitle];
     [self createView];
-    
-//    @property (nonatomic,strong) NSString *nameTitle;
-//    @property (nonatomic,strong) NSString *subTitle;
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"},
-                                   @{@"nameTitle":@"AMB", @"subTitle":@"Amber"}
-                                    ]
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        SearchAddressModel *model = [[SearchAddressModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
+    [self requestData];
 }
 
 -(void)createView
@@ -76,31 +50,38 @@
     }];
     [_tableView registerClass:[SearchAddressTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self footerReflesh];
     [self headerReflesh];
-}
-
-
--(void)footerReflesh
-{
-    _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        self.page += 1;
-        [self requestData];
-    }];
-    
-    
 }
 
 -(void)headerReflesh
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
 
 -(void)requestData
 {
-    
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject: _searchField.text forKey:@"key_words"];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject)
+    {
+        [_sourceArray removeAllObjects];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            for (NSDictionary *dataDic in dict[@"data"][@"currency_list"]) {
+                SearchAddressModel *model = [[SearchAddressModel alloc] initWithDict:dataDic];
+                [_sourceArray addObject:model];
+            }
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self.tableView reloadData];
+    } fail:^(NSError *error) {
+        NSLog(@"%@", error.description);
+    }];
 }
 
 
@@ -126,7 +107,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SearchAddressModel *model = self.sourceArray[indexPath.row];
-    self.currencyBlock(model.nameTitle);
+    self.currencyBlock(model.currency);
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -169,20 +150,14 @@
     
     self.navigationItem.hidesBackButton = YES;
     self.navigationItem.rightBarButtonItem.customView.hidden=YES;
-    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [self.tableView reloadData];
+    [self requestData];
     [self.view endEditing:YES];
     return YES;
 }
-
-
-
-
-
 
 -(void)cancelButtonAction:(UIBarButtonItem *)barButtonItem
 {

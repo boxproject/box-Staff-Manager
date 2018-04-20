@@ -7,11 +7,14 @@
 //
 
 #import "SearchApprovalViewController.h"
-#import "SearchApprovalTableViewCell.h"
-#import "SearchApprovalModel.h"
+#import "ApprovalBusinessTableViewCell.h"
+#import "ApprovalBusinessDetailViewController.h"
+#import "CreateApprovalFlowViewController.h"
 
 #define PageSize  12
-#define CellReuseIdentifier  @"SearchApproval"
+#define CellReuseIdentifier  @"ApprovalBusiness"
+#define ApprovalBusinessVCTitle  @"审批流"
+#define ApprovalBusinessVCCreateBtn  @"创建"
 
 @interface SearchApprovalViewController ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
@@ -33,24 +36,53 @@
     _sourceArray = [[NSMutableArray alloc] init];
     [self createTitle];
     [self createView];
-    
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"titleName":@"王钥匙"},
-                                   @{@"titleName":@"张三"},
-                                   @{@"titleName":@"李四"},
-                                   @{@"titleName":@"王钥匙"},
-                                   @{@"titleName":@"王钥匙"},
-                                   @{@"titleName":@"王钥匙"}
-                                   ]
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        SearchApprovalModel *model = [[SearchApprovalModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
+    _page = 1;
+    [self requestData];
 }
+
+#pragma mark ----- 数据请求 -----
+-(void)requestData
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject: _searchField.text forKey:@"key_words"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
+                [_sourceArray addObject:model];
+            }
+            
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
+}
+
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        
+    });
+}
+
 
 -(void)createView
 {
@@ -64,12 +96,24 @@
         make.right.offset(-0);
         make.bottom.equalTo(self.view.mas_bottom).offset(0);
     }];
-    [_tableView registerClass:[SearchApprovalTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
+    [_tableView registerClass:[ApprovalBusinessTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self footerReflesh];
     [self headerReflesh];
 }
 
+
+#pragma mark ----- rightBarButtonItemAction -----
+- (void)rightButtonAction:(UIBarButtonItem *)buttonItem{
+    CreateApprovalFlowViewController *createApprovalFlowVc = [[CreateApprovalFlowViewController alloc] init];
+    UINavigationController *createApprovalFlowNc = [[UINavigationController alloc] initWithRootViewController:createApprovalFlowVc];
+    [self presentViewController:createApprovalFlowNc animated:YES completion:nil];
+}
+
+-(void)backAction:(UIBarButtonItem *)barButtonItem
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 -(void)footerReflesh
 {
@@ -85,28 +129,23 @@
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
-
--(void)requestData
-{
-    
-}
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 60;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    SearchApprovalTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
-    SearchApprovalModel *model = self.sourceArray[indexPath.row];
+    ApprovalBusinessTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
+    ApprovalBusinessModel *model = self.sourceArray[indexPath.row];
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
@@ -115,10 +154,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SearchApprovalModel *model = self.sourceArray[indexPath.row];
-    self.approvalBlock(model.titleName) ;
+    ApprovalBusinessModel *model = self.sourceArray[indexPath.row];
+    self.approvalBlock(model);
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 
 
 -(void)createTitle
@@ -159,7 +199,6 @@
     
     self.navigationItem.hidesBackButton = YES;
     self.navigationItem.rightBarButtonItem.customView.hidden=YES;
-    
 }
 
 -(void)cancelButtonAction:(UIBarButtonItem *)barButtonItem
@@ -167,12 +206,38 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [self.tableView reloadData];
     [self.view endEditing:YES];
+    _page = 1;
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject: textField.text forKey:@"key_words"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
+                [_sourceArray addObject:model];
+            }
+            
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
     return YES;
 }
 

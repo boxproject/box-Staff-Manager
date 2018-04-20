@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CurrencyModel.h"
 
+typedef void(^Block)(NSString *address);
 @interface HomeDirectoryViewController : UIViewController
+
+@property(nonatomic, strong)NSString *type;
+@property (nonatomic, copy) Block addressBlock;
+@property(nonatomic, strong)CurrencyModel *model;
 
 @end

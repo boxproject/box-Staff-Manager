@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CurrencyModel.h"
 
 @interface TransferViewController : UIViewController
 
 @property(nonatomic, strong)NSString *titlename;
-
+@property(nonatomic, strong)CurrencyModel *mode;
+@property(nonatomic, strong)NSString *fromType;
 @end

@@ -71,7 +71,7 @@
 
 - (void)setDataWithModel:(AccountAdressModel *)model
 {
-    _titleLab.text = model.titleName;
+    _titleLab.text = model.currency;
 
 }
 

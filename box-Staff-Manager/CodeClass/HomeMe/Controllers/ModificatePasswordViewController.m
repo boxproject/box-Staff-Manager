@@ -14,9 +14,11 @@
 #define ModificatePasswordVCpawdnew  @"新密码"
 #define ModificatePasswordVCpawdnewInfo  @"请输入新密码"
 #define ModificatePasswordVCRenewPawd  @"新密码"
-#define ModificatePasswordVCRenewPawdInfo  @"请再次输入新密码"@"修改成功"
+#define ModificatePasswordVCRenewPawdInfo  @"请再次输入新密码"
 #define ModificatePasswordVCVerify  @"确认密码"
 #define ModificatePasswordVCAleartSucceed  @"修改成功"
+#define ModificatePasswordVCOriginalError  @"原密码错误"
+#define PerfectInformationVCrenewPawdError  @"密码不一致"
 
 @interface ModificatePasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
@@ -174,7 +176,7 @@
     
     _renewPawdTf = [[UITextField alloc] init];
     _renewPawdTf.font = Font(14);
-    _renewPawdTf.placeholder = ModificatePasswordVCpawdnewInfo;
+    _renewPawdTf.placeholder = ModificatePasswordVCRenewPawdInfo;
     _renewPawdTf.delegate = self;
     _renewPawdTf.textColor = [UIColor colorWithHexString:@"#333333"];
     _renewPawdTf.keyboardType = UIKeyboardTypeAlphabet;
@@ -217,6 +219,21 @@
 
 -(void)verifyAction:(UIButton *)Btn
 {
+    
+    if (![_originalPawdTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
+        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCOriginalError];
+        return;
+    }
+    if ([_pawdnewTf.text isEqualToString:@""]) {
+        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCpawdnewInfo];
+        return;
+    }
+    if (![_pawdnewTf.text isEqualToString:_renewPawdTf.text]) {
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCrenewPawdError];
+        return;
+    }
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:_pawdnewTf.text];
+    
     [self.navigationController popViewControllerAnimated:YES];
     [WSProgressHUD showSuccessWithStatus:ModificatePasswordVCAleartSucceed];
 }
@@ -235,7 +252,6 @@
 {
     //[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.navigationController popViewControllerAnimated:YES];
-    
 }
 
 - (void)didReceiveMemoryWarning {

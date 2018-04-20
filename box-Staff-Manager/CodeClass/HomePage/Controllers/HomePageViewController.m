@@ -34,9 +34,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self createDirectoryInfo];
     [self initTabBarVC];
+    // Do any additional setup after loading the view.
 }
+
+-(void)createDirectoryInfo
+{
+    NSInteger applyer_id = [[BoxDataManager sharedManager].applyer_id integerValue];
+    NSString *path = [DeviceManager documentPathAppendingPathComponent:[NSString stringWithFormat:@"staffManager/%ld",(long)applyer_id]];
+    NSString *dbPath = [path stringByAppendingPathComponent:@"message.db"];
+    BOOL fileExist = [[NSFileManager defaultManager]fileExistsAtPath:path];
+    if (!fileExist) {
+        NSLog(@"没有发现数据库开始创建中。。。");
+        NSError *error;
+        [[NSFileManager defaultManager]createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+        if (error) {
+            //创建数据库失败
+            NSLog(@"------创建数据库失败");
+        }else{
+            NSString *dbPath = [path stringByAppendingPathComponent:@"message.db"];
+            [DBHelp openDataBase:dbPath];
+            //创建表结构
+            [[DirectoryManager sharedManager] createDirectoryTable];
+            [[MenberInfoManager sharedManager] createMenberInfoTable];
+        }
+    }else{
+        NSLog(@"数据库存在 直接Open %@",dbPath);
+        [DBHelp openDataBase:dbPath];
+    }
+}
+
+
+
 
 -(void)initTabBarVC
 {

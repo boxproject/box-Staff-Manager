@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CurrencyModel.h"
 
 @interface tansferCodeViewController : UIViewController
+
+@property(nonatomic, strong)CurrencyModel *model;
 
 @end

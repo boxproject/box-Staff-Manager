@@ -18,11 +18,23 @@
 {
     if (self = [super init])
     {
-        if(![dict[@"titleName"] isKindOfClass:[NSNull class]]){
-            self.titleName = [dict objectForKey:@"titleName"];
+        if(![dict[@"account"] isKindOfClass:[NSNull class]]){
+            self.account = [dict objectForKey:@"account"];
         }
-        if(![dict[@"subTitle"] isKindOfClass:[NSNull class]]){
-            self.subTitle = [dict objectForKey:@"subTitle"];
+        if(![dict[@"app_account_id"] isKindOfClass:[NSNull class]]){
+            self.app_account_id = [dict objectForKey:@"app_account_id"];
+        }
+        if(![dict[@"manager_account_id"] isKindOfClass:[NSNull class]]){
+            self.manager_account_id = [dict objectForKey:@"manager_account_id"];
+        }
+        if(![dict[@"cipher_text"] isKindOfClass:[NSNull class]]){
+            self.cipher_text = [dict objectForKey:@"cipher_text"];
+        }
+        if(![dict[@"employee_num"] isKindOfClass:[NSNull class]]){
+            self.employee_num = [[dict objectForKey:@"employee_num"] integerValue];
+        }
+        if(![dict[@"is_uploaded"] isKindOfClass:[NSNull class]]){
+            self.is_uploaded = [[dict objectForKey:@"is_uploaded"] integerValue];
         }
     }
     return self;

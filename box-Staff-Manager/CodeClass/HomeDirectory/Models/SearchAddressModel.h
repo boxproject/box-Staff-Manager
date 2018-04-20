@@ -10,8 +10,8 @@
 
 @interface SearchAddressModel : NSObject
 
-@property (nonatomic,strong) NSString *nameTitle;
-@property (nonatomic,strong) NSString *subTitle;
+@property (nonatomic,strong) NSString *currency;
+@property (nonatomic,strong) NSString *address;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

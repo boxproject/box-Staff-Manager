@@ -103,72 +103,20 @@
         make.centerX.equalTo(self.view);
         make.height.offset(80/2);
         make.width.offset(318/2);
-        
-        
     }];
-    
-//    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    //[_scanButton setTitle:@"开始扫描" forState:UIControlStateNormal];
-//    [btn setImage:[UIImage imageNamed:@"startScanImg"] forState:UIControlStateNormal];
-//    btn.titleLabel.font = Font(17);
-//    [btn setTitleColor:kBlueColor forState:UIControlStateNormal];
-//    [btn addTarget:self action:@selector(btnAction) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:btn];
-//    [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(subLaber.mas_bottom).offset(140);
-//        make.centerX.equalTo(self.view);
-//        make.height.offset(60);
-//        make.width.offset(180);
-//
-//
-//    }];
-    
+ 
 }
-
-//-(void)btnAction
-//{
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    NSString *publicKeyBase64 = [defaults valueForKey:@"publicKeyBase64"];
-//    NSString *privateKeyBase64 = [defaults valueForKey:@"privateKeyBase64"];
-//
-//    NSString *signSHA256 = [_aRSAHandler signRSAString:@"hhqq888" privateKeyBase64:privateKeyBase64];
-//    BOOL verySign = [_aRSAHandler verifyRSAString:@"hhqq888" withSign:signSHA256 publicKeyBase64: publicKeyBase64];
-//
-//
-//}
-
 
 #pragma mark ----- 开始扫描 -----
 -(void)scanAction
 {
-//    ScanCodeViewController *scanVC = [[ScanCodeViewController alloc]init];
-//    scanVC.fromFunction = fromInitAccount;
-//    scanVC.nameStr = _nameStr;
-//    scanVC.passwordStr = _passwordStr;
-//    scanVC.applyer_id = _applyer_id;
-//    [self.navigationController pushViewController:scanVC animated:YES];
-
- //   [_aRSAHandler opensslGenerateKey];
-//    NSString *str = [JsonObject getRandomStringWithNum:8];
-//    NSLog(@"%@", str);
-    
-    HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-    //UINavigationController *homePageNC = [[UINavigationController alloc]initWithRootViewController:homePageVC];
-    [self presentViewController:homePageVC animated:YES completion:nil];
-    
-    
-    //text
-//    PerfectInformationViewController *perferInVC = [[PerfectInformationViewController alloc] init];
-//    UINavigationController *perferInNC = [[UINavigationController alloc]initWithRootViewController:perferInVC];
-//    [self presentViewController:perferInNC animated:YES completion:nil];
-    
-    //[self intoLeft];
-    
+    ScanCodeViewController *scanVC = [[ScanCodeViewController alloc]init];
+    scanVC.fromFunction = fromInitAccount;
+    scanVC.nameStr = _nameStr;
+    scanVC.passwordStr = _passwordStr;
+    scanVC.applyer_id = _applyer_id;
+    [self.navigationController pushViewController:scanVC animated:YES];
 }
-
-
-
-
 
 
 

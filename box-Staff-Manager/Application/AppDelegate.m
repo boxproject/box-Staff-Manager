@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "PerfectInformationViewController.h"
+#import "HomePageViewController.h"
 
 @interface AppDelegate ()
 
@@ -18,7 +19,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
     //启动页延时
     //sleep(2);
     //[NSThread sleepForTimeInterval:2.0];
@@ -26,9 +26,7 @@
     //网络监测
     [self monitorReachabilityStatus];
     [self launchJumpVC];
-    
-    
-    
+
     return YES;
 }
 
@@ -39,13 +37,29 @@
     self.window.frame = [UIScreen mainScreen].bounds;
     self.window.backgroundColor = kWhiteColor;
     [self.window makeKeyAndVisible];
-    PerfectInformationViewController *perfectInformationVC = [[PerfectInformationViewController alloc] init];
-    UINavigationController *perfectInformationNC = [[UINavigationController alloc] initWithRootViewController:perfectInformationVC];
-    //设置导航栏颜色
-    [UINavigationBar appearance].barTintColor =  kWhiteColor;
-    self.window.rootViewController = perfectInformationNC;
-    
-    
+    [[BoxDataManager sharedManager] getAllData];
+    NSInteger launchState = [[BoxDataManager sharedManager] getLaunchState];
+    switch (launchState) {
+        case PerfectInformation:
+        {
+            PerfectInformationViewController *perfectInformationVC = [[PerfectInformationViewController alloc] init];
+            UINavigationController *perfectInformationNC = [[UINavigationController alloc] initWithRootViewController:perfectInformationVC];
+            //设置导航栏颜色
+            [UINavigationBar appearance].barTintColor =  kWhiteColor;
+            self.window.rootViewController = perfectInformationNC;
+            break;
+        }
+           
+        case EnterHomeBox:
+        {
+            HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
+            self.window.rootViewController = homePageVC;
+            break;
+        }
+            
+        default:
+            break;
+    }
 }
 
 
@@ -74,8 +88,6 @@
         }
     }];
 }
-
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

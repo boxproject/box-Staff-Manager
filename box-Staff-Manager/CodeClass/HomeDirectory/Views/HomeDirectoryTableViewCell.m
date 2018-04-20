@@ -16,7 +16,6 @@
 @property (nonatomic,strong) UILabel *addressLab;
 @property (nonatomic,strong) UILabel *remarkLab;
 
-
 @end
  
 @implementation HomeDirectoryTableViewCell
@@ -45,7 +44,7 @@
     _img = [[UIImageView alloc] init];
     _img.layer.cornerRadius = 35.0/2.0;
     _img.layer.masksToBounds = YES;
-    _img.backgroundColor = kWhiteColor;
+    _img.image = [UIImage imageNamed:@"icon_headimage"];
     [_backgdView addSubview:_img];
     [_img mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(25);
@@ -89,7 +88,7 @@
     
     _addressLab = [[UILabel alloc]init];
     _addressLab.font = Font(11);
-    _addressLab.textAlignment = NSTextAlignmentCenter;
+    _addressLab.textAlignment = NSTextAlignmentLeft;
     _addressLab.textColor = [UIColor colorWithHexString:@"#ffffff"];
     [_backgdView addSubview:_addressLab];
     [_addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -98,8 +97,6 @@
         make.right.offset(-25);
         make.height.offset(16);
     }];
-    
-    
 }
 
 - (void)setDataWithModel:(HomeDirectoryModel *)model integer:(NSInteger)integer
@@ -111,26 +108,22 @@
     switch (remainder) {
         case 1:
         {
-            //_backgdView.backgroundColor = RGB(84, 88, 107);
             _backgdView.image = [UIImage imageNamed:@"image_adress bg3"];
             break;
         }
         case 2:
         {
-            //_backgdView.backgroundColor = RGB(151, 130, 255);
             _backgdView.image = [UIImage imageNamed:@"image_adress bg2"];
             break;
         }
         case 0:
         {
-            //_backgdView.backgroundColor = RGB(238, 137, 161);
             _backgdView.image = [UIImage imageNamed:@"image_adress bg1"];
             break;
         }
         default:
             break;
     }
-    
 }
 
 - (void)awakeFromNib {

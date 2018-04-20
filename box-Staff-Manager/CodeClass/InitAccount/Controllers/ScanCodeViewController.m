@@ -10,15 +10,19 @@
 #import <AVFoundation/AVFoundation.h>
 #import "PerfectInformationViewController.h"
 #import "HomePageViewController.h"
+#import "TransferViewController.h"
 
 #define ScanSize   [[UIScreen mainScreen] bounds].size.width - 70
-
+#define ScanCodeWSprogress  @"注册失败"
 #define ScanCodeVCTitle  @"扫一扫"
 #define PerfectInformationVCTorchlight  @"轻触关闭"
 #define PerfectInformationVCTorchheight  @"轻触照亮"
 #define PerfectInformationVCScanResult  @"将二维码放入框内，即可自动扫描"
 
 @interface ScanCodeViewController () <AVCaptureMetadataOutputObjectsDelegate,CALayerDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
+{
+    NSTimer *timer;
+}
 
 /** 扫描二维码范围的view */
 @property(nonatomic, strong) UIView *scanView;
@@ -44,12 +48,10 @@
 
 /** 非扫描区域的蒙版 */
 @property (nonatomic,strong) CALayer *maskLayer;
-
-@property (nonatomic,strong)NSTimer *timer;
-
-@property(nonatomic, strong)UIARSAHandler *aRSAHandler;
 //服务端申请表ID
 @property(nonatomic, strong)NSString *reg_id;
+
+@property (nonatomic, strong) DDRSAWrapper *aWrapper;
 
 @end
 
@@ -71,7 +73,7 @@
     self.navigationController.navigationBar.alpha = 0.5;
     
     [self leftBarItem];
-    _aRSAHandler = [[UIARSAHandler alloc] init];
+    _aWrapper = [[DDRSAWrapper alloc] init];
     [self createscanxView];
     //设置扫描二维码
     [self setupScanQRCode];
@@ -441,7 +443,6 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     //判断扫描是否有数据
     if (metadataObjects != nil && [metadataObjects count] > 0) {
-        
         AVMetadataMachineReadableCodeObject *metadataObject = [metadataObjects objectAtIndex:0];
         NSString *result;
         //判断的扫描的结果是否是二维码
@@ -449,82 +450,89 @@
             // 显示遮盖
             [SVProgressHUD showWithStatus:@"正在处理"];
             [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
-            
-            
             // 当扫描到数据时，停止扫描
             [ _session stopRunning];
             // 将扫描的线从父控件中移除
             [_scanImageView removeFromSuperview];
-            
             result = metadataObject.stringValue;
-            
             // 当前延迟1.0秒
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                // 隐藏遮盖
-                [SVProgressHUD dismiss];
                 // 将扫描后的结果显示在label上
-                self.scanResult.text = result;
+                //self.scanResult.text = result;
                 if (_fromFunction == fromInitAccount) {
                     [self handleFromInitAccount:result];
-                    /*
-                    HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-                    //UINavigationController *homePageNC = [[UINavigationController alloc]initWithRootViewController:homePageVC];
-                    [self presentViewController:homePageVC animated:YES completion:nil];
-                    */
-                    
                 }else if (_fromFunction == fromTransfer){
+                    // 隐藏遮盖
+                    [SVProgressHUD dismiss];
                     self.codeBlock(result);
                     [self.navigationController popViewControllerAnimated:YES];
+                }else if (_fromFunction == fromHomeBox){
+                    // 隐藏遮盖
+                    [SVProgressHUD dismiss];
+                    TransferViewController *transferVC = [[TransferViewController alloc] init];
+                    transferVC.mode = _model;
+                    transferVC.fromType = @"scanCode";
+                    BoxNavigationController *transferNC = [[BoxNavigationController alloc] initWithRootViewController:transferVC];
+                    [self presentViewController:transferNC animated:YES completion:nil];
                 }
-        
             });
             
         }else{
             NSLog(@"不是二维码");
         }
-        
-        //返回主线程，并将扫描的结果传回主线程
-        //[self performSelectorOnMainThread:@selector(reportScanResult:) withObject:result waitUntilDone:NO];
     }
-    
-  
 }
 
+#pragma mark ------ 员工APP递交加密后的注册申请 -----
 -(void)handleFromInitAccount:(NSString *)codeStr
 {
+    //生成固定随机值
+    NSString *applyer_random = [JsonObject getRandomStringWithNum:8];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"app_account_random" codeValue:applyer_random];
     NSArray *codeArray = [JsonObject dictionaryWithJsonStringArr:codeStr];
     NSString *box_IP = codeArray[0];
+    NSString *boxIpStr = [NSString stringWithFormat:@"http://%@", box_IP];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"box_IP" codeValue:boxIpStr];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"box_IpPort" codeValue:box_IP];
     NSString *randomStr = codeArray[1];
     NSString *timeCode = codeArray[2];
-    [_aRSAHandler opensslGenerateKey];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *publicKeyBase64 = [defaults valueForKey:@"publicKeyBase64"];
-    NSString *aesStr = [FSAES128 AES128EncryptStrig:publicKeyBase64 keyStr:randomStr];
-    
-
+    [_aWrapper generateSecKeyPairWithKey];
+    NSString *publicKeyBase64 = [BoxDataManager sharedManager].publicKeyBase64;
+    NSArray *aesArray = [NSArray arrayWithObjects:applyer_random, publicKeyBase64, nil];
+    NSString *aesSting = [JsonObject dictionaryToarrJson:aesArray];
+    NSString *aesStr = [FSAES128 AES128EncryptStrig:aesSting keyStr:randomStr];
     //applyer_id 申请者唯一识别码
     //captain_id 直属上级唯一识别码
-
+    //存储账户名、直属上级唯一识别码、申请者唯一识别码
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"applyer_account" codeValue:_nameStr];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"captain_id" codeValue:timeCode];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"applyer_id" codeValue:_applyer_id];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:_passwordStr];
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:aesStr forKey:@"msg"];
     [paramsDic setObject:_applyer_id forKey:@"applyer_id"];
     [paramsDic setObject:timeCode forKey:@"captain_id"];
     [paramsDic setObject:_nameStr forKey:@"applyer_account"];
-    
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             _reg_id = dict[@"data"][@"reg_id"];
-            NSString *message = dict[@"message"];
+            [[BoxDataManager sharedManager] saveDataWithCoding:@"reg_id" codeValue:_reg_id];
             [self getApprovalResult];
+        }else {
+            // 隐藏遮盖
+            [SVProgressHUD dismiss];
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [self.navigationController popViewControllerAnimated:YES];
         }
-        
     } fail:^(NSError *error) {
+        // 隐藏遮盖
+        [SVProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
 }
 
-
+#pragma mark ------ 员工APP轮询注册审批结果 -----
 -(void)getApprovalResult
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
@@ -533,29 +541,62 @@
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             NSString *consent = dict[@"data"][@"consent"];//0暂无结果 1拒绝 2同意
-            NSString *message = dict[@"message"];
-            NSString *depth = dict[@"depth"];
             if ([consent integerValue] == 0) {
-                _timer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(getApprovalResult:) userInfo:nil repeats:YES];
+                timer = [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(getApprovalResult:) userInfo:nil repeats:YES];
             }else if([consent integerValue] == 1){
+                [SVProgressHUD dismiss];
                 [WSProgressHUD showErrorWithStatus:@"授权失败"];
+                [self.navigationController popViewControllerAnimated:YES];
             }else if([consent integerValue] == 2){
-                [WSProgressHUD showErrorWithStatus:@"授权成功"];
-                HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-                [self presentViewController:homePageVC animated:YES completion:nil];
+                [SVProgressHUD dismiss];
+                NSInteger depth = [dict[@"data"][@"depth"] integerValue];
+                if (depth == 0) {
+                    if(![dict[@"data"][@"cipher_text"] isKindOfClass:[NSNull class]]){
+                        NSString *cipher_text = dict[@"data"][@"cipher_text"];
+                        NSString *hmacCipher = [UIARSAHandler hmac:[BoxDataManager sharedManager].publicKeyBase64 withKey:[BoxDataManager sharedManager].app_account_random];
+                        if (![cipher_text isEqualToString:hmacCipher]) {
+                            [self getApprovalResultcancel];
+                            return ;
+                        }
+                    }
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [WSProgressHUD showSuccessWithStatus:@"授权成功"];
+                    [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
+                    [[BoxDataManager sharedManager] saveDataWithCoding:@"depth" codeValue:[NSString stringWithFormat:@"%ld", depth]];
+                    HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
+                    [self presentViewController:homePageVC animated:YES completion:nil];
+                });
             }
-            
         }
         
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
     }];
-    
-    
 }
 
+#pragma mark ------ 员工反馈上级审核注册结果有误 -----
+-(void)getApprovalResultcancel
+{
+    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:_reg_id privateStr:[BoxDataManager sharedManager].privateKeyBase64];
+    //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:_reg_id signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:_reg_id forKey:@"reg_id"];
+    [paramsDic setObject:_applyer_id forKey:@"applyer_id"];
+    [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval/cancel" params:paramsDic success:^(id responseObject) {
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            [WSProgressHUD showErrorWithStatus:ScanCodeWSprogress];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    } fail:^(NSError *error) {
+        NSLog(@"%@", error.description);
+    }];
+}
 
--(void)getApprovalResult:(NSTimer *)timer
+-(void)getApprovalResult:(NSTimer *)Ttimer
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_reg_id forKey:@"reg_id"];
@@ -563,40 +604,49 @@
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             NSString *consent = dict[@"data"][@"consent"];//0暂无结果 1拒绝 2同意
-            NSString *message = dict[@"message"];
-            NSString *depth = dict[@"depth"];
             if ([consent integerValue] == 0) {
-                 
             }else if([consent integerValue] == 1){
-                _timer = nil;
-                [_timer invalidate];
+                [SVProgressHUD dismiss];
+                [timer invalidate];
+                timer = nil;
                 [WSProgressHUD showErrorWithStatus:@"授权失败"];
+                [self.navigationController popViewControllerAnimated:YES];
             }else if([consent integerValue] == 2){
-                _timer = nil;
-                [_timer invalidate];
-                [WSProgressHUD showErrorWithStatus:@"授权成功"];
+                [SVProgressHUD dismiss];
+                [timer invalidate];
+                timer = nil;
+                NSInteger depth = [dict[@"data"][@"depth"] integerValue];
+                if (depth == 0) {
+                    if(![dict[@"data"][@"cipher_text"] isKindOfClass:[NSNull class]]){
+                        NSString *cipher_text = dict[@"data"][@"cipher_text"];
+                        NSString *hmacCipher = [UIARSAHandler hmac:[BoxDataManager sharedManager].publicKeyBase64 withKey:[BoxDataManager sharedManager].app_account_random];
+                        if (![cipher_text isEqualToString:hmacCipher]) {
+                            [self getApprovalResultcancel];
+                            return ;
+                        }
+                    }
+                }
+                [WSProgressHUD showSuccessWithStatus:@"授权成功"];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"depth" codeValue:[NSString stringWithFormat:@"%ld", depth]];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
                 HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
                 [self presentViewController:homePageVC animated:YES completion:nil];
+
             }
-            
         }
         
     } fail:^(NSError *error) {
-        _timer = nil;
-        [_timer invalidate];
+        [timer invalidate];
+        timer = nil;
         NSLog(@"%@", error.description);
     }];
 }
 
 
-
-
 //http://aes.jypc.org/?p=37737
 -(void)reportScanResult:(NSString *)result{
-    
     //扫描完毕，停止扫描
     //[self stopScanning];
-    
     //创建对话框，将扫描结果以对话框的形式呈现
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:result preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {

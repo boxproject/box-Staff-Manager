@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CurrencyModel.h"
 
 typedef NS_ENUM(NSInteger, FromFunction) {
     fromInitAccount,
@@ -26,5 +27,7 @@ typedef void(^Block)(NSString *codeText);
 @property(nonatomic, strong)NSString *passwordStr;
 //申请者唯一识别码
 @property(nonatomic, strong)NSString *applyer_id;
+
+@property(nonatomic, strong)CurrencyModel *model;
 
 @end

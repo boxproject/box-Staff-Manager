@@ -16,6 +16,10 @@
 #define ScanAdressVCIknown  @"我知道了"
 
 @interface ScanAdressViewController ()<UIScrollViewDelegate, UITextFieldDelegate,MBProgressHUDDelegate>
+{
+    NSTimer *registTimer;
+    NSTimer *codeTimer;
+}
 
 @property(nonatomic, strong)UIScrollView *contentView;
 /** 授权码 */
@@ -24,9 +28,8 @@
 @property(nonatomic, strong)UIButton *authorizeBtn;
 @property(nonatomic, strong)MBProgressHUD *progressHUD;
 @property(nonatomic, strong)UIView *aleartView;
-@property(nonatomic, strong)NSTimer *timer;
-@property(nonatomic, strong)NSString *captain_id;
 @property(nonatomic, strong)NSString *randomStr;
+@property(nonatomic, strong)DDRSAWrapper *aWrapper;
 
 @end
 
@@ -43,75 +46,111 @@
     UIImage *bgImage = [self imageWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, kTopHeight) alphe:1.0];
     [bar setBackgroundImage:bgImage forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = [UIColor colorWithHexString:@"#292e40"];
-    
+    _aWrapper = [[DDRSAWrapper alloc] init];
     [self createBarItem];
     [self createView];
     [self initProgressHUD];
-    
-    NSInteger currentTime = [[NSDate date]timeIntervalSince1970] * 1000;
-    _captain_id = [NSString stringWithFormat:@"%ld", currentTime];
-    
-//    _timer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(registrationsPending:) userInfo:nil repeats:YES];
-    
 }
 
-//-(void)registrationsPending:(NSTimer *)timer
-//{
-//    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
-//    [paramsDic setObject:_captain_id forKey:@"captain_id"];
-//    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/registrations/pending" params:paramsDic success:^(id responseObject) {
-//        NSDictionary *dict = responseObject;
-//        if ([dict[@"code"] integerValue] == 0 && ![dict[@"data"] isKindOfClass:[NSNull class]]) {
-//            for (NSDictionary *dic in dict[@"data"]) {
-////                NSString *consent = dic[@"data"][@"consent"];//0暂无结果 1拒绝 2同意
-////                NSString *message = dic[@"message"];
-////                NSString *msg = dic[@"data"][@"msg"];
-//                [self handleRegistrationsPending:dic];
-//            }
-//
-//
-//        }
-//
-//    } fail:^(NSError *error) {
-//        _timer = nil;
-//        [_timer invalidate];
-//        NSLog(@"%@", error.description);
-//    }];
-//}
-//
-//-(void)handleRegistrationsPending:(NSDictionary *)dic
-//{
-//    NSString *consent = dic[@"consent"];//0暂无结果 1拒绝 2同意
-//    NSString *msg = dic[@"msg"];
-//    NSString *reg_id = dic[@"reg_id"];
-//    NSString *applyer_pub_key = [FSAES128 AES128DecryptString:msg keyStr:_randomStr];
-//    if (applyer_pub_key !=  nil) {
-//
-//        NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
-//        [paramsDic setObject:@"2" forKey:@"consent"];
-//        [paramsDic setObject:applyer_pub_key forKey:@"applyer_pub_key"];
-//        [paramsDic setObject:reg_id forKey:@"reg_id"];
-//
-//        [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval" params:paramsDic success:^(id responseObject) {
-//            NSDictionary *dict = responseObject;
-//            if ([dict[@"code"] integerValue] == 0) {
-//
-//
-//            }
-//
-//        } fail:^(NSError *error) {
-//            NSLog(@"%@", error.description);
-//        }];
-//
-//    }
-//
-//
-//
-//}
+#pragma mark ----- 绑定二维码30秒变化一次 -----
+-(void)codeChange:(NSTimer *)timer
+{
+   _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:[self generateAuthorizationCode]];
+}
+
+-(NSString *)generateAuthorizationCode
+{
+    NSString *box_IP = [BoxDataManager sharedManager].box_IP;
+    NSArray *box_IPArr = [box_IP componentsSeparatedByString:@"//"];
+    _randomStr = [JsonObject getRandomStringWithNum:8];
+    NSArray *codeArray = [NSArray arrayWithObjects:box_IPArr[1], _randomStr, [BoxDataManager sharedManager].app_account_id, nil];
+    NSString *codeSting = [JsonObject dictionaryToarrJson:codeArray];
+    return codeSting;
+}
 
 
+#pragma mark ----- 上级APP轮询注册申请 -----
+-(void)registrationsPending:(NSTimer *)timer
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"captain_id"];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/registrations/pending" params:paramsDic success:^(id responseObject) {
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0 && ![dict[@"data"] isKindOfClass:[NSNull class]]) {
+            for (NSDictionary *dic in dict[@"data"]) {
+                [self handleRegistrationsPending:dic];
+            }
+        }
+    } fail:^(NSError *error) {
+        NSLog(@"%@", error.description);
+    }];
+}
 
-
+-(void)handleRegistrationsPending:(NSDictionary *)dic
+{
+    NSString *manager_id = dic[@"manager_id"]; //直属上级唯一标识符
+    if (![[BoxDataManager sharedManager].app_account_id isEqualToString:manager_id]) {
+        return;
+    }
+    NSString *consent = dic[@"consent"];//0暂无结果 1拒绝 2同意
+    if ([consent isEqualToString:@"2"] || [consent isEqualToString:@"1"]) {
+        return;
+    }
+    NSString *msg = dic[@"msg"]; //加密后的注册信息, string
+    NSString *applyer_id = dic[@"applyer_id"]; //申请者唯一标识符
+    NSString *reg_id = dic[@"reg_id"]; //服务端申请表ID
+    NSString *applyer_Account = dic[@"applyer_account"]; //申请者账户
+    NSString *randomString = [FSAES128 AES128DecryptString:msg keyStr:_randomStr];
+    if (randomString == nil) {
+        NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+        [paramsDic setObject:reg_id forKey:@"reg_id"];
+        [paramsDic setObject:@"1" forKey:@"consent"];
+        [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval" params:paramsDic success:^(id responseObject) {
+            NSDictionary *dict = responseObject;
+            if ([dict[@"code"] integerValue] == 0) {
+                NSLog(@"------------------%@", dict[@"message"]);
+            }
+        } fail:^(NSError *error) {
+            NSLog(@"%@", error.description);
+        }];
+    }else{
+        NSArray *randomArray = [JsonObject dictionaryWithJsonStringArr:randomString];
+        
+        NSString *applyer_pub_key = randomArray[1];
+        NSString *menber_random = randomArray[0];
+        
+        NSDictionary *menberDic = @{@"menber_id":applyer_id,
+                                    @"menber_account":applyer_Account,
+                                    @"publicKey":applyer_pub_key,
+                                    @"menber_random":menber_random,
+                                    @"directIdentify":@(1)
+                                    };
+        MenberInfoModel *model = [[MenberInfoModel alloc] initWithDict:menberDic];
+        if (applyer_pub_key !=  nil) {
+            //该账号对申请者公钥的签名信息
+            NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:applyer_pub_key privateStr:[BoxDataManager sharedManager].privateKeyBase64];
+            //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:applyer_pub_key signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+            //该账号对申请者公钥生成的信息摘要
+            NSString *hmacSHA256 = [UIARSAHandler hmac:applyer_pub_key withKey:[BoxDataManager sharedManager].app_account_random];
+            NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+            [paramsDic setObject:reg_id forKey:@"reg_id"];
+            [paramsDic setObject:@"2" forKey:@"consent"];
+            [paramsDic setObject:applyer_pub_key forKey:@"applyer_pub_key"];
+            [paramsDic setObject:signSHA256 forKey:@"en_pub_key"];
+            [paramsDic setObject:hmacSHA256 forKey:@"cipher_text"];
+            
+            [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval" params:paramsDic success:^(id responseObject) {
+                NSDictionary *dict = responseObject;
+                if ([dict[@"code"] integerValue] == 0) {
+                    NSLog(@"------------------%@", dict[@"message"]);
+                    [[MenberInfoManager sharedManager] insertMenberInfoModel:model];
+                }
+            } fail:^(NSError *error) {
+                NSLog(@"%@", error.description);
+            }];
+        }
+    }
+}
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {
     frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
@@ -272,19 +311,16 @@
         make.height.offset(38);
         make.width.offset(130);
     }];
-    
-    
-    
-    
 }
 
 -(void)achieveBtnAction:(UIButton *)btn
 {
     _aleartView.hidden = YES;
     _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:[self generateAuthorizationCode]];
+    registTimer = [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(registrationsPending:) userInfo:nil repeats:YES];
+    //绑定二维码30秒变化一次
+    codeTimer = [NSTimer scheduledTimerWithTimeInterval:30.0f target:self selector:@selector(codeChange:) userInfo:nil repeats:YES];
 }
-
- 
 
 #pragma mark ----- createBarItem -----
 - (void)createBarItem{
@@ -296,20 +332,22 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (_aleartView.hidden) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"返回将不再绑定正在扫描二维码的员工App" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [registTimer invalidate];
+            registTimer = nil;
+            [codeTimer invalidate];
+            codeTimer = nil;
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
-
-
--(NSString *)generateAuthorizationCode
-{
-    NSString *box_IP = BOX_IP;
-    _randomStr = [JsonObject getRandomStringWithNum:8];
-    NSArray *codeArray = [NSArray arrayWithObjects:box_IP, _randomStr, _captain_id, nil];
-    NSString *codeSting = [JsonObject dictionaryToarrJson:codeArray];
-    return codeSting;
-}
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

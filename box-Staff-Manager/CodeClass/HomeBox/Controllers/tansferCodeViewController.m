@@ -7,13 +7,14 @@
 //
 
 #import "tansferCodeViewController.h"
+#import "CurrencyView.h"
 
 #define tansferCodeVCTitle  @"收款码"
 #define tansferCodeVCScanLab  @"收款二维码"
 #define tansferCodeVCSaveAddressBtnb  @"复制收款地址"
 #define tansferCodeVCSaveAddressSucced  @"复制成功"
 
-@interface tansferCodeViewController ()<UIScrollViewDelegate, MBProgressHUDDelegate>
+@interface tansferCodeViewController ()<UIScrollViewDelegate, MBProgressHUDDelegate,CurrencyViewDelegate>
 
 @property (nonatomic,strong) UIView *viewLayer;
 
@@ -28,6 +29,8 @@
 @property(nonatomic, strong)UILabel *detailLab;
 /** 复制收款地址 */
 @property(nonatomic, strong)UIButton  *saveAddressBtn;
+
+@property (nonatomic,strong)CurrencyView *currencyView;
 
 @end
 
@@ -108,7 +111,10 @@
     }];
     
     _accountQRCodeImg = [[UIImageView alloc] init];
-    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:@"hahahah"];
+    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:_model.address];
+    if (_model.address == nil) {
+        _accountQRCodeImg.image = [UIImage imageNamed:@"icon_ercode"];
+    }
     [oneView addSubview:_accountQRCodeImg];
     [_accountQRCodeImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(oneBackView.mas_bottom).offset(79/2);
@@ -119,7 +125,7 @@
     
     
     _detailLab = [[UILabel alloc] init];
-    _detailLab.text = @"0xb2ed7ceaebd98686cb9310a32d93e91044a580a6";
+    _detailLab.text = _model.address;
     _detailLab.textAlignment = NSTextAlignmentCenter;
     _detailLab.font = Font(11);
     _detailLab.textColor = [UIColor colorWithHexString:@"#666666"];
@@ -152,6 +158,9 @@
 #pragma mark ----- saveAddressAction -----
 -(void)saveAddressAction:(UIButton *)btn
 {
+    if (_model.address == nil) {
+        return;
+    }
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = _detailLab.text;
     [self showProgressHUD];
@@ -165,7 +174,6 @@
     //self.progressHUD.dimBackground = YES; //设置有遮罩
     self.progressHUD.label.text = tansferCodeVCSaveAddressSucced; //设置进度框中的提示文字
     [self.progressHUD showAnimated:YES];
-    
     [self.progressHUD hideAnimated:YES afterDelay:0.5];
 }
 
@@ -196,7 +204,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {
     frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
     UIColor *redColor = [UIColor colorWithHexString:@"#292e40"];;
@@ -209,30 +216,24 @@
     return theImage;
 }
 
-
 -(void)createTitleView
 {
     _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
     self.navigationItem.titleView = self.viewLayer;
     
-    _topTitleLab = [[UILabel alloc] init];
+    _topTitleLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
     _topTitleLab.textAlignment = NSTextAlignmentCenter;
     _topTitleLab.font = Font(16);
-    _topTitleLab.attributedText = [self attributedStringWithImage:@"BTC"];
+    _topTitleLab.attributedText = [self attributedStringWithImage:_model.currency];
     _topTitleLab.textColor = kWhiteColor;
     _topTitleLab.numberOfLines = 1;
     [_viewLayer addSubview:_topTitleLab];
-    [_topTitleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(_viewLayer);
-        make.centerX.equalTo(_viewLayer);
-        make.height.offset(30);
-        make.width.offset(100);
-    }];
-    UITapGestureRecognizer *topTitleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(topTitleTapAction:)];
-    _viewLayer.userInteractionEnabled = YES;
-    [_viewLayer addGestureRecognizer:topTitleTap];
     
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, 200, 30);
+    [button addTarget:self action:@selector(topTitleAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_viewLayer addSubview:button];
 }
 
 -(NSMutableAttributedString *)attributedStringWithImage:(NSString *)string
@@ -240,7 +241,7 @@
     NSString *str = [NSString stringWithFormat:@"%@%@", string, tansferCodeVCTitle];
     //创建富文本
     NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", str]];
-    [attri addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"] range:NSMakeRange(0, str.length + 1)];
+    [attri addAttribute:NSForegroundColorAttributeName value:kWhiteColor range:NSMakeRange(0, str.length + 1)];
     //NSTextAttachment可以将要插入的图片作为特殊字符处理
     NSTextAttachment *attch = [[NSTextAttachment alloc] init];
     //定义图片内容及位置和大小
@@ -256,11 +257,24 @@
     
 }
 
-
 #pragma mark ----- topTitleTapAction -----
--(void)topTitleTapAction:(UITapGestureRecognizer *)tap
+-(void)topTitleAction:(UIButton *)tap
 {
-    
+    _currencyView = [[CurrencyView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _currencyView.delegate = self;
+    [[UIApplication sharedApplication].keyWindow addSubview:_currencyView];
+}
+ 
+#pragma mark ----- CurrencyViewDelegate -----
+- (void)didSelectItem:(CurrencyModel *)model
+{
+    _model = model;
+    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:_model.address];
+    if (_model.address == nil) {
+        _accountQRCodeImg.image = [UIImage imageNamed:@"icon_ercode"];
+    }
+    _detailLab.text = _model.address;
+    _topTitleLab.attributedText = [self attributedStringWithImage:_model.currency];
 }
 
 

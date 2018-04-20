@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TransferAwaitModel.h"
+@protocol TransferAwaitDetailDelegate <NSObject>
 
+@optional
+- (void)backReflesh;
+@end
 @interface TransferAwaitDetailViewController : UIViewController
+
+@property(nonatomic, strong)TransferAwaitModel *model;
+@property (nonatomic,weak) id <TransferAwaitDetailDelegate> delegate;
 
 @end

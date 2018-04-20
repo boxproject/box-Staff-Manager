@@ -8,17 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, ApprovalState) {
-    ApprovalAwait,   //待审批
-    Approvaling,     //审批中
-    ApprovalSucceed, //审批成功
-    ApprovalFail     //审批失败
-};
-
 @interface TransferAwaitModel : NSObject
 
-@property (nonatomic,strong) NSString *approvalTitle;
-@property(nonatomic, assign) ApprovalState approvalState;
+/** 申请理由 */
+@property (nonatomic,strong) NSString *tx_info;
+/** 审批进度 0待审批 1审批中 2被驳回 3审批成功 */
+@property(nonatomic, assign) ApprovalState progress;
+/** 1-转账中 2-转账成功*/
+@property(nonatomic, assign) NSInteger arrived;
+/** 转账记录编号 */
+@property (nonatomic,strong) NSString *order_number;
+/** 转账金额 */
+@property (nonatomic,strong) NSString *amount;
+/** 币种 */
+@property (nonatomic,strong) NSString *currency;
+/** 该笔转账申请时间戳 */
+@property(nonatomic, assign) NSInteger apply_at;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

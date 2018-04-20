@@ -13,5 +13,6 @@ pod 'MBProgressHUD', '~> 1.1.0'
 pod 'SVProgressHUD', '~> 2.2.2'
 pod 'IQKeyboardManager', '~> 5.0.7'
 pod 'WSProgressHUD', '~> 1.1.3'
+pod 'FMDB', '~> 2.7.2'
 
 end

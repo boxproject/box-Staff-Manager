@@ -9,6 +9,8 @@
 #import "ApprovalBusinessViewController.h"
 #import "ApprovalBusinessModel.h"
 #import "ApprovalBusinessTableViewCell.h"
+#import "ApprovalBusinessDetailViewController.h"
+#import "CreateApprovalFlowViewController.h"
 
 
 #define PageSize  12
@@ -16,7 +18,7 @@
 #define ApprovalBusinessVCTitle  @"审批流"
 #define ApprovalBusinessVCCreateBtn  @"创建"
 
-@interface ApprovalBusinessViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface ApprovalBusinessViewController ()<UITableViewDelegate, UITableViewDataSource,CreateApprovalFlowDelegate>
 
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
@@ -33,27 +35,55 @@
     self.view.backgroundColor = kWhiteColor;
     self.title = ApprovalBusinessVCTitle;
     _sourceArray = [[NSMutableArray alloc] init];
+    _page = 1;
     [self createView];
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"approvalTitle":@"二秒科技审批流程一", @"approvalState":@(0)},
-                                   @{@"approvalTitle":@"二秒科技审批流程二", @"approvalState":@(0)},
-                                   @{@"approvalTitle":@"二秒科技审批流程三", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技审批流程四", @"approvalState":@(2)},
-                                   @{@"approvalTitle":@"二秒科技审批流程五", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技审批流程六", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技审批流程七", @"approvalState":@(0)}
-                                   ]
-                           
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
-    [self.tableView reloadData];
-    
+    [self requestData];
+}
+
+#pragma mark ----- 数据请求 -----
+-(void)requestData
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
+                [_sourceArray addObject:model];
+            }
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
+}
+
+#pragma mark ----- CreateApprovalFlowDelegate -----
+- (void)createApprovalSucceed
+{
+   [self.tableView.mj_header beginRefreshing];
+}
+
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    });
 }
 
 
@@ -83,7 +113,9 @@
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
     UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:ApprovalBusinessVCCreateBtn style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
-    self.navigationItem.rightBarButtonItem = buttonRight;
+    if ([[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
+       self.navigationItem.rightBarButtonItem = buttonRight;
+    }
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
     
@@ -91,7 +123,10 @@
 
 #pragma mark ----- rightBarButtonItemAction -----
 - (void)rightButtonAction:(UIBarButtonItem *)buttonItem{
-    //[self.navigationController popViewControllerAnimated:YES];
+    CreateApprovalFlowViewController *createApprovalFlowVc = [[CreateApprovalFlowViewController alloc] init];
+    createApprovalFlowVc.delegate = self;
+    UINavigationController *createApprovalFlowNc = [[UINavigationController alloc] initWithRootViewController:createApprovalFlowVc];
+    [self presentViewController:createApprovalFlowNc animated:YES completion:nil];
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
@@ -99,29 +134,21 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
 -(void)footerReflesh
 {
     _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
         self.page += 1;
         [self requestData];
     }];
-    
-    
 }
 
 -(void)headerReflesh
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
-
--(void)requestData
-{
-    
-}
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -139,13 +166,17 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
- 
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ApprovalBusinessModel *model = self.sourceArray[indexPath.row];
+        ApprovalBusinessDetailViewController *approvalBusinessDetailVc = [[ApprovalBusinessDetailViewController alloc] init];
+        approvalBusinessDetailVc.model = model;
+        UINavigationController *approvalBusinessDetailNc = [[UINavigationController alloc] initWithRootViewController:approvalBusinessDetailVc];
+        [self presentViewController:approvalBusinessDetailNc animated:NO completion:nil];
+    });
 }
 
 

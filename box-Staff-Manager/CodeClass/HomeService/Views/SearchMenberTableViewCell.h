@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "SearchMenberModel.h"
+#import "ApprovalBusApproversModel.h"
 
 @interface SearchMenberTableViewCell : UITableViewCell
 
 @property (nonatomic,strong) SearchMenberModel *model;
 
-- (void)setDataWithModel:(SearchMenberModel *)model;
+@property (nonatomic,strong) NSArray *array;
+
+- (void)setDataWithModel:(SearchMenberModel *)model indexPath:(NSIndexPath *)indexPath;
 
 @end

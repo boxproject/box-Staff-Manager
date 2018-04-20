@@ -9,6 +9,7 @@
 #import "AddDirectoryViewController.h"
 #import "ScanCodeViewController.h"
 #import "SearchAddressViewController.h"
+#import "HomeDirectoryModel.h"
 
 
 #define AddDirectoryVCTitle  @"新增地址"
@@ -18,11 +19,10 @@
 #define AddDirectoryNameInfo  @"请输入姓名或者公司名称"
 #define AddDirectoryVCAddress  @"收款地址"
 #define AddDirectoryVCAddressInfo  @"请输入或者选择收款人"
-#define AddDirectoryVCRemark  @"收款地址"
+#define AddDirectoryVCRemark  @"备注"
 #define AddDirectoryVCRemarkInfo  @"请输入备注"
-
-
-
+#define AddDirectoryVCcurrencyInfo  @"请选择币种"
+#define AddDirectoryVCError  @"新增地址失败"
 
 
 @interface AddDirectoryViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
@@ -32,16 +32,7 @@
 @property (nonatomic,strong)UITextField *nameTf;
 @property (nonatomic,strong)UITextField *addressTf;
 @property (nonatomic,strong)UITextField *remarkTf;
-
-
-@property (nonatomic,strong)UITextField *amountTf;
-@property (nonatomic,strong)UISlider *progressSlider;
-@property (nonatomic,strong)UILabel *minersFeeLab;
-@property (nonatomic,strong)UIButton *commitBtn;
 @property (nonatomic,strong)UIButton *scanBtn;
-@property (nonatomic,strong)UIButton *addressTextBtn;
-
-
 
 @end
 
@@ -55,6 +46,18 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithHexString:@"#666666"]}];
     [self createBarItem];
     [self createView];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    UIImage *shadowImage = self.navigationController.navigationBar.shadowImage;
+    self.navigationController.navigationBar.shadowImage = shadowImage;
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = nil;
+    self.navigationController.navigationBar.barTintColor = nil;
+    self.navigationController.navigationBar.alpha = 1.0;
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
     
 }
 
@@ -94,7 +97,7 @@
     
     _currencyTf = [[UITextField alloc] init];
     _currencyTf.font = Font(14);
-    _currencyTf.text = @"BTC";
+    _currencyTf.text = _currency;
     _currencyTf.delegate = self;
     _currencyTf.textColor = [UIColor colorWithHexString:@"#333333"];
     _currencyTf.keyboardType = UIKeyboardTypeAlphabet;
@@ -247,7 +250,7 @@
     [addressView addSubview:_scanBtn];
     [_scanBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(addressView);
-        make.right.offset(10);
+        make.right.offset(-10);
         make.width.offset(31);
         make.height.offset(50);
     }];
@@ -338,7 +341,38 @@
 
 #pragma mark ----- rightBarButtonItemAction -----
 - (void)rightButtonAction:(UIBarButtonItem *)buttonItem{
-    [self.navigationController popViewControllerAnimated:YES];
+    if (_currencyTf.text.length == 0) {
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCcurrencyInfo];
+        return;
+    }
+    if (_nameTf.text.length == 0) {
+        [WSProgressHUD showErrorWithStatus:AddDirectoryNameInfo];
+        return;
+    }
+    if (_addressTf.text.length == 0) {
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCAddressInfo];
+        return;
+    }
+    if (_remarkTf.text.length == 0) {
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCRemarkInfo];
+        return;
+    }
+    NSInteger currentTimeIn = [[NSDate date]timeIntervalSince1970] * 1000;
+    NSString *currentTime = [NSString stringWithFormat:@"%ld", currentTimeIn];
+    NSDictionary *dic = @{@"currency":_currencyTf.text,
+                          @"nameTitle": _nameTf.text,
+                          @"remark": _remarkTf.text,
+                          @"address":_addressTf.text,
+                          @"currencyId":@(0),
+                          @"directoryId":currentTime};
+    HomeDirectoryModel *model = [[HomeDirectoryModel alloc] initWithDict:dic];
+    BOOL isOk = [[DirectoryManager sharedManager] insertDirectoryModel:model];
+    if (isOk) {
+        self.currencyBlock(model.currency);
+        [self.navigationController popViewControllerAnimated:YES];
+    }else{
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCError];
+    }
 }
 
 #pragma mark ----- currencyAction -----
@@ -357,9 +391,6 @@
      [self.navigationController popViewControllerAnimated:YES];
     
 }
-
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -8,7 +8,6 @@
 
 #import "AccountAdressDetailViewController.h"
 
-
 @interface AccountAdressDetailViewController () <UIScrollViewDelegate, UITextFieldDelegate,MBProgressHUDDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
@@ -34,7 +33,7 @@
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.view.backgroundColor = [UIColor colorWithHexString:@"#292e40"];
-    self.title = _titleAccount;
+    self.title = _model.currency;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kWhiteColor}];
     UINavigationBar * bar = self.navigationController.navigationBar;
     UIImage *bgImage = [self imageWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, kTopHeight) alphe:1.0];
@@ -111,7 +110,10 @@
     }];
     
     _accountQRCodeImg = [[UIImageView alloc] init];
-    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:@"hahahah"];
+    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:_model.address];
+    if (_model.address == nil) {
+        _accountQRCodeImg.image = [UIImage imageNamed:@"icon_ercode"];
+    }
     [oneView addSubview:_accountQRCodeImg];
     [_accountQRCodeImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(oneBackView.mas_bottom).offset(78/2);
@@ -143,7 +145,6 @@
         make.height.offset(14);
     }];
     
-    
     _accountSaveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_accountSaveBtn setTitle:@"保存二维码" forState:UIControlStateNormal];
     [_accountSaveBtn setTitleColor:[UIColor colorWithHexString:@"#4c7afd"] forState:UIControlStateNormal];
@@ -158,7 +159,7 @@
     }];
     
     _accountQRLab = [[UILabel alloc] init];
-    _accountQRLab.text = @"0x74817507891570huifw8032789878078x8907078446";
+    _accountQRLab.text = _model.address;
     _accountQRLab.textAlignment = NSTextAlignmentCenter;
     _accountQRLab.font = Font(11);
     _accountQRLab.textColor = [UIColor colorWithHexString:@"#8e9299"];
@@ -190,6 +191,9 @@
 #pragma mark ----- 复制地址／账户二维码 -----
 -(void)accountCopyAction:(UIButton *)btn
 {
+    if (_model.address == nil) {
+        return;
+    }
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = _accountQRLab.text;
     [self showProgressHUD];
@@ -211,7 +215,6 @@
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
     //保存到本地相机
     UIImageWriteToSavedPhotosAlbum(newImage,self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
-    
 }
 
 //保存相片的回调方法
@@ -219,10 +222,10 @@
 {
     if (error) {
         [SVProgressHUD showErrorWithStatus:@"保存失败"];
-        [SVProgressHUD dismissWithDelay:1.0];
+        [SVProgressHUD dismissWithDelay:0.8];
     } else {
         [SVProgressHUD showSuccessWithStatus:@"成功保存到相册"];
-        [SVProgressHUD dismissWithDelay:1.0];
+        [SVProgressHUD dismissWithDelay:0.8];
     }
 }
 
@@ -232,7 +235,6 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back_white"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
@@ -240,7 +242,6 @@
     //[self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {
     frame = CGRectMake(0, 0, frame.size.width, frame.size.height);

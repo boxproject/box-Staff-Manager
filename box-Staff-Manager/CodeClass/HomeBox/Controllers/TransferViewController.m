@@ -11,6 +11,11 @@
 #import "TransferView.h"
 #import "TransferRecordViewController.h"
 #import "SearchApprovalViewController.h"
+#import "UIARSAHandler.h"
+#import "HomeDirectoryViewController.h"
+#import "ApprovalBusinessModel.h"
+#import "CurrencyView.h"
+
 
 #define TransferVCTitle  @"转账"
 #define TransferVCApprovalProcess  @"审批流"
@@ -28,8 +33,9 @@
 #define TransferVCMinersFeeFast  @"快"
 #define TransferVCBtnTitle  @"提交审批"
 
-@interface TransferViewController ()<UITextFieldDelegate,UIScrollViewDelegate,TransferViewDelegate>
 
+@interface TransferViewController ()<UITextFieldDelegate,UIScrollViewDelegate,TransferViewDelegate,CurrencyViewDelegate>
+@property(nonatomic, strong)DDRSAWrapper *aWrapper;
 @property(nonatomic, strong)UIScrollView *contentView;
 @property (nonatomic,strong) UIView *viewLayer;
 @property (nonatomic,strong)UILabel *topTitleLab;
@@ -43,9 +49,10 @@
 @property (nonatomic,strong)UIButton *commitBtn;
 @property (nonatomic,strong)UIButton *scanBtn;
 @property (nonatomic,strong)UIButton *addressTextBtn;
-
+@property (nonatomic,strong)ApprovalBusinessModel *approvalBusinessModel;
 @property (nonatomic, strong)IQKeyboardManager *manager;
 @property (nonatomic, strong)TransferView *transferView;
+@property (nonatomic,strong)CurrencyView *currencyView;
 
 @end
 
@@ -59,8 +66,7 @@
     [self createBarItem];
     [self createView];
     [self initIQKeyboardManager];
-    
-    
+    _aWrapper = [[DDRSAWrapper alloc] init];
 }
 
 -(void)initIQKeyboardManager
@@ -82,9 +88,7 @@
     self.navigationController.navigationBar.barTintColor = nil;
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
-    
 }
-
 
 -(NSMutableAttributedString *)attributedStringWithImage:(NSString *)string
 {
@@ -104,42 +108,43 @@
     //将图片放在第一位
     [attri insertAttributedString:stringAt atIndex:str.length];
     return attri;
-
 }
-
 
 -(void)createTitleView
 {
     _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
     self.navigationItem.titleView = self.viewLayer;
-    
-    _topTitleLab = [[UILabel alloc] init];
+    _topTitleLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
     _topTitleLab.textAlignment = NSTextAlignmentCenter;
     _topTitleLab.font = Font(16);
-    _topTitleLab.attributedText = [self attributedStringWithImage:@"BTC"];
+    _topTitleLab.attributedText = [self attributedStringWithImage:_mode.currency];
     _topTitleLab.textColor = [UIColor colorWithHexString:@"#666666"];
     _topTitleLab.numberOfLines = 1;
     [_viewLayer addSubview:_topTitleLab];
-    [_topTitleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(_viewLayer);
-        make.centerX.equalTo(_viewLayer);
-        make.height.offset(30);
-        make.width.offset(100);
-    }];
-    UITapGestureRecognizer *topTitleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(topTitleTapAction:)];
-    _viewLayer.userInteractionEnabled = YES;
-    [_viewLayer addGestureRecognizer:topTitleTap];
-    
+   
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, 200, 30);
+    [button addTarget:self action:@selector(topTitleAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_viewLayer addSubview:button];
 }
 
 
 #pragma mark ----- topTitleTapAction -----
--(void)topTitleTapAction:(UITapGestureRecognizer *)tap
+-(void)topTitleAction:(UIButton *)tap
 {
-    
+    _currencyView = [[CurrencyView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _currencyView.delegate = self;
+    [[UIApplication sharedApplication].keyWindow addSubview:_currencyView];
 }
 
+#pragma mark ----- CurrencyViewDelegate -----
+- (void)didSelectItem:(CurrencyModel *)model
+{
+    _mode = model;
+    _topTitleLab.attributedText = [self attributedStringWithImage:model.currency];
+    _currencyTf.text = model.currency;
+}
 
 #pragma mark - createBarItem
 - (void)createBarItem{
@@ -158,7 +163,6 @@
     TransferRecordViewController *transferRecordVc = [[TransferRecordViewController alloc] init];
     transferRecordVc.fromVC = @"transferVC";
     [self.navigationController pushViewController:transferRecordVc animated:YES];
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
@@ -168,7 +172,11 @@
     _manager.shouldToolbarUsesTextFieldTintColor = NO;
     _manager.enableAutoToolbar = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *vc = self.presentingViewController;
+    while (vc.presentingViewController) {
+        vc = vc.presentingViewController;
+    }
+    [vc dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(void)createView
@@ -211,6 +219,9 @@
     _approvalProcessTf.delegate = self;
     _approvalProcessTf.textColor = [UIColor colorWithHexString:@"#333333"];
     _approvalProcessTf.keyboardType = UIKeyboardTypeAlphabet;
+    [_approvalProcessTf addTarget:self
+                        action:@selector(textFieldDidChange:)
+              forControlEvents:UIControlEventEditingChanged];
     [approvalProcessView addSubview:_approvalProcessTf];
     [_approvalProcessTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(approvalProcessLab.mas_right).offset(15);
@@ -276,10 +287,13 @@
     
     _currencyTf = [[UITextField alloc] init];
     _currencyTf.font = Font(14);
-    _currencyTf.text = @"BTC";
+    _currencyTf.text = _mode.currency;
     _currencyTf.delegate = self;
     _currencyTf.textColor = [UIColor colorWithHexString:@"#333333"];
     _currencyTf.keyboardType = UIKeyboardTypeAlphabet;
+    [_currencyTf addTarget:self
+                           action:@selector(textFieldDidChange:)
+                 forControlEvents:UIControlEventEditingChanged];
     [currencyView addSubview:_currencyTf];
     [_currencyTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(currencyLab.mas_right).offset(15);
@@ -323,11 +337,16 @@
     }];
     
     _addressTf = [[UITextField alloc] init];
-    _addressTf.placeholder = TransferVCReceiptAddressInfo;
     _addressTf.font = Font(14);
     _addressTf.delegate = self;
     _addressTf.placeholder = TransferVCReceiptAddressInfo;
+    if ([_fromType isEqualToString:@"scanCode"]) {
+        _addressTf.text = _mode.address;
+    }
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_addressTf addTarget:self
+                    action:@selector(textFieldDidChange:)
+          forControlEvents:UIControlEventEditingChanged];
     [addressView addSubview:_addressTf];
     [_addressTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(addressLab.mas_right).offset(15);
@@ -416,6 +435,9 @@
     _amountTf.delegate = self;
     _amountTf.keyboardType = UIKeyboardTypeDecimalPad;
     _amountTf.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_amountTf addTarget:self
+                   action:@selector(textFieldDidChange:)
+         forControlEvents:UIControlEventEditingChanged];
     [amountView addSubview:_amountTf];
     [_amountTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(amountLab.mas_right).offset(15);
@@ -464,6 +486,9 @@
     _applyReasonTf.delegate = self;
     _applyReasonTf.keyboardType = UIKeyboardTypeDefault;
     _applyReasonTf.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_applyReasonTf addTarget:self
+                  action:@selector(textFieldDidChange:)
+        forControlEvents:UIControlEventEditingChanged];
     [applyReasonView addSubview:_applyReasonTf];
     [_applyReasonTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(applyReasonLab.mas_right).offset(15);
@@ -546,7 +571,7 @@
     _minersFeeLab = [[UILabel alloc] init];
     _minersFeeLab.textAlignment = NSTextAlignmentCenter;
     _minersFeeLab.font = Font(12);
-    _minersFeeLab.text = @"0.00000000ETH";
+    _minersFeeLab.text = @"0.00000000";
     _minersFeeLab.textColor = [UIColor colorWithHexString:@"#cccccc"];
     [minersFeeView addSubview:_minersFeeLab];
     [_minersFeeLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -585,17 +610,28 @@
         make.top.offset(SCREEN_HEIGHT - (kTopHeight - 64) - kTopHeight - 63- 46);
         make.height.offset(46);
     }];
-    //_commitBtn.enabled = NO;
-    
- 
+    _commitBtn.enabled = NO;
+}
+
+#pragma mark ----- textFieldDidChange -----
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    if (_approvalProcessTf.text.length > 0 && _currencyTf.text.length > 0 && _addressTf.text.length > 0 && _amountTf.text.length > 0 && _applyReasonTf.text.length > 0) {
+        _commitBtn.enabled = YES;
+        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+    }else{
+        _commitBtn.enabled = NO;
+        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+    }
 }
 
 #pragma mark ----- currencyAction -----
 -(void)approvalProcessAction:(UIButton *)btn
 {
     SearchApprovalViewController *searchApprovalVc = [[SearchApprovalViewController alloc] init];
-    searchApprovalVc.approvalBlock = ^(NSString *text){
-        _approvalProcessTf.text = text;
+    searchApprovalVc.approvalBlock = ^(ApprovalBusinessModel *model){
+        _approvalProcessTf.text = model.flow_name;
+        _approvalBusinessModel = model;
     };
     [self.navigationController pushViewController:searchApprovalVc animated:YES];
 }
@@ -610,7 +646,13 @@
 #pragma mark -----  地址簿 -----
 -(void)addressTextAction:(UIButton *)btn
 {
-    
+    HomeDirectoryViewController *directoryVC = [[HomeDirectoryViewController alloc] init];
+    directoryVC.model = _mode;
+    directoryVC.addressBlock = ^(NSString *addressText){
+        _addressTf.text = addressText;
+    };
+    directoryVC.type = @"getAddress";
+    [self.navigationController pushViewController:directoryVC animated:YES];
 }
 
 #pragma mark -----  扫描二维码获取地址 -----
@@ -628,18 +670,31 @@
 -(void)pressSlider:(UISlider *)slider
 {
     CGFloat value = slider.value;
-    _minersFeeLab.text = [NSString stringWithFormat:@"%.8f%@", value,@"ETH"];
-    
+    _minersFeeLab.text = [NSString stringWithFormat:@"%.8f", value];
 }
 
 #pragma mark -----  提交审批 -----
 -(void)cormfirmAction:(UIButton *)btn
 {
-    [self.view endEditing:YES];
-    _transferView = [[TransferView alloc] initWithFrame:[UIScreen mainScreen].bounds dic:nil];
+    CGFloat amountFloat= [_amountTf.text floatValue];
+    CGFloat flowLimit = [_approvalBusinessModel.single_limit floatValue];
+    if (amountFloat > flowLimit) {
+        [WSProgressHUD showErrorWithStatus:@"金额超出上限"];
+        return;
+    }
+    NSInteger timestampIn = [[NSDate date]timeIntervalSince1970] * 1000;
+    NSString *timestamp = [NSString stringWithFormat:@"%ld", timestampIn];
+    NSDictionary *applyInfoDic = @{@"currency":_currencyTf.text,
+                                   @"to_address":_addressTf.text,
+                                   @"amount":_amountTf.text,
+                                   @"tx_info":_applyReasonTf.text,
+                                   @"miner":_minersFeeLab.text,
+                                   @"timestamp":timestamp
+                                   };
+    
+    _transferView = [[TransferView alloc] initWithFrame:[UIScreen mainScreen].bounds dic:applyInfoDic flowName:_approvalBusinessModel.flow_name];
     _transferView.delegate = self;
     [[UIApplication sharedApplication].keyWindow addSubview:_transferView];
-    
 }
 
 #pragma mark -----  TransferViewDelegate -----
@@ -651,6 +706,39 @@
     _manager.enableAutoToolbar = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)showProgressHUD
+{
+    [WSProgressHUD setProgressHUDIndicatorStyle:WSProgressHUDIndicatorBigGray];
+    [WSProgressHUD show];
+}
+
+#pragma mark -----  TransferViewDelegate -----
+- (void)transferViewDelegate:(NSDictionary *)dic
+{
+    NSString *applyInfo = [JsonObject dictionaryToJson:dic];
+    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:applyInfo privateStr:[BoxDataManager sharedManager].privateKeyBase64];
+    //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:applyInfo signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:applyInfo forKey:@"apply_info"];
+    [paramsDic setObject:_approvalBusinessModel.flow_id forKey:@"flow_id"];
+    [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/application" params:paramsDic success:^(id responseObject) {
+        [WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
+            [_transferView createAchieveView];
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+    } fail:^(NSError *error) {
+        [WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+    }];
 }
 
 

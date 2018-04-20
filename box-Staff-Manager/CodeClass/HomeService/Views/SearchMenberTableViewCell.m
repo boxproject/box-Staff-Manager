@@ -16,6 +16,8 @@
 
 @property (nonatomic,strong) UIView *lineView;
 
+@property (nonatomic,strong) UIImageView *rightIcon;
+
 @end
 
 @implementation SearchMenberTableViewCell
@@ -35,21 +37,21 @@
     _titleLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [self.contentView addSubview:_titleLab];
     [_titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(11);
+        make.top.offset(0);
         make.left.offset(15);
         make.right.offset(-15);
-        make.height.offset(20);
+        make.bottom.offset(0);
     }];
-    
-    _subTitleLab = [[UILabel alloc]init];
-    _subTitleLab.font = Font(12);
-    _subTitleLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [self.contentView addSubview:_subTitleLab];
-    [_subTitleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_titleLab.mas_bottom).offset(4);
-        make.left.offset(15);
-        make.right.offset(-15);
-        make.height.offset(17);
+ 
+    _rightIcon = [[UIImageView alloc] init];
+    _rightIcon.image = [UIImage imageNamed:@"right_icon"];
+    [self.contentView addSubview:_rightIcon];
+    [_rightIcon mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.offset(-12);
+        make.centerY.equalTo(self.contentView);
+        make.width.offset(20);
+        make.height.offset(22);
+        
     }];
     
     
@@ -57,7 +59,7 @@
     _lineView.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
     [self.contentView addSubview:_lineView];
     [_lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.contentView.mas_bottom).offset(-1);
+        make.bottom.equalTo(self.contentView.mas_bottom).offset(0);
         make.left.offset(15);
         make.right.offset(-15);
         make.height.offset(1);
@@ -65,15 +67,34 @@
     
 }
 
-- (void)setDataWithModel:(SearchMenberModel *)model;
+- (void)setDataWithModel:(SearchMenberModel *)model indexPath:(NSIndexPath *)indexPath;
 {
-    _titleLab.text = model.titleName;
-    _subTitleLab.text = model.subTitle;
+    if (model.employee_num > 0) {
+        _titleLab.text = [NSString stringWithFormat:@"%@ (%ld)", model.account, model.employee_num];
+        if (indexPath.section == 0) {
+            _rightIcon.hidden = NO;
+        }else{
+            _rightIcon.hidden = YES;
+        }
+    }else{
+        _titleLab.text = model.account;
+        _rightIcon.hidden = YES;
+    }
     
+    if ([model.app_account_id isEqualToString:[BoxDataManager sharedManager].app_account_id]) {
+        _titleLab.text = [NSString stringWithFormat:@"%@ (%@)", model.account, @"我"];
+        _rightIcon.hidden = YES;
+    }
+    if (indexPath.section == 1) {
+        for (ApprovalBusApproversModel *approvalBusModel in _array) {
+            if ([approvalBusModel.app_account_id  isEqualToString:model.app_account_id]) {
+                _rightIcon.hidden = NO;
+                _rightIcon.image = [UIImage imageNamed:@"icon_check1"];
+                
+            }
+        }
+    }
 }
-
-
-
 
 
 - (void)awakeFromNib {

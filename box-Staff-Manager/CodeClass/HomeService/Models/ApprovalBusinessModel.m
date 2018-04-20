@@ -18,11 +18,17 @@
 {
     if (self = [super init])
     {
-        if(![dict[@"approvalTitle"] isKindOfClass:[NSNull class]]){
-            self.approvalTitle = [dict objectForKey:@"approvalTitle"];
+        if(![dict[@"flow_id"] isKindOfClass:[NSNull class]]){
+            self.flow_id = [dict objectForKey:@"flow_id"];
         }
-        if(![dict[@"approvalTitle"] isKindOfClass:[NSNull class]]){
-            self.approvalState = [[dict objectForKey:@"approvalState"] integerValue];
+        if(![dict[@"flow_name"] isKindOfClass:[NSNull class]]){
+            self.flow_name = [dict objectForKey:@"flow_name"];
+        }
+        if(![dict[@"progress"] isKindOfClass:[NSNull class]]){
+            self.progress = [[dict objectForKey:@"progress"] integerValue];
+        }
+        if(![dict[@"single_limit"] isKindOfClass:[NSNull class]]){
+            self.single_limit = [dict objectForKey:@"single_limit"];
         }
     }
     return self;

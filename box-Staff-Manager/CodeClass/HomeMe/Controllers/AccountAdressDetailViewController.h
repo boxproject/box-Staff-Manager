@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AccountAdressModel.h"
 
 @interface AccountAdressDetailViewController : UIViewController
 
-@property(nonatomic, strong)NSString *titleAccount;
+@property(nonatomic, strong)AccountAdressModel *model;
 
 @end

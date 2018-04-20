@@ -102,8 +102,8 @@
 
 - (void)setDataWithModel:(ApprovalBusinessModel *)model
 {
-    _approvalTitleLab.text = model.approvalTitle;
-    switch (model.approvalState) {
+    _approvalTitleLab.text = model.flow_name;
+    switch (model.progress) {
         case ApprovalAwait:
         {
             _approvalStateLab.text = ApprovalAwaitBusiness;

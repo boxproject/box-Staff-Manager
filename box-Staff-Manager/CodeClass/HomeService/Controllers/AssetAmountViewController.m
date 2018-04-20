@@ -31,26 +31,9 @@
     self.view.backgroundColor = kWhiteColor;
     self.title = AssetAmountVCTitle;
     _sourceArray = [[NSMutableArray alloc] init];
+    self.page = 1;
     [self createView];
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"titleName":@"ETH", @"amountTitle":@"120.78000000",@"freezeAmount":@"0.00000000"},
-                                   @{@"titleName":@"EOS", @"amountTitle":@"54040.90000000",@"freezeAmount":@"0.00000000"},
-                                   @{@"titleName":@"APPC", @"amountTitle":@"120000.1000000",@"freezeAmount":@"0.00000000"},
-                                   @{@"titleName":@"zb", @"amountTitle":@"89098.00000000",@"freezeAmount":@"0.00000000"},
-                                   @{@"titleName":@"ONT", @"amountTitle":@"70130.00000000",@"freezeAmount":@"0.00000000"},
-                                   @{@"titleName":@"VEN", @"amountTitle":@"35000.00000000",@"freezeAmount":@"0.00000000"}
-                                   ]
-                           
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        AssetAmountModel *model = [[AssetAmountModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
-    [self.tableView reloadData];
-    
+    [self requestData];
 }
 
 
@@ -98,22 +81,56 @@
         self.page += 1;
         [self requestData];
     }];
-    
-    
 }
 
 -(void)headerReflesh
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
 
+#pragma mark ----- 数据请求 -----
 -(void)requestData
 {
-    
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/balance" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            for (NSDictionary *dataDic in dict[@"data"]) {
+                AssetAmountModel *model = [[AssetAmountModel alloc] initWithDict:dataDic];
+                [_sourceArray addObject:model];
+            }
+            [self.tableView reloadData];
+            
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
 }
 
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    });
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -125,13 +142,11 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
     AssetAmountTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
     AssetAmountModel *model = self.sourceArray[indexPath.row];
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 /*

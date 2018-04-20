@@ -54,7 +54,6 @@
         make.bottom.offset(0);
         make.left.equalTo(leftImg.mas_right).offset(9);
         make.right.offset(-130);
-        
     }];
     
     _rightIcon = [[UIImageView alloc] init];
@@ -77,15 +76,11 @@
         make.right.offset(-15);
         make.height.offset(1);
     }];
-    
-    
-    
 }
 
 - (void)setDataWithModel:(TransferAwaitModel *)model
 {
-    _approvalTitleLab.text = model.approvalTitle;
-
+    _approvalTitleLab.text = model.tx_info;
 }
 
 

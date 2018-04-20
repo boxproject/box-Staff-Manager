@@ -8,17 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, ApprovalState) {
-    ApprovalAwait,   //待审批
-    Approvaling,     //审批中
-    ApprovalSucceed, //审批成功
-    ApprovalFail     //审批失败
-};
-
 @interface ApprovalBusinessModel : NSObject
 
-@property (nonatomic,strong) NSString *approvalTitle;
-@property(nonatomic, assign) ApprovalState approvalState;
+/** 审批流模板编号 */
+@property (nonatomic,strong) NSString *flow_id;
+/** 审批流模板审批进度 0待审批 2审批拒绝 3审批通过 */
+@property(nonatomic, assign) ApprovalState progress;
+/** 审批流模板名称 */
+@property (nonatomic,strong) NSString *flow_name;
+/** 金额上限 */
+@property (nonatomic,strong) NSString *single_limit;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

@@ -15,7 +15,7 @@
 #define CellReuseIdentifier  @"TransferAwait"
 #define TransferAwaitVCTitle  @"待审批转账"
 
-@interface TransferAwaitViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface TransferAwaitViewController ()<UITableViewDelegate, UITableViewDataSource,TransferAwaitDetailDelegate>
 
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
@@ -33,26 +33,59 @@
     self.view.backgroundColor = kWhiteColor;
     self.title = TransferAwaitVCTitle;
     _sourceArray = [[NSMutableArray alloc] init];
+    _page = 1;
     [self createView];
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"approvalTitle":@"二秒科技待审批一", @"approvalState":@(0)},
-                                   @{@"approvalTitle":@"二秒科技待审批二", @"approvalState":@(0)},
-                                   @{@"approvalTitle":@"二秒科技待审批三", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技待审批四", @"approvalState":@(2)},
-                                   @{@"approvalTitle":@"二秒科技待审批五", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技待审批六", @"approvalState":@(1)},
-                                   @{@"approvalTitle":@"二秒科技待审批七", @"approvalState":@(0)}
-                                   ]
-                           
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
-    [self.tableView reloadData];
+    [self requestData];
+}
+
+#pragma mark ----- 数据请求 -----
+-(void)requestData
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:@(1) forKey:@"type"];
+    [paramsDic setObject:@(0) forKey:@"progress"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:listDic];
+                model.progress = 0;
+                [_sourceArray addObject:model];
+            }
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
+}
+
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    });
+}
+
+#pragma mark ----- TransferAwaitDetailDelegate -----
+- (void)backReflesh
+{
+    _page = 1;
+    [self requestData];
 }
 
 -(void)createView
@@ -72,6 +105,7 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self footerReflesh];
     [self headerReflesh];
+
 }
 
 #pragma mark - createBarItem
@@ -84,7 +118,10 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if ([self.delegate respondsToSelector:@selector(backReflesh)]) {
+        [self.delegate backReflesh];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 
@@ -102,15 +139,11 @@
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
 
--(void)requestData
-{
-    
-}
-
-
+ 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
 }
@@ -118,7 +151,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60;
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -132,16 +164,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         TransferAwaitModel *model = self.sourceArray[indexPath.row];
         TransferAwaitDetailViewController *transferAwaitDetailVc = [[TransferAwaitDetailViewController alloc] init];
+        transferAwaitDetailVc.delegate = self;
+        transferAwaitDetailVc.model = model;
         UINavigationController *transferAwaitDetailNc = [[UINavigationController alloc] initWithRootViewController:transferAwaitDetailVc];
         [self presentViewController:transferAwaitDetailNc animated:NO completion:nil];
     });
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

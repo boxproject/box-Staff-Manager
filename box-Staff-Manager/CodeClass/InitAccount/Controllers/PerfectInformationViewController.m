@@ -192,38 +192,29 @@
         make.top.equalTo(aleartLab.mas_bottom).offset(46);
         make.height.offset(91/2);
     }];
-    
-    
-    
-    
-    
-    
-    
 }
 
 -(void)cormfirmAction:(UIButton *)btn
 {
-//    if ( [_nameTf.text isEqualToString:@""]) {
-//        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartOne];
-//        return;
-//    }
-//    if ([_passwordTf.text isEqualToString:@""]) {
-//        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartTwo];
-//        return;
-//    }
-//    if (![_passwordTf.text isEqualToString:_verifyPwFf.text]) {
-//        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartThree];
-//        return;
-//    }
-    
+    if ( [_nameTf.text isEqualToString:@""]) {
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartOne];
+        return;
+    }
+    if ([_passwordTf.text isEqualToString:@""]) {
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartTwo];
+        return;
+    }
+    if (![_passwordTf.text isEqualToString:_verifyPwFf.text]) {
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartThree];
+        return;
+    }
     InitAccountViewController *initAccountVC = [[InitAccountViewController alloc] init];
-    NSInteger currentTime = [[NSDate date]timeIntervalSince1970] * 1000;
-    NSString *currentString = [NSString stringWithFormat:@"%ld", currentTime];
+    NSInteger applyer_idIn = [[NSDate date]timeIntervalSince1970] * 1000;
+    NSString *applyer_id = [NSString stringWithFormat:@"%ld", applyer_idIn];
     initAccountVC.nameStr = _nameTf.text;
     initAccountVC.passwordStr = _passwordTf.text;
-    initAccountVC.applyer_id = currentString;
+    initAccountVC.applyer_id = applyer_id;
     [self.navigationController pushViewController:initAccountVC animated:YES];
-    
 }
 
 

@@ -18,11 +18,11 @@
 {
     if (self = [super init])
     {
-        if(![dict[@"titleName"] isKindOfClass:[NSNull class]]){
-            self.titleName = [dict objectForKey:@"titleName"];
+        if(![dict[@"currency"] isKindOfClass:[NSNull class]]){
+            self.currency = [dict objectForKey:@"currency"];
         }
-        if(![dict[@"amountTitle"] isKindOfClass:[NSNull class]]){
-            self.amountTitle = [dict objectForKey:@"amountTitle"];
+        if(![dict[@"balance"] isKindOfClass:[NSNull class]]){
+            self.balance = [dict objectForKey:@"balance"];
         }
         if(![dict[@"freezeAmount"] isKindOfClass:[NSNull class]]){
             self.freezeAmount = [dict objectForKey:@"freezeAmount"];

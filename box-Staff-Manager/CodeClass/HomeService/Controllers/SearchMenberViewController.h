@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+
+@protocol SearchMenberDelegate <NSObject>
+
+@optional
+- (void)replaceMenberReflesh;
+@end
+
 typedef void(^MenberBlock)(NSString *text);
 @interface SearchMenberViewController : UIViewController
 @property (nonatomic, copy) MenberBlock menberBlock;
+@property (nonatomic, strong) NSString *employee_account_id;
+@property (nonatomic,weak) id <SearchMenberDelegate> delegate;
 @end

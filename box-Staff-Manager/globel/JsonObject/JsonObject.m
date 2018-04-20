@@ -93,13 +93,8 @@
             string = [string stringByAppendingString:tempString];
         }
     }
-    
     return string;
 }
-
-
-
-
 
 
 @end

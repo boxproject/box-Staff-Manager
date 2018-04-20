@@ -10,7 +10,9 @@
 
 @interface AccountAdressModel : NSObject
 
-@property (nonatomic,strong) NSString *titleName;
+@property (nonatomic,strong) NSString *currency;
+@property (nonatomic,strong) NSString *address;
+
 - (instancetype)initWithDict:(NSDictionary *)dict;
 
 @end

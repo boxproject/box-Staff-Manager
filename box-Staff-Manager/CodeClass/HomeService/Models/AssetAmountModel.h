@@ -10,8 +10,8 @@
 
 @interface AssetAmountModel : NSObject
 
-@property (nonatomic,strong) NSString *titleName;
-@property (nonatomic,strong) NSString *amountTitle;
+@property (nonatomic,strong) NSString *currency;
+@property (nonatomic,strong) NSString *balance;
 @property (nonatomic,strong) NSString *freezeAmount;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;

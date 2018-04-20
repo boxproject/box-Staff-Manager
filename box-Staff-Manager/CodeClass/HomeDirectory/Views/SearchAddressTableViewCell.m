@@ -11,7 +11,6 @@
 @interface SearchAddressTableViewCell()
 
 @property (nonatomic,strong) UILabel *nameTitleLab;
-
 @property (nonatomic,strong) UIView *lineView;
 
 @end
@@ -54,17 +53,7 @@
 
 - (void)setDataWithModel:(SearchAddressModel *)model
 {
-    NSString *subTitle = [NSString stringWithFormat:@" (%@)",model.subTitle];
-    NSString *titleStr = [NSString stringWithFormat:@"%@%@", model.nameTitle, subTitle];
-    NSMutableAttributedString *passwordholder = [[NSMutableAttributedString alloc] initWithString:titleStr];
-    [passwordholder addAttribute:NSForegroundColorAttributeName
-                           value:[UIColor colorWithHexString:@"#cccccc"]
-                           range:NSMakeRange(model.nameTitle.length,  subTitle.length)];
-    [passwordholder addAttribute:NSFontAttributeName
-                           value:Font(13)
-                           range:NSMakeRange(model.nameTitle.length,  subTitle.length)];
-    _nameTitleLab.attributedText = passwordholder;
-    
+    _nameTitleLab.text = model.currency;
 }
 
 

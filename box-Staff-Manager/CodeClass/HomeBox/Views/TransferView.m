@@ -9,6 +9,7 @@
 #import "TransferView.h"
 
 #define TransferViewTitle  @"确认转账"
+#define TransferViewApproval  @"审批流"
 #define TransferViewCurrency  @"币种"
 #define TransferViewReceiptAddress  @"收款地址"
 #define TransferViewAmount  @"金额"
@@ -20,6 +21,8 @@
 #define TransferViewAchieveTitle  @"提交审批成功"
 #define TransferViewAchieveSubTitle  @"可在转账记录中查看审批进度"
 #define TransferViewAchieveDid  @"完成"
+#define TransferViewPutPassWord  @"请输入密码"
+#define TransferViewPassWordError  @"密码不正确"
 
 
 @interface TransferView ()<UITextFieldDelegate>
@@ -33,6 +36,7 @@
 @property (nonatomic,strong)UIView *mainView;
 @property (nonatomic,strong)UIView *mainTwoView;
 @property (nonatomic,strong)UILabel *titlelab;
+@property (nonatomic,strong)UILabel *approvalLab;
 @property (nonatomic,strong)UILabel *currencyInfoLab;
 @property (nonatomic,strong)UILabel *adressInfoLab;
 @property (nonatomic,strong)UILabel *amountInfoLab;
@@ -42,31 +46,29 @@
 @property (nonatomic,strong)UIButton *submitBtn;
 @property (nonatomic,strong)UILabel *titleTwolab;
 @property (nonatomic,strong)UIView *fullView;
-
+@property (nonatomic,strong)NSDictionary *dict;
 
 @end
 
 @implementation TransferView
 
--(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic{
+-(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName{
     self = [super initWithFrame:frame];
     if (self) {
-        [self createView:dic];
-        
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        [self createView:dic flowName:flowName];
+        _dict = dic;
     }
     return self;
 }
 
--(void)createView:(NSDictionary *)dic
+-(void)createView:(NSDictionary *)dic flowName:(NSString *)flowName
 {
-    _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,  SCREEN_WIDTH, SCREEN_HEIGHT - 417)];
+    _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,  SCREEN_WIDTH, SCREEN_HEIGHT - 417 - 54)];
     _topView.backgroundColor = [UIColor colorWithHexString:@"#18191c"];
     _topView.alpha = 0.6;
     [self addSubview:_topView];
     
-    _mainView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417,  SCREEN_WIDTH, 417)];
+    _mainView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417 - 54,  SCREEN_WIDTH, 417 + 54)];
     _mainView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [self addSubview:_mainView];
     
@@ -114,6 +116,43 @@
         make.height.offset(1);
     }];
     
+    //审批流
+    UILabel *approvalLab = [[UILabel alloc] init];
+    approvalLab.textAlignment = NSTextAlignmentLeft;
+    approvalLab.font = Font(14);
+    approvalLab.text = TransferViewApproval;
+    approvalLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [_mainView addSubview:approvalLab];
+    [approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineOne.mas_bottom).offset(0);
+        make.left.offset(16);
+        make.width.offset(60);
+        make.height.offset(53);
+    }];
+    
+    _approvalLab = [[UILabel alloc] init];
+    _approvalLab.textAlignment = NSTextAlignmentRight;
+    _approvalLab.font = Font(14);
+    _approvalLab.text = flowName;
+    _approvalLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_mainView addSubview:_approvalLab];
+    [_approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineOne.mas_bottom).offset(0);
+        make.left.equalTo(approvalLab.mas_right).offset(13);
+        make.right.offset(-15);
+        make.height.offset(53);
+    }];
+    
+    UIView *lineZero = [[UIView alloc] init];
+    lineZero.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [_mainView addSubview:lineZero];
+    [lineZero mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_approvalLab.mas_bottom).offset(0);
+        make.left.offset(16);
+        make.width.offset(SCREEN_WIDTH - 31);
+        make.height.offset(1);
+    }];
+    
     //币种
     UILabel *currencyLab = [[UILabel alloc] init];
     currencyLab.textAlignment = NSTextAlignmentLeft;
@@ -122,7 +161,7 @@
     currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_mainView addSubview:currencyLab];
     [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineOne.mas_bottom).offset(0);
+        make.top.equalTo(lineZero.mas_bottom).offset(0);
         make.left.offset(16);
         make.width.offset(60);
         make.height.offset(53);
@@ -131,11 +170,11 @@
     _currencyInfoLab = [[UILabel alloc] init];
     _currencyInfoLab.textAlignment = NSTextAlignmentRight;
     _currencyInfoLab.font = Font(14);
-    _currencyInfoLab.text = @"BTC";
+    _currencyInfoLab.text = dic[@"currency"];
     _currencyInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_currencyInfoLab];
     [_currencyInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineOne.mas_bottom).offset(0);
+        make.top.equalTo(lineZero.mas_bottom).offset(0);
         make.left.equalTo(currencyLab.mas_right).offset(13);
         make.right.offset(-15);
         make.height.offset(53);
@@ -168,7 +207,7 @@
     _adressInfoLab = [[UILabel alloc] init];
     _adressInfoLab.textAlignment = NSTextAlignmentRight;
     _adressInfoLab.font = Font(12);
-    _adressInfoLab.text = @"0xb2ed7ceaebd98686cb9310a32d93e91";
+    _adressInfoLab.text = dic[@"to_address"];;
     _adressInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_adressInfoLab];
     [_adressInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -205,7 +244,7 @@
     _amountInfoLab = [[UILabel alloc] init];
     _amountInfoLab.textAlignment = NSTextAlignmentRight;
     _amountInfoLab.font = Font(14);
-    _amountInfoLab.text = @"200.78BTC";
+    _amountInfoLab.text = dic[@"amount"];
     _amountInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_amountInfoLab];
     [_amountInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -242,7 +281,7 @@
     _applyReasonInfoLab = [[UILabel alloc] init];
     _applyReasonInfoLab.textAlignment = NSTextAlignmentRight;
     _applyReasonInfoLab.font = Font(14);
-    _applyReasonInfoLab.text = @"用于BOX项目投资";
+    _applyReasonInfoLab.text = dic[@"tx_info"];
     _applyReasonInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_applyReasonInfoLab];
     [_applyReasonInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -279,7 +318,7 @@
     _minersFeeInfoLab = [[UILabel alloc] init];
     _minersFeeInfoLab.textAlignment = NSTextAlignmentRight;
     _minersFeeInfoLab.font = Font(14);
-    _minersFeeInfoLab.text = @"0.00009847BTC";
+    _minersFeeInfoLab.text = dic[@"miner"];
     _minersFeeInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_minersFeeInfoLab];
     [_minersFeeInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -315,14 +354,12 @@
         make.top.equalTo(lineSix.mas_bottom).offset(30);
         make.height.offset(46);
     }];
-     
- 
     
 }
 
 -(void)createMainTwoView
 {
-    _mainTwoView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417,  SCREEN_WIDTH, 417)];
+    _mainTwoView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417 - 54,  SCREEN_WIDTH, 417 + 54)];
     _mainTwoView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [self addSubview:_mainTwoView];
     
@@ -415,6 +452,9 @@
 
 -(void)createAchieveView
 {
+    _mainTwoView.hidden = YES;
+    _topView.hidden = YES;
+    
     _fullView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     _fullView.backgroundColor = kWhiteColor;
     [self addSubview:_fullView];
@@ -488,9 +528,17 @@
 
 -(void)submitAction:(UIButton *)btn
 {
-    _mainTwoView.hidden = YES;
-    _topView.hidden = YES;
-    [self createAchieveView];
+    if ([_passwordTf.text isEqualToString:@""]) {
+        [WSProgressHUD showErrorWithStatus:TransferViewPutPassWord];
+        return;
+    }
+    if (![_passwordTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
+        [WSProgressHUD showErrorWithStatus:TransferViewPassWordError];
+        return;
+    }
+    if ([self.delegate respondsToSelector:@selector(transferViewDelegate:)]) {
+        [self.delegate transferViewDelegate:_dict];
+    }
 }
 
 -(void)achieveBtnAction:(UIButton *)btn

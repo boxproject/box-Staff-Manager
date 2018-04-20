@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-typedef void(^ApprovalBlock)(NSString *text);
+#import "ApprovalBusinessModel.h"
+typedef void(^ApprovalBlock)(ApprovalBusinessModel *model);
 @interface SearchApprovalViewController : UIViewController
 
 @property (nonatomic, copy) ApprovalBlock approvalBlock;

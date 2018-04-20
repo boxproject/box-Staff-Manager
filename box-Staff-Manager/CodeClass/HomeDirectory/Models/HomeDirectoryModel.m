@@ -30,6 +30,12 @@
         if(![dict[@"remark"] isKindOfClass:[NSNull class]]){
             self.remark = [dict objectForKey:@"remark"];
         }
+        if(![dict[@"currencyId"] isKindOfClass:[NSNull class]]){
+            self.currencyId = [[dict objectForKey:@"currencyId"] integerValue];
+        }
+        if(![dict[@"directoryId"] isKindOfClass:[NSNull class]]){
+            self.directoryId = [dict objectForKey:@"directoryId"];
+        }
      }
     return self;
 }

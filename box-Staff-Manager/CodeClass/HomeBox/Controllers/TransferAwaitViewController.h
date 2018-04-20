@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol TransferAwaitDelegate <NSObject>
+
+@optional
+- (void)backReflesh;
+@end
+
 @interface TransferAwaitViewController : UIViewController
+
+@property (nonatomic,weak) id <TransferAwaitDelegate> delegate;
 
 @end

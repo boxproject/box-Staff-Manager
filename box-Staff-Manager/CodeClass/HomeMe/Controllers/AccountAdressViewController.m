@@ -14,6 +14,7 @@
 
 #define CellReuseIdentifier  @"AccountAdress"
 #define AccountAdressViewTitle  @"账户地址"
+#define PageSize  12
 
 @interface AccountAdressViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -33,27 +34,9 @@
     self.title = AccountAdressViewTitle;
     self.navigationController.navigationBar.hidden = NO;
     _sourceArray = [[NSMutableArray alloc] init];
+    _page = 1;
     [self createView];
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"titleName":@"EOS"},
-                                   @{@"titleName":@"BTS"},
-                                   @{@"titleName":@"FAIR"},
-                                   @{@"titleName":@"OMG"},
-                                   @{@"titleName":@"APPC"},
-                                   @{@"titleName":@"BTC"},
-                                   @{@"titleName":@"ETH"}
-                                   ]
-                           
-                           };
-    
-    
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        AccountAdressModel *model = [[AccountAdressModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
-    [self.tableView reloadData];
-    
+    [self requestData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -65,9 +48,7 @@
     self.navigationController.navigationBar.barTintColor = nil;
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
-    
 }
-
 
 -(void)createView
 {
@@ -84,7 +65,6 @@
     }];
     [_tableView registerClass:[AccountAdressTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self footerReflesh];
     [self headerReflesh];
 }
 
@@ -93,38 +73,60 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
     [self.navigationController popViewControllerAnimated:YES];
-
-}
-
-
--(void)footerReflesh
-{
-    _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        self.page += 1;
-        [self requestData];
-    }];
-    
-    
 }
 
 -(void)headerReflesh
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
 }
 
+#pragma mark ----- 数据请求 -----
 -(void)requestData
 {
-    
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    //[paramsDic setObject: @(_page) forKey:@"page"];
+    //[paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            for (NSDictionary *dataDic in dict[@"data"][@"currency_list"]) {
+                AccountAdressModel *model = [[AccountAdressModel alloc] initWithDict:dataDic];
+                [_sourceArray addObject:model];
+            }
+            [self.tableView reloadData];
+            
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
 }
 
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+    });
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -142,7 +144,6 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -150,7 +151,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         AccountAdressModel *model = self.sourceArray[indexPath.row];
         AccountAdressDetailViewController *accountAdressDetailVC = [[AccountAdressDetailViewController alloc] init];
-        accountAdressDetailVC.titleAccount = model.titleName;
+        accountAdressDetailVC.model = model;
         UINavigationController *accountAdressDetailNC = [[UINavigationController alloc] initWithRootViewController:accountAdressDetailVC];
         [self presentViewController:accountAdressDetailNC animated:NO completion:nil];
     });

@@ -47,7 +47,6 @@ static AFHTTPSessionManager *_manager;
         // 是否在证书域字段中验证域名
         [_manager.securityPolicy setValidatesDomainName:NO];
         */
-   
  
     });
     return _manager;
@@ -55,47 +54,38 @@ static AFHTTPSessionManager *_manager;
 
 - (void)requestWithMethod:(HTTPMethod)method withUrl:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successBlock fail:(requestFailureBlock)failBlock
 {
-    url = [NSString stringWithFormat:@"%@%@",BOX_IP, url];
+    url = [NSString stringWithFormat:@"%@%@",[BoxDataManager sharedManager].box_IP, url];
     NSLog(@"URL:---\n%@",url);
     //url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     __weak AFHTTPSessionManager *manager = [self sharedHTTPSession];
-    
     switch (method) {
         case GET:{
             [manager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
-                
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                
                 if (successBlock) {
                     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
                     NSLog(@"JSON: %@", dict);
                     successBlock(dict);
                 }
-                
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"Error: %@", error);
                 failBlock(error);
             }];
-            
             break;
         }
         case POST:{
             [manager POST:url parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-                
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                
                 if (successBlock) {
                     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
                     NSLog(@"JSON: %@", dict);
                     successBlock(dict);
                 }
-                
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"Error: %@", error);
                 failBlock(error);
             }];
-            
             break;
         }
         default:
@@ -103,10 +93,6 @@ static AFHTTPSessionManager *_manager;
     }
 }
 
-
-
-
-
-
+ 
 
 @end

@@ -16,7 +16,8 @@
 #define TransferTopViewMinersFee  @"矿工费"
 #define TransferTopViewStateOne  @"待审批"
 #define TransferTopViewStateTwo  @"审批中"
-#define TransferTopViewStateThree  @"已审批"
+#define TransferTopViewStateThreeTransfing  @"审批通过(转账中)"
+#define TransferTopViewStateThree  @"审批通过(转账成功)"
 #define TransferTopViewStateFour  @"已拒绝审批"
 #define TransferTopViewTitle  @"审批进度："
 
@@ -75,7 +76,7 @@
     _amountLab = [[UILabel alloc] init];
     _amountLab.textAlignment = NSTextAlignmentCenter;
     _amountLab.font = FontBold(24);
-    _amountLab.text = @"-200.789BTC";
+    _amountLab.text = @"";
     _amountLab.textColor = [UIColor colorWithHexString:@"#444444"];
     [mainView addSubview:_amountLab];
     [_amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -88,7 +89,7 @@
     _stateLab = [[UILabel alloc] init];
     _stateLab.textAlignment = NSTextAlignmentCenter;
     _stateLab.font = Font(14);
-    _stateLab.text = @"审批中";
+    _stateLab.text = @"";
     _stateLab.textColor = [UIColor colorWithHexString:@"#999999"];
     [mainView addSubview:_stateLab];
     [_stateLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -114,7 +115,7 @@
     _currencyInfoLab = [[UILabel alloc] init];
     _currencyInfoLab.textAlignment = NSTextAlignmentRight;
     _currencyInfoLab.font = Font(14);
-    _currencyInfoLab.text = @"BTC";
+    _currencyInfoLab.text = @"";
     _currencyInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_currencyInfoLab];
     [_currencyInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -139,13 +140,14 @@
     _adressInfoLab = [[UILabel alloc] init];
     _adressInfoLab.textAlignment = NSTextAlignmentRight;
     _adressInfoLab.font = Font(12);
-    _adressInfoLab.text = @"0xb2ed7ceaebd98686cb9310a32d93e91";
+    _adressInfoLab.text = @"";
     _adressInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_adressInfoLab];
     [_adressInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(currencyLab.mas_bottom).offset(10);
         make.right.offset(-14);
         make.height.offset(20);
+        make.left.offset(75);
     }];
     
    
@@ -165,7 +167,7 @@
     _amountInfoLab = [[UILabel alloc] init];
     _amountInfoLab.textAlignment = NSTextAlignmentRight;
     _amountInfoLab.font = Font(14);
-    _amountInfoLab.text = @"200.78BTC";
+    _amountInfoLab.text = @"";
     _amountInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_amountInfoLab];
     [_amountInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -190,7 +192,7 @@
     _applyMenber = [[UILabel alloc] init];
     _applyMenber.textAlignment = NSTextAlignmentRight;
     _applyMenber.font = Font(14);
-    _applyMenber.text = @"黄大大";
+    _applyMenber.text = @"";
     _applyMenber.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_applyMenber];
     [_applyMenber mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -215,7 +217,7 @@
     _applyReasonInfoLab = [[UILabel alloc] init];
     _applyReasonInfoLab.textAlignment = NSTextAlignmentRight;
     _applyReasonInfoLab.font = Font(14);
-    _applyReasonInfoLab.text = @"用于BOX项目投资";
+    _applyReasonInfoLab.text = @"";
     _applyReasonInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_applyReasonInfoLab];
     [_applyReasonInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -240,7 +242,7 @@
     _minersFeeInfoLab = [[UILabel alloc] init];
     _minersFeeInfoLab.textAlignment = NSTextAlignmentRight;
     _minersFeeInfoLab.font = Font(14);
-    _minersFeeInfoLab.text = @"0.00009847BTC";
+    _minersFeeInfoLab.text = @"";
     _minersFeeInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_minersFeeInfoLab];
     [_minersFeeInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -299,7 +301,7 @@
     _bottomTitle = [[UILabel alloc] init];
     _bottomTitle.textAlignment = NSTextAlignmentLeft;
     _bottomTitle.font = Font(14);
-    _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,@"等待黄大大审批"];
+    //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,@"等待黄大大审批"];
     _bottomTitle.textColor = [UIColor colorWithHexString:@"#666666"];
     [mainView addSubview:_bottomTitle];
     [_bottomTitle mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -313,7 +315,47 @@
 
 -(void)setValueWithData:(NSDictionary *)dic
 {
+    NSString *currency = dic[@"currency"];
+    NSString *amount = dic[@"amount"];
+    NSString *tx_info = dic[@"tx_info"];
+    NSString *miner = dic[@"miner"];
+    NSString *to_address = dic[@"to_address"];
+    NSInteger progress = [dic[@"progress"] integerValue];
+    NSInteger arrived = [dic[@"arrived"] integerValue];
+    NSString *accont = dic[@"account"];
+    _amountLab.text = [NSString stringWithFormat:@"-%@%@", amount, currency];
+    _currencyInfoLab.text = currency;
+    _adressInfoLab.text = to_address;
+    _amountInfoLab.text = [NSString stringWithFormat:@"-%@%@", amount, currency];
+    _applyMenber.text = accont;
+    _applyReasonInfoLab.text = tx_info;
+    _minersFeeInfoLab.text = miner;
     
+    switch (progress) {
+        case 0:
+            _stateLab.text = TransferTopViewStateOne;
+            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateOne];
+            break;
+        case 1:
+            _stateLab.text = TransferTopViewStateTwo;
+            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateTwo];
+            break;
+        case 2:
+            _stateLab.text = TransferTopViewStateFour;
+            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateFour];
+            break;
+        case 3:
+            if (arrived == 1) {
+                _stateLab.text = TransferTopViewStateThreeTransfing;
+                _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThreeTransfing];
+            }else if(arrived == 2){
+                _stateLab.text = TransferTopViewStateThree;
+                _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThree];
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 

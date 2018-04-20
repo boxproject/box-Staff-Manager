@@ -24,6 +24,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
 
 @property (nonatomic,weak) id <TransferViewDelegate> delegate;
 
--(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic;
+-(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName;
+-(void)createAchieveView;
 
 @end

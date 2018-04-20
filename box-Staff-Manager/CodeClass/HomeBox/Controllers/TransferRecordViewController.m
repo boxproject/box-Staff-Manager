@@ -10,7 +10,9 @@
 #import "TransferRecordTableViewCell.h"
 #import "TransferRecordModel.h"
 #import "TransferRecordDetailViewController.h"
+#import "TransferAwaitModel.h"
 
+#define PageSize  12
 #define CellReuseIdentifier  @"TransferRecord"
 
 @interface TransferRecordViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -22,15 +24,11 @@
 @property (nonatomic, strong)NSMutableArray *sourceArray;
 @property (nonatomic,assign) NSInteger page;
 @property (nonatomic,assign) NSInteger pageSize;
+@property (nonatomic,assign) NSInteger type;
 
 @end
 
 @implementation TransferRecordViewController
-
-//@property (nonatomic,strong) NSString *topLeft;
-//@property (nonatomic,assign) NSInteger timeIn;
-//@property (nonatomic,strong) NSString *topRight;
-//@property(nonatomic, assign) TransferState tansferStateState;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -38,31 +36,57 @@
     self.view.backgroundColor = kWhiteColor;
     //self.title = _titleName;
     _sourceArray = [[NSMutableArray alloc] init];
-    NSInteger currentTime = [[NSDate date]timeIntervalSince1970] * 1000;
     [self createSegmentedView];
     [self createView];
-    NSDictionary *dict = @{
-                           @"data":@[
-                                   @{@"topLeft":@"用于黄大大买EOS", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(2)},
-                                   @{@"topLeft":@"用于黄大大买EOS", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(2)},
-                                   @{@"topLeft":@"用于黄大大买EOS", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(2)},
-                                   @{@"topLeft":@"用于黄大大买EOS", @"timeIn":@(currentTime),@"topRight":@"50.98ETH", @"tansferStateState":@(2)},
-                                   @{@"topLeft":@"用于黄大大买EOS", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(2)},
-                                   @{@"topLeft":@"用于黄大大买BOX", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(1)},
-                                   @{@"topLeft":@"用于黄大大买BOX", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(1)},
-                                   @{@"topLeft":@"用于黄大大买BOX", @"timeIn":@(currentTime),@"topRight":@"-50.98ETH", @"tansferStateState":@(1)}
-                                   ]
-                           
-                           };
+    //0作为发起者
+    _type = 0;
+    _page = 1;
+    [self requestData];
     
     
-    for (NSDictionary *dataDic in dict[@"data"]) {
-        TransferRecordModel *model = [[TransferRecordModel alloc] initWithDict:dataDic];
-        [_sourceArray addObject:model];
-    }
-    [self.tableView reloadData];
-    
-    
+}
+
+#pragma mark ----- 数据请求 -----
+-(void)requestData
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:@(_type) forKey:@"type"];
+    [paramsDic setObject:@(-1) forKey:@"progress"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    //[ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
+        //[WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:listDic];
+                [_sourceArray addObject:model];
+            }
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        //[WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
+}
+
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        
+    });
 }
 
 -(void)createSegmentedView
@@ -85,14 +109,16 @@
 
 -(void)segmentedChangle
 {
-    if (_segmentedView.selectedSegmentIndex == 1) {
-        //[_sourceArray removeAllObjects];
-        //[self.tableView reloadData];
+    if (_segmentedView.selectedSegmentIndex == 0) {
+        _page = 1;
+        _type = 0;
+        [self requestData];
+        
     }else{
-        //[_sourceArray removeAllObjects];
-        //[self.tableView reloadData];
+        _page = 1;
+        _type = 1;
+        [self requestData];
     }
-    
 }
 
 
@@ -148,12 +174,8 @@
 {
     _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.page = 1;
+        [self requestData];
     }];
-}
-
--(void)requestData
-{
-    
 }
 
 
@@ -169,7 +191,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     TransferRecordTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
-    TransferRecordModel *model = self.sourceArray[indexPath.row];
+    TransferAwaitModel *model = self.sourceArray[indexPath.row];
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
@@ -179,8 +201,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        TransferRecordModel *model = self.sourceArray[indexPath.row];
+        TransferAwaitModel *model = self.sourceArray[indexPath.row];
         TransferRecordDetailViewController *transferRecordDetailVc = [[TransferRecordDetailViewController alloc] init];
+        transferRecordDetailVc.model = model;
         UINavigationController *transferRecordDetailNc = [[UINavigationController alloc] initWithRootViewController:transferRecordDetailVc];
         [self presentViewController:transferRecordDetailNc animated:NO completion:nil];
     });
