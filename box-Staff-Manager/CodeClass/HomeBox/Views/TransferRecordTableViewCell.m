@@ -141,13 +141,12 @@
             break;
     }
     _bottomLeftLab.text = [self getElapseTimeToString:model.apply_at];
-    
 }
 
 - (NSString *)getElapseTimeToString:(NSInteger)second{
     NSDateFormatter  *dateformatter1 = [[NSDateFormatter alloc] init];
     [dateformatter1 setDateFormat:@"M月d日 HH:mm"];
-    NSTimeInterval timeInterval1 = second/1000;
+    NSTimeInterval timeInterval1 = second;
     NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
     NSString *dateStr1=[dateformatter1 stringFromDate:date1];
     return dateStr1;

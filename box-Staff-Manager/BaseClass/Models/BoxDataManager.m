@@ -33,7 +33,6 @@
 -(void)getAllData
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //[defaults setObject:@"192.168.199.181:5001" forKey: @"box_IpPort"];
     self.box_IP = [defaults valueForKey:@"box_IP"];
     self.applyer_id = [defaults valueForKey:@"applyer_id"];
     self.app_account_id = [defaults valueForKey:@"applyer_id"];
