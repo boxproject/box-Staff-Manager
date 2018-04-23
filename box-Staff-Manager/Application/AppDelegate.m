@@ -21,12 +21,10 @@
     // Override point for customization after application launch.
     //启动页延时
     //sleep(2);
-    //[NSThread sleepForTimeInterval:2.0];
-    
+    [NSThread sleepForTimeInterval:2.0];
     //网络监测
     [self monitorReachabilityStatus];
     [self launchJumpVC];
-
     return YES;
 }
 

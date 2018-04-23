@@ -48,9 +48,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject: _searchField.text forKey:@"key_words"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -61,13 +59,11 @@
                 ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
                 [_sourceArray addObject:model];
             }
-            
         }else{
             [ProgressHUD showStatus:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -79,10 +75,8 @@
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
-        
     });
 }
-
 
 -(void)createView
 {
@@ -121,8 +115,6 @@
         self.page += 1;
         [self requestData];
     }];
-    
-    
 }
 
 -(void)headerReflesh
@@ -149,7 +141,6 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -190,9 +181,6 @@
     
     
     UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
-    //字体颜色
-    //    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithHexString:@"#50b4ff"]];
-    
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -215,9 +203,7 @@
     [paramsDic setObject: textField.text forKey:@"key_words"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -228,13 +214,11 @@
                 ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
                 [_sourceArray addObject:model];
             }
-            
         }else{
             [ProgressHUD showStatus:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];

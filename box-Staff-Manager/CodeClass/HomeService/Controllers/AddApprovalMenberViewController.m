@@ -50,9 +50,6 @@
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
     UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"搜索" style:UIBarButtonItemStyleDone target:self action:@selector(searchMenberAction:)];
-    //字体颜色
-    //    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithHexString:@"#50b4ff"]];
-    
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -121,9 +118,7 @@
     [paramsDic setObject:account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -148,7 +143,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];

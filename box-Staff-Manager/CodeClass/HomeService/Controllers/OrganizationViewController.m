@@ -49,9 +49,7 @@
 -(void)getEmployeeInfo{
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/employee/pubkeys/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
             NSArray *dataArray = responseObject[@"data"];
             for (NSDictionary *dic in dataArray) {
@@ -83,12 +81,8 @@
                     }
                 }
             }
-        }else{
-            //[ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
         }
-        
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
 }
@@ -197,9 +191,7 @@
     [paramsDic setObject:account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -215,7 +207,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -229,7 +220,6 @@
         [self.tableView.mj_footer endRefreshing];
     });
 }
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -311,7 +301,6 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:model.app_account_id forKey:@"employee_account_id"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/info" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             NSArray *listArray = dict[@"data"][@"employee_accounts_info"];
@@ -358,7 +347,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -402,7 +390,6 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:appAccountId forKey:@"employee_account_id"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/employee/info" params:paramsDic success:^(id responseObject) {
         //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
@@ -443,7 +430,6 @@
         }
         
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         complete(nil);
     }];

@@ -13,11 +13,9 @@
 #import "EditorDirectoryViewController.h"
 #import "CurrencyView.h"
 
-
 #define HomeDirectoryVCTitle  @"地址簿"
 #define HomeDirectoryVCAddAddress  @"新增地址"
 #define CellReuseIdentifier  @"HomeDirectory"
-
 
 @interface HomeDirectoryViewController ()<UITableViewDelegate, UITableViewDataSource,CurrencyViewDelegate>
 
@@ -98,24 +96,6 @@
     _labelTip.font = [UIFont systemFontOfSize:17];
     _labelTip.hidden = YES;
     [_tableView addSubview:_labelTip];
-//    [self footerReflesh];
-//    [self headerReflesh];
-}
-
-
--(void)footerReflesh
-{
-    _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        self.page += 1;
-        
-    }];
-}
-
--(void)headerReflesh
-{
-    _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.page = 1;
-    }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -190,27 +170,7 @@
         
         UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:actionCancel];
-        
         [self presentViewController:alert animated:YES completion:nil];
-        
-        /*
-         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"确定删除？" preferredStyle:UIAlertControllerStyleAlert];
-         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-         HomeDirectoryModel *model =_sourceArray[indexPath.row];
-         BOOL isOK = [[DirectoryManager sharedManager] deleteDirectoryModel:model];
-         if (isOK) {
-         // 删除模型
-         [self.sourceArray removeObjectAtIndex:indexPath.row];
-         // 刷新
-         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-         
-         }
-         
-         }]];
-         [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
-         
-         [self presentViewController:alert animated:YES completion:nil];
-         */
     }];
     
     return @[action1, action0];
@@ -255,7 +215,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
 -(NSMutableAttributedString *)attributedStringWithImage:(NSString *)string
 {
     NSString *str = [NSString stringWithFormat:@"%@%@", string, HomeDirectoryVCTitle];
@@ -275,7 +234,6 @@
     [attri insertAttributedString:stringAt atIndex:str.length];
     return attri;
 }
-
 
 -(void)createTitleView
 {

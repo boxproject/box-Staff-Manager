@@ -28,7 +28,6 @@
 @property(nonatomic, strong) UIView *scanView;
 /** 存放扫描结果的label */
 @property(nonatomic, strong) UILabel *scanResult;
-
 /** 扫描的线 */
 @property (nonatomic,strong) UIImageView *scanImageView;
 
@@ -59,7 +58,6 @@
 {
     BOOL _isOpen;
     AVCaptureVideoDataOutput * _videoOutput;
-    
 }
 
 - (void)viewDidLoad {
@@ -68,7 +66,6 @@
     self.title = ScanCodeVCTitle;
     self.view.backgroundColor = kWhiteColor;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kWhiteColor}];
-    //[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = kBlackColor;
     self.navigationController.navigationBar.alpha = 0.5;
     
@@ -77,10 +74,8 @@
     [self createscanxView];
     //设置扫描二维码
     [self setupScanQRCode];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startAnimate) name:@"startAnimation" object:nil];
     [self initTotch];
-    
 }
 
 #pragma mark ----- back按钮 -----
@@ -88,7 +83,6 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back_white"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *button = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStyleDone target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = button;
-    
 }
 
 - (void)backButtonAction:(UIBarButtonItem *)buttonItem{
@@ -102,7 +96,6 @@
     [self startAnimate];
     //开启二维码扫描
     [_session startRunning];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -117,8 +110,6 @@
     }
     [_session stopRunning];
 }
-
-
 
 -(void)createscanxView
 {
@@ -162,7 +153,6 @@
         make.bottom.right.offset(0);
     }];
     
-    
     _torchBtn = [TBButton buttonWithType:UIButtonTypeCustom];//highlight
     [_torchBtn setImage:[UIImage imageNamed:@"QRCodeTorch"] forState:UIControlStateNormal];
     [_torchBtn setTitle:PerfectInformationVCTorchheight forState:UIControlStateNormal];
@@ -192,9 +182,7 @@
         make.height.offset(22);
         make.centerX.equalTo(self.view);
     }];
-    
 }
-
 
 -(void)initTotch
 {
@@ -227,8 +215,6 @@
             return;
         }
         [_session addOutput:_videoOutput];
-        
-        
         self.brightBlock = brightBlock;
     }
 }
@@ -642,19 +628,6 @@
     }];
 }
 
-
-//http://aes.jypc.org/?p=37737
--(void)reportScanResult:(NSString *)result{
-    //扫描完毕，停止扫描
-    //[self stopScanning];
-    //创建对话框，将扫描结果以对话框的形式呈现
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:result preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-    }];
-    [alert addAction:action];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
 #pragma mark - <CALayerDelegate - 图层的代理方法>
 /**
  *   蒙板生成,需设置代理，并在退出页面时取消代理
@@ -668,8 +641,6 @@
         CGContextClearRect(ctx, scanFrame);
     }
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

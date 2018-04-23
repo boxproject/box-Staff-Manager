@@ -49,7 +49,6 @@
         make.right.offset(-15);
         make.height.offset(1);
     }];
-    
 }
 
 - (void)setDataWithModel:(OrganizationListModel *)model

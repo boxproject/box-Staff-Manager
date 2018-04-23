@@ -47,7 +47,6 @@
     self.progressHUD.delegate = self;
     //添加ProgressHUD到界面中
     [self.view addSubview:self.progressHUD];
-    
 }
 
 
@@ -170,7 +169,6 @@
         make.top.equalTo(_accountSaveBtn.mas_bottom).offset(14);
         make.height.offset(15);
     }];
-    
 }
 
 -(void)showProgressHUD
@@ -185,9 +183,6 @@
     [self.progressHUD hideAnimated:YES afterDelay:0.5];
 }
 
-
-
-
 #pragma mark ----- 复制地址／账户二维码 -----
 -(void)accountCopyAction:(UIButton *)btn
 {
@@ -197,7 +192,6 @@
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = _accountQRLab.text;
     [self showProgressHUD];
-    
 }
 
 #pragma mark ----- 保存二维码／账户二维码 -----

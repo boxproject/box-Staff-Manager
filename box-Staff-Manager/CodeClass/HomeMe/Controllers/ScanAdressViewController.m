@@ -238,7 +238,6 @@
         make.width.offset(370/2);
     }];
     
-    
     _detailLab = [[UILabel alloc] init];
     _detailLab.text = ScanAdressVCDetailLab;
     _detailLab.textAlignment = NSTextAlignmentCenter;
@@ -253,9 +252,7 @@
     }];
     
     [self createAleartView];
-    
 }
-
 
 -(void)createAleartView
 {
@@ -327,7 +324,6 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back_white"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem

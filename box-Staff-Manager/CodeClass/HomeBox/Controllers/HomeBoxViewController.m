@@ -34,7 +34,6 @@
 #define HomeBoxVCParticipateIn  @"我参与的"
 #define HomeBoxVCTransferSubLab  @"暂无待审批转账"
 
-
 @interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
@@ -400,11 +399,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:@(1) forKey:@"type"];
     [paramsDic setObject:@(0) forKey:@"progress"];
-    //[paramsDic setObject: @(1) forKey:@"page"];
-    //[paramsDic setObject:@(1) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             NSArray *listArray = dict[@"data"][@"list"];
@@ -426,7 +421,6 @@
             [_contentView.mj_header endRefreshing];
         });
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         dispatch_async(dispatch_get_main_queue(), ^{
             [_contentView.mj_header endRefreshing];
@@ -476,7 +470,6 @@
 {
     
 }
-
 
 #pragma mark ----- scrollview取消弹簧效果 -----
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView

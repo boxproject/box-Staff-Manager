@@ -16,7 +16,6 @@
 #import "ApprovalBusinessModel.h"
 #import "CurrencyView.h"
 
-
 #define TransferVCTitle  @"转账"
 #define TransferVCApprovalProcess  @"审批流"
 #define TransferVCApprovalProcessInfo  @"请选择审批流"
@@ -32,7 +31,6 @@
 #define TransferVCMinersFeeSlow  @"慢"
 #define TransferVCMinersFeeFast  @"快"
 #define TransferVCBtnTitle  @"提交审批"
-
 
 @interface TransferViewController ()<UITextFieldDelegate,UIScrollViewDelegate,TransferViewDelegate,CurrencyViewDelegate>
 @property(nonatomic, strong)DDRSAWrapper *aWrapper;

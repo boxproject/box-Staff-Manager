@@ -447,7 +447,6 @@
         make.top.equalTo(lineSix.mas_bottom).offset(38);
         make.height.offset(46);
     }];
-    
 }
 
 -(void)createAchieveView
@@ -511,7 +510,6 @@
         make.height.offset(38);
         make.width.offset(130);
     }];
-    
 }
 
 

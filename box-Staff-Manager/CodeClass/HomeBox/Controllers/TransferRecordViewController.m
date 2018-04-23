@@ -34,7 +34,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
-    //self.title = _titleName;
     _sourceArray = [[NSMutableArray alloc] init];
     [self createSegmentedView];
     [self createView];
@@ -42,8 +41,6 @@
     _type = 0;
     _page = 1;
     [self requestData];
-    
-    
 }
 
 #pragma mark ----- 数据请求 -----
@@ -55,9 +52,7 @@
     [paramsDic setObject:@(-1) forKey:@"progress"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -73,7 +68,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -85,7 +79,6 @@
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
-        
     });
 }
 
@@ -106,7 +99,6 @@
     return _viewLayer;
 }
 
-
 -(void)segmentedChangle
 {
     if (_segmentedView.selectedSegmentIndex == 0) {
@@ -120,8 +112,6 @@
         [self requestData];
     }
 }
-
-
 
 -(void)createView
 {
@@ -147,7 +137,6 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
@@ -166,8 +155,6 @@
         self.page += 1;
         [self requestData];
     }];
-    
-    
 }
 
 -(void)headerReflesh
@@ -195,7 +182,6 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -207,7 +193,6 @@
         UINavigationController *transferRecordDetailNc = [[UINavigationController alloc] initWithRootViewController:transferRecordDetailVc];
         [self presentViewController:transferRecordDetailNc animated:NO completion:nil];
     });
-    
 }
 
 

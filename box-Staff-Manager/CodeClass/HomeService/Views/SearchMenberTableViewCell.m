@@ -51,9 +51,7 @@
         make.centerY.equalTo(self.contentView);
         make.width.offset(20);
         make.height.offset(22);
-        
     }];
-    
     
     _lineView = [[UIView alloc]init];
     _lineView.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
@@ -64,7 +62,6 @@
         make.right.offset(-15);
         make.height.offset(1);
     }];
-    
 }
 
 - (void)setDataWithModel:(SearchMenberModel *)model indexPath:(NSIndexPath *)indexPath;

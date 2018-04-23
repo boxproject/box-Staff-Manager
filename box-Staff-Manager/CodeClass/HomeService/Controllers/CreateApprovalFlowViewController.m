@@ -14,7 +14,6 @@
 #import "MenberInfoModel.h"
 #import "AddApprovalMenberViewController.h"
 
-
 #define CellReuseIdentifier  @"CreateApprovalFlow"
 #define headerReusableViewIdentifier  @"CreateApprovalFlow"
 #define CreateApprovalFlowVCTitle  @"创建审批流"
@@ -113,8 +112,6 @@
                     }
                 }
             }
-        }else{
-            //[ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
         }
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
@@ -180,9 +177,7 @@
         make.bottom.offset(-kTabBarHeight + 49);
         make.height.offset(45);
     }];
-    
 }
-
 
 #pragma mark  ----- UICollectionViewDataSource -----
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

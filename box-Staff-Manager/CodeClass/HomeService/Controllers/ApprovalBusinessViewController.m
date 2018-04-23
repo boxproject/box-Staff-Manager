@@ -12,7 +12,6 @@
 #import "ApprovalBusinessDetailViewController.h"
 #import "CreateApprovalFlowViewController.h"
 
-
 #define PageSize  12
 #define CellReuseIdentifier  @"ApprovalBusiness"
 #define ApprovalBusinessVCTitle  @"审批流"
@@ -47,9 +46,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -65,7 +62,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];

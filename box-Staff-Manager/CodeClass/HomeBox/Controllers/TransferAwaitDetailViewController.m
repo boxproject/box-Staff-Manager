@@ -145,9 +145,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_model.order_number forKey:@"order_number"];
     [paramsDic setObject: [BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
             _apply_info = responseObject[@"data"][@"apply_info"];
             NSInteger progress = [responseObject[@"data"][@"progress"] integerValue];
@@ -176,7 +174,6 @@
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
 }
@@ -289,7 +286,6 @@
         make.bottom.offset(-kTabBarHeight + 49);
         make.height.offset(45);
     }];
-    
 }
 
 #pragma mark ----- PrivatePasswordViewDelegate -----

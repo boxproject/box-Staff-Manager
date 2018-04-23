@@ -17,7 +17,6 @@
 #define SearchApprovalMenberVCSectionOne  @"层级"
 #define SearchApprovalMenberVCSectionTwo  @"人员选择"
 
-
 @interface SearchApprovalMenberViewController ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
 @property (nonatomic,strong) UITableView *tableView;
@@ -26,7 +25,6 @@
 @property (nonatomic,assign) NSInteger pageSize;
 @property (nonatomic, strong) UITextField *searchField;
 @property(nonatomic, strong)DDRSAWrapper *aWrapper;
- 
 
 @end
 
@@ -71,9 +69,6 @@
     
     
     UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
-    //字体颜色
-    //    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor colorWithHexString:@"#50b4ff"]];
-    
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -89,9 +84,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject:_searchField.text forKey:@"key_words"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -107,7 +100,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -122,9 +114,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject:textField.text forKey:@"key_words"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
@@ -140,7 +130,6 @@
         }
         [self reloadAction];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
         [self reloadAction];
     }];
@@ -177,8 +166,6 @@
         self.page += 1;
         [self requestData];
     }];
-    
-    
 }
 
 -(void)headerReflesh
@@ -195,7 +182,6 @@
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
-        
     });
 }
 
@@ -232,7 +218,6 @@
     return 50;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     SearchMenberTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
@@ -240,7 +225,6 @@
     cell.model = model;
     [cell setDataWithModel:model indexPath:indexPath];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

@@ -11,7 +11,6 @@
 #import "SearchAddressViewController.h"
 #import "HomeDirectoryModel.h"
 
-
 #define AddDirectoryVCTitle  @"新增地址"
 #define AddDirectoryVCRightTitle  @"完成"
 #define AddDirectoryCurrency  @"币种"
@@ -23,7 +22,6 @@
 #define AddDirectoryVCRemarkInfo  @"请输入备注"
 #define AddDirectoryVCcurrencyInfo  @"请选择币种"
 #define AddDirectoryVCError  @"新增地址失败"
-
 
 @interface AddDirectoryViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
@@ -58,7 +56,6 @@
     self.navigationController.navigationBar.barTintColor = nil;
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
-    
 }
 
 -(void)createView
@@ -302,10 +299,7 @@
         make.width.offset(SCREEN_WIDTH - 30);
         make.height.offset(1);
     }];
-    
 }
-
-
 
 #pragma mark -----  扫描二维码获取地址 -----
 -(void)scanAction:(UIButton *)btn
@@ -317,7 +311,6 @@
     };
     [self.navigationController pushViewController:scanCodeVC animated:YES];
 }
-
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     if (textField == _currencyTf) {
@@ -336,7 +329,6 @@
     self.navigationItem.rightBarButtonItem = buttonRight;
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
-    
 }
 
 #pragma mark ----- rightBarButtonItemAction -----

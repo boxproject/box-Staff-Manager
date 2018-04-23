@@ -33,7 +33,6 @@
 
 -(void)createView
 {
-    //icon_wait2
     _img = [[UIImageView alloc] init];
     _img.image = [UIImage imageNamed:@""];
     _img.layer.cornerRadius = 12.0/2.0;

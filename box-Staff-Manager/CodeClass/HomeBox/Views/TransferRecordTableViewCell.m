@@ -43,7 +43,6 @@
         make.top.offset(12);
         make.width.offset(14);
         make.height.offset(14);
-        
     }];
     
     _topLeftLab = [[UILabel alloc]init];
@@ -55,7 +54,6 @@
         make.height.offset(20);
         make.left.equalTo(leftImg.mas_right).offset(9);
         make.right.offset(-120);
-        
     }];
     
     _bottomLeftLab = [[UILabel alloc]init];
@@ -67,7 +65,6 @@
         make.height.offset(17);
         make.left.equalTo(leftImg.mas_right).offset(9);
         make.right.offset(-120);
-        
     }];
     
     _topRightlab = [[UILabel alloc]init];
@@ -80,7 +77,6 @@
         make.height.offset(19);
         make.width.offset(130);
         make.right.offset(-15);
-        
     }];
     
     _bottomRightlab = [[UILabel alloc]init];
@@ -93,7 +89,6 @@
         make.height.offset(17);
         make.width.offset(150);
         make.right.offset(-15);
-        
     }];
     
     _lineView = [[UIView alloc]init];

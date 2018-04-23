@@ -45,8 +45,6 @@
     [self layoutCollectionView];
     [self createCollectionView];
     [self requestData];
-    
-    
 }
 
 
@@ -105,7 +103,6 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 // 设置section头视图的参考大小，与tableheaderview类似
@@ -130,9 +127,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_model.order_number forKey:@"order_number"];
     [paramsDic setObject: [BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
             NSString *apply_info = responseObject[@"data"][@"apply_info"];
             NSInteger progress = [responseObject[@"data"][@"progress"] integerValue];
@@ -155,7 +150,6 @@
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
 }
@@ -177,7 +171,6 @@
     UIImage *leftImage = [[UIImage imageNamed:@"icon_back_white"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
-    
 }
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
@@ -185,7 +178,6 @@
     //[self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 
 - (void)didReceiveMemoryWarning {

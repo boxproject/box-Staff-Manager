@@ -73,7 +73,6 @@
     [_nameLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.offset(3);
         make.right.bottom.offset(-3);
-        
     }];
     
     UITapGestureRecognizer *addMenberTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addMenberAction:)];

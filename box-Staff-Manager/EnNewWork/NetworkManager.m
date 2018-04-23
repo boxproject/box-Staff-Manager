@@ -37,7 +37,6 @@ static AFHTTPSessionManager *_manager;
         _manager.securityPolicy.validatesDomainName=NO;
         
         /*
-        //https://juejin.im/entry/56af1446df0eea0054800d38
         // 2.设置证书模式 支持https（校验证书，不可以抓包)
         NSString * cerPath = [[NSBundle mainBundle] pathForResource:@"xxx" ofType:@"cer"];
         NSData * cerData = [NSData dataWithContentsOfFile:cerPath];
@@ -56,7 +55,6 @@ static AFHTTPSessionManager *_manager;
 {
     url = [NSString stringWithFormat:@"%@%@",[BoxDataManager sharedManager].box_IP, url];
     NSLog(@"URL:---\n%@",url);
-    //url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     __weak AFHTTPSessionManager *manager = [self sharedHTTPSession];
     switch (method) {
@@ -94,5 +92,4 @@ static AFHTTPSessionManager *_manager;
 }
 
  
-
 @end

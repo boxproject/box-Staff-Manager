@@ -13,7 +13,6 @@
 #define ModifyServerAddressVCAleartSucceed  @"修改成功"
 #define ModifyServerAddressVCVerifyBtn  @"确认修改"
 
-
 @interface ModifyServerAddressViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;

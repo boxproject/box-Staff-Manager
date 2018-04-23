@@ -14,8 +14,6 @@
 
 @property (nonatomic,strong) UIView *lineView;
 
-//@property (nonatomic,strong) UILabel *approvalStateLab;
-
 @property (nonatomic,strong) UIImageView *rightIcon;
 
 @end
@@ -29,8 +27,6 @@
     [self createView];
     return self;
 }
-
-
 
 - (void)createView{
     

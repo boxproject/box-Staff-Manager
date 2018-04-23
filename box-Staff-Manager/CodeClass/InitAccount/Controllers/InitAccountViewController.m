@@ -8,11 +8,6 @@
 
 #import "InitAccountViewController.h"
 #import "ScanCodeViewController.h"
-//#import "UIARSAHandler.h"
-
-
-//text
-#import "HomePageViewController.h"
 
 #define InitAccountVCTitle  @"扫一扫"
 #define PerfectInformationVCLaber  @"扫一扫完成授权"
@@ -38,7 +33,6 @@
     UIBarButtonItem *barBtn = [[UIBarButtonItem alloc]init];
     barBtn.title=@"";
     self.navigationItem.leftBarButtonItem = barBtn;
-   
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -104,7 +98,6 @@
         make.height.offset(80/2);
         make.width.offset(318/2);
     }];
- 
 }
 
 #pragma mark ----- 开始扫描 -----
@@ -117,8 +110,6 @@
     scanVC.applyer_id = _applyer_id;
     [self.navigationController pushViewController:scanVC animated:YES];
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

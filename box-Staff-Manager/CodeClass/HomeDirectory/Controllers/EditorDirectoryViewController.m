@@ -55,7 +55,6 @@
     self.navigationController.navigationBar.barTintColor = nil;
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
-    
 }
 
 -(void)createView
@@ -336,7 +335,6 @@
     self.navigationItem.rightBarButtonItem = buttonRight;
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
-    
 }
 
 #pragma mark ----- rightBarButtonItemAction -----

@@ -17,7 +17,6 @@
 #define HomeMeVCTitle  @"我"
 #define homeBoxTitle  @"BOX"
 
-
 #define PerfectInformationVCLaber  @"扫一扫完成授权"
 #define PerfectInformationVCSubLaber  @"扫一扫私钥App完成账号授权"
 
@@ -65,9 +64,6 @@
     }
 }
 
-
-
-
 -(void)initTabBarVC
 {
     
@@ -109,8 +105,6 @@
     UINavigationController *HomeMeNC = [[UINavigationController alloc] initWithRootViewController:self.HomeMeVC];
     self.viewControllers = @[self.homeBoxVC, homeDirectoryNV, HomeServiceNV, HomeMeNC];
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

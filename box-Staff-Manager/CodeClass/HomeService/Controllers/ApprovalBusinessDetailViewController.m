@@ -99,7 +99,6 @@
         make.bottom.offset(-kTabBarHeight + 49);
         make.height.offset(45);
     }];
-
 }
 
 #pragma mark  ----- UICollectionViewDataSource -----
@@ -122,7 +121,6 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
-    
 }
 
 // 设置section头视图的参考大小，与tableheaderview类似
@@ -146,9 +144,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_model.flow_id forKey:@"flow_id"];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flow/info" params:paramsDic success:^(id responseObject) {
-        //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
             NSInteger progress = [responseObject[@"data"][@"progress"] integerValue];
             [self showBtnApprovalState:progress];
@@ -171,7 +167,6 @@
         });
         
     } fail:^(NSError *error) {
-        //[WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
 }
@@ -195,7 +190,6 @@
             break;
     }
 }
-
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {
     frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
