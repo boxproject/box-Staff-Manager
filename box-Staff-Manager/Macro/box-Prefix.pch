@@ -41,6 +41,7 @@
 #import "DeviceManager.h"
 #import "MenberInfoManager.h"
 #import "DDRSAWrapper.h"
+#import "PassWordManager.h"
 
 
 typedef NS_ENUM(NSInteger, ApprovalState) {

@@ -13,12 +13,14 @@
 #define ModificatePasswordVCoriginalPawdInfo  @"请输入原密码"
 #define ModificatePasswordVCpawdnew  @"新密码"
 #define ModificatePasswordVCpawdnewInfo  @"请输入新密码"
-#define ModificatePasswordVCRenewPawd  @"新密码"
+#define ModificatePasswordVCRenewPawd  @"新密码(只支持6-20位数字、字母区分大小写)"
 #define ModificatePasswordVCRenewPawdInfo  @"请再次输入新密码"
 #define ModificatePasswordVCVerify  @"确认密码"
 #define ModificatePasswordVCAleartSucceed  @"修改成功"
 #define ModificatePasswordVCOriginalError  @"原密码错误"
 #define PerfectInformationVCrenewPawdError  @"密码不一致"
+#define ModificatePasswordVCCheckPwd  @"密码必须为6-20位数字和字母组成"
+
 
 @interface ModificatePasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
@@ -226,6 +228,11 @@
     }
     if ([_pawdnewTf.text isEqualToString:@""]) {
         [WSProgressHUD showErrorWithStatus:ModificatePasswordVCpawdnewInfo];
+        return;
+    }
+    BOOL checkBool = [PassWordManager checkPassWord:_pawdnewTf.text];
+    if (!checkBool) {
+        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCCheckPwd];
         return;
     }
     if (![_pawdnewTf.text isEqualToString:_renewPawdTf.text]) {

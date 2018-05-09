@@ -11,13 +11,14 @@
 
 #define PerfectInformationVCTitle  @"完善信息"
 #define PerfectInformationVCNameText  @"请输入姓名"
-#define PerfectInformationVCPasswordText  @"请输入密码 (只支持数字、字母区分大小写)"
+#define PerfectInformationVCPasswordText  @"请输入密码 (只支持6-20位数字、字母区分大小写)"
 #define PerfectInformationVCVerifiyText  @"请再次输入密码"
 #define PerfectInformationVCAleartLab  @"此密码不可找回，请您牢记"
 #define PerfectInformationVCCormfirmBtn  @"确认提交"
 #define PerfectInformationVCAleartOne  @"请完善信息"
 #define PerfectInformationVCAleartTwo  @"请输入密码"
 #define PerfectInformationVCAleartThree  @"密码不一致"
+#define PerfectInformationVCCheckPwd  @"密码必须为6-20位数字和字母组成"
 
 @interface PerfectInformationViewController ()<UIScrollViewDelegate, UITextFieldDelegate>
 
@@ -203,6 +204,12 @@
         [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartTwo];
         return;
     }
+    BOOL checkBool = [PassWordManager checkPassWord:_passwordTf.text];
+    if (!checkBool) {
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCCheckPwd];
+        return;
+    }
+
     if (![_passwordTf.text isEqualToString:_verifyPwFf.text]) {
         [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartThree];
         return;

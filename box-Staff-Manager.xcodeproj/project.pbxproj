@@ -54,6 +54,7 @@
 		1707DB24206E361900AE81BE /* SearchApprovalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB23206E361900AE81BE /* SearchApprovalModel.m */; };
 		1707DB27206E363400AE81BE /* SearchApprovalTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB26206E363400AE81BE /* SearchApprovalTableViewCell.m */; };
 		1707DB2A206F256800AE81BE /* BoxDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB29206F256800AE81BE /* BoxDataManager.m */; };
+		171EC0E420A2B0FA00CA7F20 /* PassWordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 171EC0E220A2B0F900CA7F20 /* PassWordManager.m */; };
 		1764028120790C9F00E125B2 /* MenberInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1764028020790C9F00E125B2 /* MenberInfoManager.m */; };
 		1764028420790E0D00E125B2 /* MenberInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1764028320790E0D00E125B2 /* MenberInfoModel.m */; };
 		176402872079C89500E125B2 /* AddApprovalMenberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402862079C89500E125B2 /* AddApprovalMenberViewController.m */; };
@@ -231,6 +232,8 @@
 		1707DB26206E363400AE81BE /* SearchApprovalTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchApprovalTableViewCell.m; sourceTree = "<group>"; };
 		1707DB28206F256800AE81BE /* BoxDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoxDataManager.h; sourceTree = "<group>"; };
 		1707DB29206F256800AE81BE /* BoxDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoxDataManager.m; sourceTree = "<group>"; };
+		171EC0E220A2B0F900CA7F20 /* PassWordManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PassWordManager.m; sourceTree = "<group>"; };
+		171EC0E320A2B0F900CA7F20 /* PassWordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PassWordManager.h; sourceTree = "<group>"; };
 		1764027F20790C9F00E125B2 /* MenberInfoManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenberInfoManager.h; sourceTree = "<group>"; };
 		1764028020790C9F00E125B2 /* MenberInfoManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenberInfoManager.m; sourceTree = "<group>"; };
 		1764028220790E0D00E125B2 /* MenberInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenberInfoModel.h; sourceTree = "<group>"; };
@@ -501,6 +504,8 @@
 				1771419F20714B040092FD11 /* DeviceManager.m */,
 				1764027F20790C9F00E125B2 /* MenberInfoManager.h */,
 				1764028020790C9F00E125B2 /* MenberInfoManager.m */,
+				171EC0E320A2B0F900CA7F20 /* PassWordManager.h */,
+				171EC0E220A2B0F900CA7F20 /* PassWordManager.m */,
 			);
 			path = ManagerCommon;
 			sourceTree = "<group>";
@@ -1384,6 +1389,7 @@
 				176402E72084CBBC00E125B2 /* ModifyServerAddressViewController.m in Sources */,
 				1764028120790C9F00E125B2 /* MenberInfoManager.m in Sources */,
 				1707DAB8206B867800AE81BE /* ApprovalBusinessModel.m in Sources */,
+				171EC0E420A2B0FA00CA7F20 /* PassWordManager.m in Sources */,
 				1707DAD9206B8FB900AE81BE /* OrganizationViewController.m in Sources */,
 				17AD196720635889000052B5 /* InitAccountViewController.m in Sources */,
 				1707DADF206B8FDC00AE81BE /* OrganizationModel.m in Sources */,
@@ -1665,12 +1671,13 @@
 					"box-Staff-Manager/globel/OpenSSL/include",
 				);
 				INFOPLIST_FILE = "box-Staff-Manager/Resource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/box-Staff-Manager/globel/OpenSSL/include",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.2se.box-Staff-Manager";
+				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1703,12 +1710,13 @@
 					"box-Staff-Manager/globel/OpenSSL/include",
 				);
 				INFOPLIST_FILE = "box-Staff-Manager/Resource/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/box-Staff-Manager/globel/OpenSSL/include",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.2se.box-Staff-Manager";
+				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

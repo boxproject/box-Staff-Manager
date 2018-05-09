@@ -168,6 +168,7 @@
         return;
     }
     if ([self.delegate respondsToSelector:@selector(PrivatePasswordViewDelegate:)]) {
+        _confirmBtn.userInteractionEnabled = YES;
         [self.delegate PrivatePasswordViewDelegate:_passwordTf.text];
     }
 }

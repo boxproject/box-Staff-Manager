@@ -28,7 +28,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>开启相机进行扫描</string>
+	<string>员工App需要访问您的相机，以方便您体验拍摄、扫码、刷脸等</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>添加图片到相册</string>
 	<key>UIMainStoryboardFile</key>

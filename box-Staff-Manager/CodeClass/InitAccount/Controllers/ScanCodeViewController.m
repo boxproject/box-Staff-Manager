@@ -11,6 +11,7 @@
 #import "PerfectInformationViewController.h"
 #import "HomePageViewController.h"
 #import "TransferViewController.h"
+#import "PerfectInformationViewController.h"
 
 #define ScanSize   [[UIScreen mainScreen] bounds].size.width - 70
 #define ScanCodeWSprogress  @"注册失败"
@@ -18,6 +19,7 @@
 #define PerfectInformationVCTorchlight  @"轻触关闭"
 #define PerfectInformationVCTorchheight  @"轻触照亮"
 #define PerfectInformationVCScanResult  @"将二维码放入框内，即可自动扫描"
+#define PerfectInformationVCErrorCode  @"二维码无效"
 
 @interface ScanCodeViewController () <AVCaptureMetadataOutputObjectsDelegate,CALayerDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 {
@@ -446,6 +448,13 @@
                 // 将扫描后的结果显示在label上
                 //self.scanResult.text = result;
                 if (_fromFunction == fromInitAccount) {
+                    NSArray *codeArray = [JsonObject dictionaryWithJsonStringArr:result];
+                    if (codeArray == nil) {
+                        [WSProgressHUD showErrorWithStatus:PerfectInformationVCErrorCode];
+                        [self.navigationController popViewControllerAnimated:YES];
+                        [SVProgressHUD dismiss];
+                        return ;
+                    }
                     [self handleFromInitAccount:result];
                 }else if (_fromFunction == fromTransfer){
                     // 隐藏遮盖
@@ -515,7 +524,21 @@
         // 隐藏遮盖
         [SVProgressHUD dismiss];
         NSLog(@"%@", error.description);
+        [self handleError];
     }];
+}
+
+-(void)handleError
+{
+    [WSProgressHUD showErrorWithStatus:@"请求失败"];
+    for (UIViewController *controller in self.navigationController.viewControllers) {
+        
+        if ([controller isKindOfClass:[PerfectInformationViewController class]]) {
+            [self.navigationController popToViewController:controller animated:YES];
+            
+        }
+        
+    }
 }
 
 #pragma mark ------ 员工APP轮询注册审批结果 -----
@@ -546,7 +569,6 @@
                         }
                     }
                 }
-                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [WSProgressHUD showSuccessWithStatus:@"授权成功"];
                     [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
@@ -559,6 +581,7 @@
         
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
+        [self handleError];
     }];
 }
 
@@ -579,6 +602,7 @@
         }
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
+        [self handleError];
     }];
 }
 
@@ -625,6 +649,7 @@
         [timer invalidate];
         timer = nil;
         NSLog(@"%@", error.description);
+        [self handleError];
     }];
 }
 

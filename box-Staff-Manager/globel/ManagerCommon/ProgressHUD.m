@@ -33,6 +33,7 @@
 #define NetWorkCode2008  @"未找到对应币种信息"
 #define NetWorkCode1008  @"指定下级账号不存在"
 #define NetWorkCode1013  @"指定下属账号已被停用"
+#define NetWorkCode2009  @"余额不足"
 
 @implementation ProgressHUD
 
@@ -96,6 +97,8 @@
         [WSProgressHUD showErrorWithStatus:NetWorkCode1008];
     }else if(code == 1013){
         [WSProgressHUD showErrorWithStatus:NetWorkCode1013];
+    }else if(code == 1013){
+        [WSProgressHUD showErrorWithStatus:NetWorkCode2009];
     }
 }
 

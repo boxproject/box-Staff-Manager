@@ -48,7 +48,6 @@
 @property (nonatomic,strong)UIButton *scanBtn;
 @property (nonatomic,strong)UIButton *addressTextBtn;
 @property (nonatomic,strong)ApprovalBusinessModel *approvalBusinessModel;
-@property (nonatomic, strong)IQKeyboardManager *manager;
 @property (nonatomic, strong)TransferView *transferView;
 @property (nonatomic,strong)CurrencyView *currencyView;
 
@@ -63,18 +62,7 @@
     [self createTitleView];
     [self createBarItem];
     [self createView];
-    [self initIQKeyboardManager];
     _aWrapper = [[DDRSAWrapper alloc] init];
-}
-
--(void)initIQKeyboardManager
-{
-    _manager = [IQKeyboardManager sharedManager]; //处理键盘遮挡
-    //[manager setCanAdjustTextView:YES];
-    _manager.enable = YES;
-    _manager.shouldResignOnTouchOutside = YES;
-    _manager.shouldToolbarUsesTextFieldTintColor = YES;
-    _manager.enableAutoToolbar = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -165,16 +153,8 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    _manager.enable = NO;
-    _manager.shouldResignOnTouchOutside = NO;
-    _manager.shouldToolbarUsesTextFieldTintColor = NO;
-    _manager.enableAutoToolbar = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    UIViewController *vc = self.presentingViewController;
-    while (vc.presentingViewController) {
-        vc = vc.presentingViewController;
-    }
-    [vc dismissViewControllerAnimated:YES completion:NULL];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(void)createView
@@ -698,10 +678,6 @@
 #pragma mark -----  TransferViewDelegate -----
 -(void)transferDidAchieve
 {
-    _manager.enable = NO;
-    _manager.shouldResignOnTouchOutside = NO;
-    _manager.shouldToolbarUsesTextFieldTintColor = NO;
-    _manager.enableAutoToolbar = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
