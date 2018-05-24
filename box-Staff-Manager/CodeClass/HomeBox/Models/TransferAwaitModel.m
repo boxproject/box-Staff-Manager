@@ -39,6 +39,9 @@
         if(![dict[@"arrived"] isKindOfClass:[NSNull class]]){
             self.arrived = [[dict objectForKey:@"arrived"] integerValue];
         }
+        if(![dict[@"type"] isKindOfClass:[NSNull class]]){
+            self.type = [[dict objectForKey:@"type"] integerValue];
+        }
         
     }
     return self;

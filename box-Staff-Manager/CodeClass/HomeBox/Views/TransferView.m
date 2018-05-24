@@ -305,7 +305,7 @@
     UILabel *minersFeeLab = [[UILabel alloc] init];
     minersFeeLab.textAlignment = NSTextAlignmentLeft;
     minersFeeLab.font = Font(14);
-    minersFeeLab.text = TransferViewAmount;
+    minersFeeLab.text = TransferViewMinersFee;
     minersFeeLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_mainView addSubview:minersFeeLab];
     [minersFeeLab mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -17,7 +17,7 @@
 #define AddDirectoryName  @"名称"
 #define AddDirectoryNameInfo  @"请输入姓名或者公司名称"
 #define AddDirectoryVCAddress  @"收款地址"
-#define AddDirectoryVCAddressInfo  @"请输入或者选择收款人"
+#define AddDirectoryVCAddressInfo  @"请输入收款地址"
 #define AddDirectoryVCRemark  @"备注"
 #define AddDirectoryVCRemarkInfo  @"请输入备注"
 #define AddDirectoryVCcurrencyInfo  @"请选择币种"
@@ -343,6 +343,11 @@
     }
     if (_addressTf.text.length == 0) {
         [WSProgressHUD showErrorWithStatus:AddDirectoryVCAddressInfo];
+        return;
+    }
+    BOOL checkBool = [AddressVerifyManager checkAddressVerify:_addressTf.text type:_currencyTf.text];
+    if (!checkBool) {
+        [WSProgressHUD showErrorWithStatus:AddressVerifyETHError];
         return;
     }
     if (_remarkTf.text.length == 0) {

@@ -241,6 +241,18 @@
             SearchMenberModel *model = self.sourceArray[indexPath.row];
             NSArray *array = [[MenberInfoManager sharedManager] loadMenberInfo:model.app_account_id];
             if (array.count == 0) {
+                if ([model.app_account_id  isEqualToString:[BoxDataManager sharedManager].app_account_id]) {
+                    NSDictionary *dic = @{
+                                          @"account":[BoxDataManager sharedManager].applyer_account,
+                                          @"app_account_id":[BoxDataManager sharedManager].app_account_id,
+                                          @"pub_key":[BoxDataManager sharedManager].publicKeyBase64,
+                                          @"itemType":@(0)
+                                          };
+                    ApprovalBusApproversModel *approvalBusApproversModel = [[ApprovalBusApproversModel alloc] initWithDict:dic];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"addMenber" object:approvalBusApproversModel];
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                    return;
+                }
                 [self employeePubkeysInfo:model];
             }else{
                 MenberInfoModel *menberInfoModel = array[0];

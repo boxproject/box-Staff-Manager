@@ -111,7 +111,6 @@
         [self.navigationController pushViewController:assetAmount animated:YES];
     }
 }
- 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

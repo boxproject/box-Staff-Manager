@@ -11,14 +11,14 @@
 
 #define PerfectInformationVCTitle  @"完善信息"
 #define PerfectInformationVCNameText  @"请输入姓名"
-#define PerfectInformationVCPasswordText  @"请输入密码 (只支持6-20位数字、字母区分大小写)"
+#define PerfectInformationVCPasswordText  @"请输入密码 (只支持6-12位数字、字母区分大小写)"
 #define PerfectInformationVCVerifiyText  @"请再次输入密码"
 #define PerfectInformationVCAleartLab  @"此密码不可找回，请您牢记"
 #define PerfectInformationVCCormfirmBtn  @"确认提交"
 #define PerfectInformationVCAleartOne  @"请完善信息"
 #define PerfectInformationVCAleartTwo  @"请输入密码"
 #define PerfectInformationVCAleartThree  @"密码不一致"
-#define PerfectInformationVCCheckPwd  @"密码必须为6-20位数字和字母组成"
+#define PerfectInformationVCCheckPwd  @"密码必须为6-12位数字和字母组成"
 
 @interface PerfectInformationViewController ()<UIScrollViewDelegate, UITextFieldDelegate>
 
@@ -42,7 +42,17 @@
     self.title = PerfectInformationVCTitle;
     self.view.backgroundColor = [UIColor whiteColor];
     [self createView];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    UIImage *shadowImage = self.navigationController.navigationBar.shadowImage;
+    self.navigationController.navigationBar.shadowImage = shadowImage;
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.tintColor = nil;
+    self.navigationController.navigationBar.barTintColor = nil;
+    self.navigationController.navigationBar.alpha = 1.0;
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
     
 }
 
@@ -223,6 +233,15 @@
     [self.navigationController pushViewController:initAccountVC animated:YES];
 }
 
+#pragma mark - UITextFieldDelegate
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string{
+    NSString *allStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if(textField.isSecureTextEntry==YES) {
+        textField.text= allStr;
+        return NO;
+    }
+    return YES;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

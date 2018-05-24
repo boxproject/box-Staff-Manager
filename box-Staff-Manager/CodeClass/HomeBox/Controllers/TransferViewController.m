@@ -654,6 +654,11 @@
 #pragma mark -----  提交审批 -----
 -(void)cormfirmAction:(UIButton *)btn
 {
+    BOOL checkBool = [AddressVerifyManager checkAddressVerify:_addressTf.text type:_currencyTf.text];
+    if (!checkBool) {
+        [WSProgressHUD showErrorWithStatus:AddressVerifyETHError];
+        return;
+    }
     CGFloat amountFloat= [_amountTf.text floatValue];
     CGFloat flowLimit = [_approvalBusinessModel.single_limit floatValue];
     if (amountFloat > flowLimit) {

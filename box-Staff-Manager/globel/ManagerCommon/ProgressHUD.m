@@ -34,6 +34,7 @@
 #define NetWorkCode1008  @"指定下级账号不存在"
 #define NetWorkCode1013  @"指定下属账号已被停用"
 #define NetWorkCode2009  @"余额不足"
+#define NetWorkCode1003  @"未找到该注册申请"
 
 @implementation ProgressHUD
 
@@ -97,8 +98,10 @@
         [WSProgressHUD showErrorWithStatus:NetWorkCode1008];
     }else if(code == 1013){
         [WSProgressHUD showErrorWithStatus:NetWorkCode1013];
-    }else if(code == 1013){
+    }else if(code == 2009){
         [WSProgressHUD showErrorWithStatus:NetWorkCode2009];
+    }else if(code == 1003){
+        [WSProgressHUD showErrorWithStatus:NetWorkCode1003];
     }
 }
 

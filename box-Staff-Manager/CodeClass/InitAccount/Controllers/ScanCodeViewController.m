@@ -518,7 +518,7 @@
             // 隐藏遮盖
             [SVProgressHUD dismiss];
             [ProgressHUD showStatus:[dict[@"code"] integerValue]];
-            [self.navigationController popViewControllerAnimated:YES];
+            [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {
         // 隐藏遮盖
@@ -532,14 +532,21 @@
 {
     [WSProgressHUD showErrorWithStatus:@"请求失败"];
     for (UIViewController *controller in self.navigationController.viewControllers) {
-        
         if ([controller isKindOfClass:[PerfectInformationViewController class]]) {
             [self.navigationController popToViewController:controller animated:YES];
-            
         }
-        
     }
 }
+
+-(void)handleshowProgressHUD
+{
+    for (UIViewController *controller in self.navigationController.viewControllers) {
+        if ([controller isKindOfClass:[PerfectInformationViewController class]]) {
+            [self.navigationController popToViewController:controller animated:YES];
+        }
+    }
+}
+
 
 #pragma mark ------ 员工APP轮询注册审批结果 -----
 -(void)getApprovalResult
@@ -555,7 +562,7 @@
             }else if([consent integerValue] == 1){
                 [SVProgressHUD dismiss];
                 [WSProgressHUD showErrorWithStatus:@"授权失败"];
-                [self.navigationController popViewControllerAnimated:YES];
+                [self handleshowProgressHUD];
             }else if([consent integerValue] == 2){
                 [SVProgressHUD dismiss];
                 NSInteger depth = [dict[@"data"][@"depth"] integerValue];
@@ -577,8 +584,12 @@
                     [self presentViewController:homePageVC animated:YES completion:nil];
                 });
             }
+        }else {
+            // 隐藏遮盖
+            [SVProgressHUD dismiss];
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [self handleshowProgressHUD];
         }
-        
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
         [self handleError];
@@ -599,6 +610,11 @@
         if ([dict[@"code"] integerValue] == 0) {
             [WSProgressHUD showErrorWithStatus:ScanCodeWSprogress];
             [self.navigationController popViewControllerAnimated:YES];
+        }else {
+            // 隐藏遮盖
+            [SVProgressHUD dismiss];
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
@@ -620,7 +636,7 @@
                 [timer invalidate];
                 timer = nil;
                 [WSProgressHUD showErrorWithStatus:@"授权失败"];
-                [self.navigationController popViewControllerAnimated:YES];
+                [self handleshowProgressHUD];
             }else if([consent integerValue] == 2){
                 [SVProgressHUD dismiss];
                 [timer invalidate];
@@ -643,8 +659,12 @@
                 [self presentViewController:homePageVC animated:YES completion:nil];
 
             }
+        }else {
+            // 隐藏遮盖
+            [SVProgressHUD dismiss];
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [self handleshowProgressHUD];
         }
-        
     } fail:^(NSError *error) {
         [timer invalidate];
         timer = nil;

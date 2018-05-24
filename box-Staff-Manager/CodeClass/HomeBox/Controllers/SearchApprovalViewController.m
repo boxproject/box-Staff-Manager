@@ -48,6 +48,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject: _searchField.text forKey:@"key_words"];
+    [paramsDic setObject:@(1) forKey:@"type"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -203,6 +204,7 @@
     [paramsDic setObject: textField.text forKey:@"key_words"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:@(1) forKey:@"type"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {

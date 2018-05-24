@@ -12,14 +12,14 @@
 #define ModificatePasswordVCoriginalPawd  @"原密码"
 #define ModificatePasswordVCoriginalPawdInfo  @"请输入原密码"
 #define ModificatePasswordVCpawdnew  @"新密码"
-#define ModificatePasswordVCpawdnewInfo  @"请输入新密码(6-20位数字、字母)"
+#define ModificatePasswordVCpawdnewInfo  @"请输入新密码(6-12位数字、字母)"
 #define ModificatePasswordVCRenewPawd  @"新密码"
 #define ModificatePasswordVCRenewPawdInfo  @"请再次输入新密码"
 #define ModificatePasswordVCVerify  @"确认密码"
 #define ModificatePasswordVCAleartSucceed  @"修改成功"
 #define ModificatePasswordVCOriginalError  @"原密码错误"
 #define PerfectInformationVCrenewPawdError  @"密码不一致"
-#define ModificatePasswordVCCheckPwd  @"密码必须为6-20位数字和字母组成"
+#define ModificatePasswordVCCheckPwd  @"密码必须为6-12位数字和字母组成"
 
 
 @interface ModificatePasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
@@ -254,6 +254,15 @@
     self.navigationItem.leftBarButtonItem = buttonLeft;
 }
 
+#pragma mark - UITextFieldDelegate
+- (BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string{
+    NSString *allStr = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if(textField.isSecureTextEntry==YES) {
+        textField.text= allStr;
+        return NO;
+    }
+    return YES;
+}
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {

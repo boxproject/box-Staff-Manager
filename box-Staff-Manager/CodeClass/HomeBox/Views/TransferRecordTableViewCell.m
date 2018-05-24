@@ -12,6 +12,8 @@
 #define TransferRecordTableViewCellTransfering  @"审批中"
 #define TransferRecordTableViewCellTransferStateSucceed  @"同意审批(转账成功)"
 #define TransferRecordTableViewCellTransferStateSucceedTransfing  @"同意审批(转账中)"
+#define TransferRecordTableViewCellTransferStateFail  @"同意审批(转账失败)"
+#define TransferRecordTableViewCellRecharge  @"充值成功"
 #define TransferRecordTableViewCellTransferFail  @"拒绝审批"
 
 @interface TransferRecordTableViewCell()
@@ -106,7 +108,18 @@
 - (void)setDataWithModel:(TransferAwaitModel *)model
 {
     _topLeftLab.text = model.tx_info;
-    _topRightlab.text = [NSString stringWithFormat:@"-%@%@", model.amount, model.currency];
+    if (model.type == 1) {
+        _topRightlab.text = [NSString stringWithFormat:@"+%@%@", model.amount, model.currency];
+        _bottomRightlab.text = TransferRecordTableViewCellRecharge;
+    }else if(model.type == 0){
+        _topRightlab.text = [NSString stringWithFormat:@"-%@%@", model.amount, model.currency];
+        [self handleProgress:model];
+    }
+    _bottomLeftLab.text = [self getElapseTimeToString:model.apply_at];
+}
+
+-(void)handleProgress:(TransferAwaitModel *)model
+{
     switch (model.progress) {
         case ApprovalAwait:
         {
@@ -124,6 +137,8 @@
                 _bottomRightlab.text = TransferRecordTableViewCellTransferStateSucceedTransfing;
             }else if (model.arrived == 2){
                 _bottomRightlab.text = TransferRecordTableViewCellTransferStateSucceed;
+            }else if (model.arrived == -1){
+                _bottomRightlab.text = TransferRecordTableViewCellTransferStateFail;
             }
             break;
         }
@@ -135,7 +150,6 @@
         default:
             break;
     }
-    _bottomLeftLab.text = [self getElapseTimeToString:model.apply_at];
 }
 
 - (NSString *)getElapseTimeToString:(NSInteger)second{

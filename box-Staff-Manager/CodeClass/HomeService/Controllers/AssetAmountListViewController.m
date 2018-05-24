@@ -1,12 +1,12 @@
 //
-//  TransferRecordViewController.m
+//  AssetAmountListViewController.m
 //  box-Staff-Manager
 //
-//  Created by Yu Huang on 2018/3/27.
+//  Created by Yu Huang on 2018/5/14.
 //  Copyright © 2018年 2se. All rights reserved.
 //
 
-#import "TransferRecordViewController.h"
+#import "AssetAmountListViewController.h"
 #import "TransferRecordTableViewCell.h"
 #import "TransferRecordDetailViewController.h"
 #import "TransferAwaitModel.h"
@@ -14,11 +14,8 @@
 #define PageSize  12
 #define CellReuseIdentifier  @"TransferRecord"
 
-@interface TransferRecordViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface AssetAmountListViewController ()<UITableViewDelegate, UITableViewDataSource>
 
-/**< 我发起的／我参与的 */
-@property (nonatomic,strong) UISegmentedControl *segmentedView;
-@property (nonatomic,strong) UIView *viewLayer;
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
 @property (nonatomic,assign) NSInteger page;
@@ -27,89 +24,17 @@
 
 @end
 
-@implementation TransferRecordViewController
+@implementation AssetAmountListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
+    self.title = [NSString stringWithFormat:@"%@明细",_currency];
     _sourceArray = [[NSMutableArray alloc] init];
-    [self createSegmentedView];
     [self createView];
-    //0作为发起者
-    _type = 0;
     _page = 1;
     [self requestData];
-}
-
-#pragma mark ----- 数据请求 -----
--(void)requestData
-{
-    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
-    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    [paramsDic setObject:@(_type) forKey:@"type"];
-    [paramsDic setObject:@(-1) forKey:@"progress"];
-    [paramsDic setObject: @(_page) forKey:@"page"];
-    [paramsDic setObject:@(PageSize) forKey:@"limit"];
-    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
-        NSDictionary *dict = responseObject;
-        if ([dict[@"code"] integerValue] == 0) {
-            if (_page == 1) {
-                [_sourceArray removeAllObjects];
-            }
-            NSArray *listArray = dict[@"data"][@"list"];
-            for (NSDictionary *listDic in listArray) {
-                TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:listDic];
-                [_sourceArray addObject:model];
-            }
-        }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
-        }
-        [self reloadAction];
-    } fail:^(NSError *error) {
-        NSLog(@"%@", error.description);
-        [self reloadAction];
-    }];
-}
-
--(void)reloadAction
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
-    });
-}
-
--(void)createSegmentedView
-{
-    self.navigationItem.titleView = self.viewLayer;
-}
-
-- (UIView *)viewLayer{
-    if(_viewLayer) return _viewLayer;
-    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
-    _viewLayer.backgroundColor = [UIColor clearColor];
-    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[@"我发起的",@"我参与的"]];
-    [_segmentedView addTarget:self action:@selector(segmentedChangle) forControlEvents:UIControlEventValueChanged];
-    [_viewLayer addSubview:self.segmentedView];
-    self.segmentedView.frame = CGRectMake(30, 0, 200 - 60, 30);
-    _segmentedView.selectedSegmentIndex = 0;
-    return _viewLayer;
-}
-
--(void)segmentedChangle
-{
-    if (_segmentedView.selectedSegmentIndex == 0) {
-        _page = 1;
-        _type = 0;
-        [self requestData];
-        
-    }else{
-        _page = 1;
-        _type = 1;
-        [self requestData];
-    }
 }
 
 -(void)createView
@@ -140,11 +65,7 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    if ([_fromVC isEqualToString:@"transferVC"]) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }else{
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -164,6 +85,43 @@
     }];
 }
 
+#pragma mark ----- 数据请求 -----
+-(void)requestData
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:_currency forKey:@"currency"];
+    [paramsDic setObject: @(_page) forKey:@"page"];
+    [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/trade/history/list" params:paramsDic success:^(id responseObject) {
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            if (_page == 1) {
+                [_sourceArray removeAllObjects];
+            }
+            NSArray *listArray = dict[@"data"][@"list"];
+            for (NSDictionary *listDic in listArray) {
+                TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:listDic];
+                [_sourceArray addObject:model];
+            }
+        }else{
+            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+        }
+        [self reloadAction];
+    } fail:^(NSError *error) {
+        NSLog(@"%@", error.description);
+        [self reloadAction];
+    }];
+}
+
+-(void)reloadAction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    });
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.sourceArray.count;
@@ -172,7 +130,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 59;
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -187,13 +144,15 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         TransferAwaitModel *model = self.sourceArray[indexPath.row];
+        if (model.type == 1) {
+            return ;
+        }
         TransferRecordDetailViewController *transferRecordDetailVc = [[TransferRecordDetailViewController alloc] init];
         transferRecordDetailVc.model = model;
         UINavigationController *transferRecordDetailNc = [[UINavigationController alloc] initWithRootViewController:transferRecordDetailVc];
         [self presentViewController:transferRecordDetailNc animated:NO completion:nil];
     });
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

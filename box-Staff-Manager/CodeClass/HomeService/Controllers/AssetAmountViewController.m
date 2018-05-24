@@ -9,6 +9,7 @@
 #import "AssetAmountViewController.h"
 #import "AssetAmountTableViewCell.h"
 #import "AssetAmountModel.h"
+#import "AssetAmountListViewController.h"
 
 #define PageSize  12
 #define CellReuseIdentifier  @"AssetAmount"
@@ -141,6 +142,14 @@
     cell.model = model;
     [cell setDataWithModel:model];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AssetAmountModel *model = self.sourceArray[indexPath.row];
+    AssetAmountListViewController *assetAmountListVC = [[AssetAmountListViewController alloc] init];
+    assetAmountListVC.currency = model.currency;
+    [self.navigationController pushViewController:assetAmountListVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

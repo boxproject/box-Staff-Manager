@@ -247,9 +247,9 @@
     if ([_type isEqualToString:@"getAddress"]) {
         _topTitleLab.attributedText = [self attributedStringWithImage:_model.currency];
     }else{
-        _topTitleLab.attributedText = [self attributedStringWithImage:@"BTC"];
+        _topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
     }
-    //_topTitleLab.attributedText = [self attributedStringWithImage:@"BTC"];
+    //_topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
     _topTitleLab.textColor = [UIColor colorWithHexString:@"#666666"];
     _topTitleLab.numberOfLines = 1;
     [_viewLayer addSubview:_topTitleLab];

@@ -542,9 +542,9 @@
     _topTitleLab = [[UILabel alloc] init];
     _topTitleLab.textAlignment = NSTextAlignmentCenter;
     _topTitleLab.font = Font(16);
-    _topTitleLab.attributedText = [self addAttributedText:@"BTC"];
+    _topTitleLab.attributedText = [self addAttributedText:@"ETH"];
     CurrencyModel *model = [[CurrencyModel alloc] init];
-    model.currency = @"BTC";
+    model.currency = @"ETH";
     model.address = @"";
     _currencyModel = model;
     _topTitleLab.textColor = [UIColor colorWithHexString:@"#ffffff"];
