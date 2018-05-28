@@ -109,7 +109,7 @@
             [self.tableView reloadData];
             
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {

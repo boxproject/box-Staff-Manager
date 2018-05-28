@@ -58,6 +58,7 @@
 -(void)searchMenberAction:(UIBarButtonItem *)rightBar
 {
     SearchApprovalMenberViewController *searchApprovalMenberVC = [[SearchApprovalMenberViewController alloc] init];
+    searchApprovalMenberVC.addArray = _addArray;
     [self.navigationController pushViewController:searchApprovalMenberVC animated:nil];
 }
 
@@ -139,7 +140,7 @@
                 }
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -298,7 +299,7 @@
                 }
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         
     } fail:^(NSError *error) {

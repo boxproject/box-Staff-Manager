@@ -54,6 +54,7 @@
 		1707DB24206E361900AE81BE /* SearchApprovalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB23206E361900AE81BE /* SearchApprovalModel.m */; };
 		1707DB27206E363400AE81BE /* SearchApprovalTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB26206E363400AE81BE /* SearchApprovalTableViewCell.m */; };
 		1707DB2A206F256800AE81BE /* BoxDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB29206F256800AE81BE /* BoxDataManager.m */; };
+		170F392720B7E23300B98E93 /* UIButton+touch.m in Sources */ = {isa = PBXBuildFile; fileRef = 170F392520B7E23200B98E93 /* UIButton+touch.m */; };
 		171EA98B20B27219006F53F1 /* AddressVerifyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 171EA98A20B27219006F53F1 /* AddressVerifyManager.m */; };
 		171EC0E420A2B0FA00CA7F20 /* PassWordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 171EC0E220A2B0F900CA7F20 /* PassWordManager.m */; };
 		1764028120790C9F00E125B2 /* MenberInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1764028020790C9F00E125B2 /* MenberInfoManager.m */; };
@@ -234,6 +235,8 @@
 		1707DB26206E363400AE81BE /* SearchApprovalTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchApprovalTableViewCell.m; sourceTree = "<group>"; };
 		1707DB28206F256800AE81BE /* BoxDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoxDataManager.h; sourceTree = "<group>"; };
 		1707DB29206F256800AE81BE /* BoxDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoxDataManager.m; sourceTree = "<group>"; };
+		170F392520B7E23200B98E93 /* UIButton+touch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+touch.m"; sourceTree = "<group>"; };
+		170F392620B7E23200B98E93 /* UIButton+touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+touch.h"; sourceTree = "<group>"; };
 		171EA98920B27218006F53F1 /* AddressVerifyManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddressVerifyManager.h; sourceTree = "<group>"; };
 		171EA98A20B27219006F53F1 /* AddressVerifyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddressVerifyManager.m; sourceTree = "<group>"; };
 		171EC0E220A2B0F900CA7F20 /* PassWordManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PassWordManager.m; sourceTree = "<group>"; };
@@ -514,6 +517,8 @@
 				171EC0E220A2B0F900CA7F20 /* PassWordManager.m */,
 				171EA98920B27218006F53F1 /* AddressVerifyManager.h */,
 				171EA98A20B27219006F53F1 /* AddressVerifyManager.m */,
+				170F392620B7E23200B98E93 /* UIButton+touch.h */,
+				170F392520B7E23200B98E93 /* UIButton+touch.m */,
 			);
 			path = ManagerCommon;
 			sourceTree = "<group>";
@@ -1431,6 +1436,7 @@
 				1707DA972069F08700AE81BE /* TransferRecordModel.m in Sources */,
 				1707DAEE206B9E3E00AE81BE /* SearchMenberModel.m in Sources */,
 				177141A3207166B40092FD11 /* EditorDirectoryViewController.m in Sources */,
+				170F392720B7E23300B98E93 /* UIButton+touch.m in Sources */,
 				1707DB12206CF62100AE81BE /* ScanAdressViewController.m in Sources */,
 				177141B2207323930092FD11 /* TransferApproversModel.m in Sources */,
 				1707DAE2206B8FF000AE81BE /* OrganizationListModel.m in Sources */,
@@ -1689,7 +1695,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/box-Staff-Manager/globel/OpenSSL/include",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManagerH;
+				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManager5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1728,7 +1734,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/box-Staff-Manager/globel/OpenSSL/include",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManagerH;
+				PRODUCT_BUNDLE_IDENTIFIER = com.2se.boxStaffManager5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;

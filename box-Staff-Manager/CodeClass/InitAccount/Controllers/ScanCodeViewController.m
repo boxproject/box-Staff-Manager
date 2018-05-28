@@ -466,6 +466,7 @@
                     [SVProgressHUD dismiss];
                     TransferViewController *transferVC = [[TransferViewController alloc] init];
                     transferVC.mode = _model;
+                    transferVC.address = result;
                     transferVC.fromType = @"scanCode";
                     BoxNavigationController *transferNC = [[BoxNavigationController alloc] initWithRootViewController:transferVC];
                     [self presentViewController:transferNC animated:YES completion:nil];
@@ -517,7 +518,7 @@
         }else {
             // 隐藏遮盖
             [SVProgressHUD dismiss];
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
             [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {
@@ -587,7 +588,7 @@
         }else {
             // 隐藏遮盖
             [SVProgressHUD dismiss];
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
             [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {
@@ -613,7 +614,7 @@
         }else {
             // 隐藏遮盖
             [SVProgressHUD dismiss];
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
             [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {
@@ -662,7 +663,7 @@
         }else {
             // 隐藏遮盖
             [SVProgressHUD dismiss];
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
             [self handleshowProgressHUD];
         }
     } fail:^(NSError *error) {

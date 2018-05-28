@@ -65,7 +65,6 @@
                 NSString *applyer_account = dic[@"applyer_account"];
                 //根据直属上级账号唯一标识符本地查出直属上级公钥
                 NSArray *array = [[MenberInfoManager sharedManager] loadMenberInfo:captain];
-                
                 if (array.count == 1) {
                     MenberInfoModel *model = array[0];
                     NSString *captain_pub_key = model.publicKey;
@@ -161,7 +160,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
 -(void)footerReflesh
 {
     _tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
@@ -203,7 +201,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -266,7 +264,7 @@
     UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            //获取该下属下属账号详情
+            //获取该下属账号详情
             [self gainAccountsInfo:model];
         }];
         [alert addAction:actionOk];
@@ -275,6 +273,10 @@
         [alert addAction:actionCancel];
         [self presentViewController:alert animated:YES completion:nil];
     }];
+    
+    if (![[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
+        return @[];
+    }
     if (_app_account_id == nil) {
         if (model.employee_num > 0) {
             return @[action1, action0];
@@ -308,6 +310,11 @@
             for (NSDictionary *dic in listArray) {
                 NSString *app_account_id = dic[@"app_account_id"];
                 NSString *cipher_text = dic[@"cipher_text"];
+                NSArray *menberArray = [[MenberInfoManager sharedManager] loadMenberInfo:model.app_account_id];
+                NSArray *menberEmployeeArray = [[MenberInfoManager sharedManager] loadMenberInfo:app_account_id];
+                if (menberArray.count == 0 || menberEmployeeArray == 0) {
+                    return ;
+                }
                 MenberInfoModel *menberModel = [[MenberInfoManager sharedManager] loadMenberInfo:model.app_account_id][0];
                 MenberInfoModel *menberEmployeeModel = [[MenberInfoManager sharedManager] loadMenberInfo:app_account_id][0];
                 NSString *menber_random = menberModel.menber_random;
@@ -343,12 +350,10 @@
             //删除员工账号
             [self deleteEmployeeAccount:model array:employeeInfoArr];
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
-        [self reloadAction];
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
-        [self reloadAction];
     }];
 }
 
@@ -373,17 +378,13 @@
             self.page = 1;
             [self requestData];
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
-        [self reloadAction];
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
-        [self reloadAction];
     }];
 }
-
-
 
 #pragma mark ----- 根节点获取指定非直属下属的公钥信息 -----
 - (void)employeePubkeysInfo:(NSString *)appAccountId completeLoad:(void (^)(MenberInfoModel *completeModel))complete{
@@ -426,7 +427,7 @@
                 complete(nil);
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         
     } fail:^(NSError *error) {
@@ -434,7 +435,6 @@
         complete(nil);
     }];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

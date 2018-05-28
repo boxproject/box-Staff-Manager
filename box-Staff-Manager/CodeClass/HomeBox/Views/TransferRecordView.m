@@ -83,7 +83,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         if (_sourceArray.count == 0) {
             _labelTip.hidden = NO;

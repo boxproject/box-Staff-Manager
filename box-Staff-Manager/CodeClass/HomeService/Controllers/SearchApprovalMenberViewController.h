@@ -10,4 +10,9 @@
 
 @interface SearchApprovalMenberViewController : UIViewController
 
+@property (nonatomic, strong)NSString *app_account_id;
+
+@property (nonatomic, strong) NSArray *addArray;
+
+
 @end

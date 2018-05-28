@@ -146,7 +146,7 @@
                 [_approvaledInfoArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {

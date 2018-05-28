@@ -160,7 +160,7 @@
                 [_approvaledInfoArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.collectionView reloadData];

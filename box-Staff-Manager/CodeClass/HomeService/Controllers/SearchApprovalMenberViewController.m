@@ -96,7 +96,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -126,7 +126,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -222,6 +222,7 @@
     
     SearchMenberTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
     SearchMenberModel *model = self.sourceArray[indexPath.row];
+    cell.array = _addArray;
     cell.model = model;
     [cell setDataWithModel:model indexPath:indexPath];
     return cell;
@@ -231,14 +232,23 @@
 {
     if (indexPath.section == 0) {
         SearchMenberModel *model = self.sourceArray[indexPath.row];
+        if ([model.app_account_id  isEqualToString:[BoxDataManager sharedManager].app_account_id]) {
+            return;
+        }
         if (model.employee_num > 0) {
             AddApprovalMenberViewController *addApprovalMenberVc = [[AddApprovalMenberViewController alloc] init];
+            addApprovalMenberVc.addArray = _addArray;
             addApprovalMenberVc.app_account_id = model.app_account_id;
             [self.navigationController pushViewController:addApprovalMenberVc animated:YES];
         }
     }else if (indexPath.section == 1) {
         dispatch_async(dispatch_get_main_queue(), ^{
             SearchMenberModel *model = self.sourceArray[indexPath.row];
+            for (ApprovalBusApproversModel *approvalBusModel in _addArray) {
+                if ([approvalBusModel.app_account_id  isEqualToString:model.app_account_id]) {
+                    return;
+                }
+            }
             NSArray *array = [[MenberInfoManager sharedManager] loadMenberInfo:model.app_account_id];
             if (array.count == 0) {
                 if ([model.app_account_id  isEqualToString:[BoxDataManager sharedManager].app_account_id]) {
@@ -266,7 +276,6 @@
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"addMenber" object:approvalBusApproversModel];
                 [self dismissViewControllerAnimated:YES completion:nil];
             }
-            
         });
     }
 }
@@ -318,7 +327,7 @@
                 }
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         
     } fail:^(NSError *error) {

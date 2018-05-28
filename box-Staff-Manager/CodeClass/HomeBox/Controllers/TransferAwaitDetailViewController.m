@@ -170,7 +170,7 @@
                 }
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {
@@ -311,7 +311,7 @@
             [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
             [self showBtnApprovalingState:_progress];
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];

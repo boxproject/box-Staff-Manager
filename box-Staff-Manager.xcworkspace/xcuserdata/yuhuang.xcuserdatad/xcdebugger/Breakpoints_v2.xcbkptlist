@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeBox/Views/TransferRecordTableViewCell.m"
-            timestampString = "548153567.019007"
+            timestampString = "548841624.177159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "111"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeBox/Views/TransferRecordTableViewCell.m"
-            timestampString = "548153567.019101"
+            timestampString = "548841624.177461"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "116"
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735025"
+            timestampString = "548941157.006048"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "516"
-            endingLineNumber = "516"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
             landmarkName = "-handleFromInitAccount:"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735304"
+            timestampString = "548941157.006354"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "512"
-            endingLineNumber = "512"
+            startingLineNumber = "513"
+            endingLineNumber = "513"
             landmarkName = "-handleFromInitAccount:"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735378"
+            timestampString = "548941157.006409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "525"
-            endingLineNumber = "525"
+            startingLineNumber = "526"
+            endingLineNumber = "526"
             landmarkName = "-handleFromInitAccount:"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.7355289"
+            timestampString = "548941157.006457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "556"
-            endingLineNumber = "556"
+            startingLineNumber = "557"
+            endingLineNumber = "557"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
             <Locations>
@@ -106,7 +106,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.913462"
+                  timestampString = "548936906.438697"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "556"
@@ -121,7 +121,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.915362"
+                  timestampString = "548936906.441452"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "557"
@@ -136,7 +136,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.917439"
+                  timestampString = "548936906.444306"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "556"
@@ -153,11 +153,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735592"
+            timestampString = "548941157.0065041"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "558"
-            endingLineNumber = "558"
+            startingLineNumber = "559"
+            endingLineNumber = "559"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -169,11 +169,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735658"
+            timestampString = "548941157.006549"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "594"
-            endingLineNumber = "594"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -185,7 +185,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeBox/Controllers/TransferViewController.m"
-            timestampString = "548579136.108256"
+            timestampString = "548941157.006595"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "657"
@@ -201,7 +201,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/globel/ManagerCommon/AddressVerifyManager.m"
-            timestampString = "548676328.485713"
+            timestampString = "548941157.007038"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "16"
@@ -233,7 +233,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/globel/ManagerCommon/AddressVerifyManager.m"
-            timestampString = "548676328.4858201"
+            timestampString = "548941157.007261"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "22"
@@ -249,7 +249,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/globel/ManagerCommon/AddressVerifyManager.m"
-            timestampString = "548676328.485873"
+            timestampString = "548941157.007309"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "19"
@@ -265,7 +265,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/globel/ManagerCommon/AddressVerifyManager.m"
-            timestampString = "548676328.48593"
+            timestampString = "548941157.007352"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "17"
@@ -297,11 +297,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.735953"
+            timestampString = "548941157.007423"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "574"
-            endingLineNumber = "574"
+            startingLineNumber = "575"
+            endingLineNumber = "575"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -313,11 +313,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.736088"
+            timestampString = "548941157.0074691"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "511"
-            endingLineNumber = "511"
+            startingLineNumber = "512"
+            endingLineNumber = "512"
             landmarkName = "-handleFromInitAccount:"
             landmarkType = "7">
             <Locations>
@@ -329,7 +329,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.958509"
+                  timestampString = "548936906.544899"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "511"
@@ -344,7 +344,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.960307"
+                  timestampString = "548936906.546764"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "512"
@@ -359,7 +359,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-                  timestampString = "548766677.962113"
+                  timestampString = "548936906.54863"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "511"
@@ -376,11 +376,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.7361929"
+            timestampString = "548941157.007513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "569"
-            endingLineNumber = "569"
+            startingLineNumber = "570"
+            endingLineNumber = "570"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -392,11 +392,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.736313"
+            timestampString = "548941157.007556"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "572"
-            endingLineNumber = "572"
+            startingLineNumber = "573"
+            endingLineNumber = "573"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -408,7 +408,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-            timestampString = "548759150.54436"
+            timestampString = "548838391.116503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
@@ -423,28 +423,12 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/SearchApprovalMenberViewController.m"
-            timestampString = "548766677.736443"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/InitAccount/Controllers/ScanCodeViewController.m"
-            timestampString = "548766677.736775"
+            timestampString = "548941157.007629"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "590"
-            endingLineNumber = "590"
+            startingLineNumber = "591"
+            endingLineNumber = "591"
             landmarkName = "-getApprovalResult"
             landmarkType = "7">
          </BreakpointContent>
@@ -456,7 +440,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-            timestampString = "548759150.5448591"
+            timestampString = "548838391.1168801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "102"
@@ -472,7 +456,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-            timestampString = "548759150.54513"
+            timestampString = "548838391.116941"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "108"
@@ -488,7 +472,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-                  timestampString = "548766677.9893709"
+                  timestampString = "548936906.574472"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "108"
@@ -503,7 +487,7 @@
                   moduleName = "box-Staff-Manager"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/yuhuang/Desktop/box-Staff-Manager/box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-                  timestampString = "548766677.991214"
+                  timestampString = "548936906.576321"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "109"
@@ -520,12 +504,214 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "box-Staff-Manager/CodeClass/HomeMe/Controllers/ScanAdressViewController.m"
-            timestampString = "548759150.54538"
+            timestampString = "548838391.116992"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "146"
             endingLineNumber = "146"
             landmarkName = "-handleRegistrationsPending:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            scope = "0"
+            stopOnStyle = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/SearchMenberViewController.m"
+            timestampString = "548941157.0077519"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "-gainAccountsInfo:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/globel/ManagerCommon/MenberInfoManager.m"
+            timestampString = "548838146.579854"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "-loadMenberInfo:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/SearchMenberViewController.m"
+            timestampString = "548941157.007965"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
+            landmarkName = "-gainAccountsInfo:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/OrganizationViewController.m"
+            timestampString = "548941157.008018"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "-getEmployeeInfo"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/OrganizationViewController.m"
+            timestampString = "548941157.0081919"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "-getEmployeeInfo"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/OrganizationViewController.m"
+            timestampString = "548941157.008242"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/OrganizationViewController.m"
+            timestampString = "548941157.008288"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
+            landmarkName = "-tableView:editActionsForRowAtIndexPath:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeService/Controllers/OrganizationViewController.m"
+            timestampString = "548941157.0083309"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "-gainAccountsInfo:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeBox/Views/TransferRecordTableViewCell.m"
+            timestampString = "548841624.178802"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "-setDataWithModel:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeBox/Views/TransferRecordTableViewCell.m"
+            timestampString = "548841624.178851"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "156"
+            endingLineNumber = "156"
+            landmarkName = "-getElapseTimeToString:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeBox/Controllers/HomeBoxViewController.m"
+            timestampString = "548941157.0084341"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "-requestCurrencyData"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "box-Staff-Manager/CodeClass/HomeBox/Controllers/HomeBoxViewController.m"
+            timestampString = "548941157.008607"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "471"
+            endingLineNumber = "471"
+            landmarkName = "-didSelectItem:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

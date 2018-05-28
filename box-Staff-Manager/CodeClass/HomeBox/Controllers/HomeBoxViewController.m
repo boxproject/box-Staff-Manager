@@ -63,6 +63,7 @@
 @property (nonatomic,strong)TransferRecordView *transferRecordView;
 @property (nonatomic,strong)CurrencyView *currencyView;
 @property (nonatomic,strong)CurrencyModel *currencyModel;
+@property (nonatomic,strong)NSString *currencySelect;
 
 @end
 
@@ -87,11 +88,24 @@
          NSDictionary *dict = responseObject;
          if ([dict[@"code"] integerValue] == 0) {
              NSArray *listArr = dict[@"data"][@"currency_list"];
-             NSDictionary *dic = listArr[0];
-             CurrencyModel *model = [[CurrencyModel alloc] initWithDict:dic];
-             _currencyModel = model;
-             _topTitleLab.attributedText = [self addAttributedText:model.currency];
-             [[NSNotificationCenter defaultCenter]postNotificationName:@"currencyList" object:model];
+             if (_currencySelect != nil) {
+                 for (int i = 0; i < listArr.count; i++) {
+                     NSDictionary *dic = listArr[i];
+                     CurrencyModel *model = [[CurrencyModel alloc] initWithDict:dic];
+                     if ([model.currency isEqualToString:_currencySelect]) {
+                         return ;
+                     }
+                 }
+             }
+             for (int i = 0; i < listArr.count; i++) {
+                 NSDictionary *dic = listArr[i];
+                 CurrencyModel *model = [[CurrencyModel alloc] initWithDict:dic];
+                 if ([model.currency isEqualToString:@"ETH"]) {
+                     _currencyModel = model;
+                     _topTitleLab.attributedText = [self addAttributedText:model.currency];
+                     [[NSNotificationCenter defaultCenter]postNotificationName:@"currencyList" object:model];
+                 }
+             }
          }
      } fail:^(NSError *error) {
          NSLog(@"%@", error.description);
@@ -384,6 +398,7 @@
 -(void)headRefresh
 {   [_transferRecordView requestData];
     [self requesttransferAwait];
+    [self requestCurrencyData];
 }
 
 #pragma mark  ----- TransferAwaitDelegate -----
@@ -415,7 +430,7 @@
                 [_amountLab removeFromSuperview];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [_contentView.mj_header endRefreshing];
@@ -454,6 +469,7 @@
 {
     _currencyModel = model;
     _topTitleLab.attributedText = [self addAttributedText:model.currency];
+    _currencySelect = model.currency;
 }
 
 #pragma mark ----- 查看详情 -----

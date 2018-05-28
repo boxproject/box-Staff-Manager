@@ -319,7 +319,7 @@
     _addressTf.delegate = self;
     _addressTf.placeholder = TransferVCReceiptAddressInfo;
     if ([_fromType isEqualToString:@"scanCode"]) {
-        _addressTf.text = _mode.address;
+        _addressTf.text = _address;
     }
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [_addressTf addTarget:self
@@ -665,6 +665,11 @@
         [WSProgressHUD showErrorWithStatus:@"金额超出上限"];
         return;
     }
+    CGFloat minerFloat = [_minersFeeLab.text floatValue];
+    if (minerFloat == 0.0) {
+        [WSProgressHUD showErrorWithStatus:@"请设置矿工费"];
+        return;
+    }
     NSInteger timestampIn = [[NSDate date]timeIntervalSince1970] * 1000;
     NSString *timestamp = [NSString stringWithFormat:@"%ld", timestampIn];
     NSDictionary *applyInfoDic = @{@"currency":_currencyTf.text,
@@ -712,7 +717,7 @@
             [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
             [_transferView createAchieveView];
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];

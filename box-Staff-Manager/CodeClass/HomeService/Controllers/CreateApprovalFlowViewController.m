@@ -96,7 +96,6 @@
                 NSString *applyer_account = dic[@"applyer_account"];
                 //根据直属上级账号唯一标识符本地查出直属上级公钥
                 NSArray *array = [[MenberInfoManager sharedManager] loadMenberInfo:captain];
-                
                 if (array.count == 1) {
                     MenberInfoModel *model = array[0];
                     NSString *captain_pub_key = model.publicKey;
@@ -437,7 +436,7 @@
                 [self.delegate createApprovalSucceed];
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);

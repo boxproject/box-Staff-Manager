@@ -94,7 +94,7 @@
                 }
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -157,6 +157,11 @@
         if ([dict[@"code"] integerValue] == 0) {
             NSArray *listArray = dict[@"data"][@"employee_accounts_info"];
             NSMutableArray *employeeInfoArr = [[NSMutableArray alloc] init];
+            NSArray *replaceMenberArr = [[MenberInfoManager sharedManager] loadMenberInfo:_employee_account_id];
+            NSArray *menberArr = [[MenberInfoManager sharedManager] loadMenberInfo:model.app_account_id];
+            if (replaceMenberArr.count == 0 || menberArr == 0) {
+                return ;
+            }
             //替换者
             MenberInfoModel *replaceMenberModel = [[MenberInfoManager sharedManager] loadMenberInfo:_employee_account_id][0];
             //被替换者
@@ -164,6 +169,10 @@
             for (NSDictionary *dic in listArray) {
                 NSString *app_account_id = dic[@"app_account_id"];
                 NSString *cipher_text = dic[@"cipher_text"];
+                NSArray *menberEmployeeArr = [[MenberInfoManager sharedManager] loadMenberInfo:app_account_id];
+                if (menberEmployeeArr.count == 0) {
+                    return;
+                }
                 //下属员工
                 MenberInfoModel *menberEmployeeModel = [[MenberInfoManager sharedManager] loadMenberInfo:app_account_id][0];
                 //被替换者
@@ -203,7 +212,7 @@
             //替换该员工账号
             [self replaceEmployeeAccount:model array:employeeInfoArr];
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -235,7 +244,7 @@
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }else{
-            [ProgressHUD showStatus:[dict[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -285,7 +294,7 @@
                 complete(nil);
             }
         }else{
-            [ProgressHUD showStatus:[responseObject[@"code"] integerValue]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
         }
         
     } fail:^(NSError *error) {
