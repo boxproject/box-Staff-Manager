@@ -11,7 +11,7 @@
 
 #define PerfectInformationVCTitle  @"完善信息"
 #define PerfectInformationVCNameText  @"请输入姓名"
-#define PerfectInformationVCPasswordText  @"请输入密码 (只支持6-12位数字、字母区分大小写)"
+#define PerfectInformationVCPasswordText  @"请输入密码 (6-12位数字和字母组成)"
 #define PerfectInformationVCVerifiyText  @"请再次输入密码"
 #define PerfectInformationVCAleartLab  @"此密码不可找回，请您牢记"
 #define PerfectInformationVCCormfirmBtn  @"确认提交"
@@ -31,6 +31,8 @@
 @property (nonatomic,strong)UITextField *verifyPwFf;
 /** 提交完善的信息 */
 @property (nonatomic, strong) UIButton *cormfirmButton;
+
+@property (nonatomic, strong)UIButton *showPwdBtn;
 
 @end
 
@@ -70,6 +72,7 @@
     _nameTf = [[UITextField alloc] init];
     _nameTf.backgroundColor = [UIColor whiteColor];
     _nameTf.delegate = self;
+    _nameTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     NSString *nameText = PerfectInformationVCNameText;
     NSMutableAttributedString *nameholder = [[NSMutableAttributedString alloc] initWithString:nameText];
     [nameholder addAttribute:NSForegroundColorAttributeName
@@ -101,6 +104,7 @@
     _passwordTf = [[UITextField alloc] init];
     _passwordTf.backgroundColor = [UIColor whiteColor];
     _passwordTf.delegate = self;
+    _passwordTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     NSString *passwordText = PerfectInformationVCPasswordText;
     NSMutableAttributedString *passwordholder = [[NSMutableAttributedString alloc] initWithString:passwordText];
     [passwordholder addAttribute:NSForegroundColorAttributeName
@@ -116,8 +120,21 @@
     [_passwordTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(16);
         make.top.equalTo(lineOne.mas_bottom).offset(0);
-        make.width.offset(SCREEN_WIDTH - 32);
+        make.width.offset(SCREEN_WIDTH - 32 - 38);
         make.height.offset(55);
+    }];
+    
+    _showPwdBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_showPwdBtn setImage:[UIImage imageNamed:@"icon_kejian"] forState:UIControlStateNormal];
+    [_showPwdBtn setImage:[UIImage imageNamed:@"icon_bukejian"] forState:UIControlStateSelected];
+    _showPwdBtn.selected = YES;
+    [_showPwdBtn addTarget:self action:@selector(showPwdBtnAction) forControlEvents:UIControlEventTouchUpInside];
+    [_contentView addSubview:_showPwdBtn];
+    [_showPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(_passwordTf);
+        make.width.offset(36);
+        make.right.equalTo(lineOne.mas_right).offset(0);
+        make.height.offset(27);
     }];
     
     UIView *lineTwo = [[UIView alloc] init];
@@ -133,6 +150,7 @@
     _verifyPwFf = [[UITextField alloc] init];
     _verifyPwFf.backgroundColor = [UIColor whiteColor];
     _verifyPwFf.delegate = self;
+    _verifyPwFf.clearButtonMode=UITextFieldViewModeWhileEditing;
     NSString *verifiyText = PerfectInformationVCVerifiyText;
     NSMutableAttributedString *verifiyHolder = [[NSMutableAttributedString alloc] initWithString:verifiyText];
     [verifiyHolder addAttribute:NSForegroundColorAttributeName
@@ -148,7 +166,7 @@
     [_verifyPwFf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(16);
         make.top.equalTo(lineTwo.mas_bottom).offset(0);
-        make.width.offset(SCREEN_WIDTH - 32);
+        make.width.offset(SCREEN_WIDTH - 32 - 38);
         make.height.offset(55);
     }];
     
@@ -226,11 +244,20 @@
     }
     InitAccountViewController *initAccountVC = [[InitAccountViewController alloc] init];
     NSInteger applyer_idIn = [[NSDate date]timeIntervalSince1970] * 1000;
-    NSString *applyer_id = [NSString stringWithFormat:@"%ld", applyer_idIn];
+    NSString *applyer_id = [NSString stringWithFormat:@"%ld", (long)applyer_idIn];
     initAccountVC.nameStr = _nameTf.text;
     initAccountVC.passwordStr = _passwordTf.text;
     initAccountVC.applyer_id = applyer_id;
     [self.navigationController pushViewController:initAccountVC animated:YES];
+}
+
+#pragma mark ----- 隐藏或者显示密码 -----
+- (void)showPwdBtnAction{
+    NSString *content = _passwordTf.text;
+    _showPwdBtn.selected = !_showPwdBtn.isSelected;
+    _passwordTf.secureTextEntry = _showPwdBtn.isSelected;
+    _passwordTf.text = @"";
+    _passwordTf.text = content;
 }
 
 #pragma mark - UITextFieldDelegate

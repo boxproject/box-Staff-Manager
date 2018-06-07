@@ -67,6 +67,7 @@
 		176402E120843A2D00E125B2 /* CurrentcyListCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402E020843A2D00E125B2 /* CurrentcyListCollectionViewCell.m */; };
 		176402E4208486A600E125B2 /* PrivatePasswordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402E2208486A500E125B2 /* PrivatePasswordView.m */; };
 		176402E72084CBBC00E125B2 /* ModifyServerAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402E62084CBBC00E125B2 /* ModifyServerAddressViewController.m */; };
+		1769BA6A20C7FCE0008C431A /* IcapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1769BA6920C7FCE0008C431A /* IcapManager.m */; };
 		1771419720712A770092FD11 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1771419620712A770092FD11 /* ProgressHUD.m */; };
 		1771419A207134F20092FD11 /* DBHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 17714199207134F20092FD11 /* DBHelp.m */; };
 		1771419D207136CA0092FD11 /* DirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1771419C207136CA0092FD11 /* DirectoryManager.m */; };
@@ -261,6 +262,8 @@
 		176402E3208486A600E125B2 /* PrivatePasswordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivatePasswordView.h; sourceTree = "<group>"; };
 		176402E52084CBBC00E125B2 /* ModifyServerAddressViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModifyServerAddressViewController.h; sourceTree = "<group>"; };
 		176402E62084CBBC00E125B2 /* ModifyServerAddressViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModifyServerAddressViewController.m; sourceTree = "<group>"; };
+		1769BA6820C7FCE0008C431A /* IcapManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IcapManager.h; sourceTree = "<group>"; };
+		1769BA6920C7FCE0008C431A /* IcapManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IcapManager.m; sourceTree = "<group>"; };
 		1771419520712A770092FD11 /* ProgressHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		1771419620712A770092FD11 /* ProgressHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		17714198207134F20092FD11 /* DBHelp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBHelp.h; sourceTree = "<group>"; };
@@ -488,6 +491,15 @@
 			children = (
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		1769BA6420C7FC6D008C431A /* ICAP */ = {
+			isa = PBXGroup;
+			children = (
+				1769BA6820C7FCE0008C431A /* IcapManager.h */,
+				1769BA6920C7FCE0008C431A /* IcapManager.m */,
+			);
+			path = ICAP;
 			sourceTree = "<group>";
 		};
 		17AD195120635233000052B5 /* ManagerCommon */ = {
@@ -1153,6 +1165,7 @@
 		568445AC2043B3D7004891D8 /* globel */ = {
 			isa = PBXGroup;
 			children = (
+				1769BA6420C7FC6D008C431A /* ICAP */,
 				17AD19CD206389F3000052B5 /* RSA */,
 				17AD19C62063879B000052B5 /* OpenSSLManager */,
 				17AD197220638794000052B5 /* OpenSSL */,
@@ -1501,6 +1514,7 @@
 				1707DAA0206A458700AE81BE /* HomeDirectoryTableViewCell.m in Sources */,
 				1707DA882068CFB700AE81BE /* JsonObject.m in Sources */,
 				171EA98B20B27219006F53F1 /* AddressVerifyManager.m in Sources */,
+				1769BA6A20C7FCE0008C431A /* IcapManager.m in Sources */,
 				17AD19ED206498D9000052B5 /* HomeDirectoryViewController.m in Sources */,
 				1707DB2A206F256800AE81BE /* BoxDataManager.m in Sources */,
 				1707DB27206E363400AE81BE /* SearchApprovalTableViewCell.m in Sources */,

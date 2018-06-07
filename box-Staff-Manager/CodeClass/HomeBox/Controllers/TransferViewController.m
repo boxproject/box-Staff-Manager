@@ -410,6 +410,11 @@
     _amountTf = [[UITextField alloc] init];
     _amountTf.placeholder = TransferVCAmountInfo;
     _amountTf.font = Font(14);
+    if (_amount == nil) {
+        _amountTf.text = @"0";
+    }else{
+       _amountTf.text = _amount;
+    }
     _amountTf.delegate = self;
     _amountTf.keyboardType = UIKeyboardTypeDecimalPad;
     _amountTf.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -511,7 +516,7 @@
     
     _progressSlider = [[UISlider alloc]init];
     //设置滑动条最大值
-    _progressSlider.maximumValue=0.001;
+    _progressSlider.maximumValue=0.01;
     //设置滑动条的最小值，可以为负值
     _progressSlider.minimumValue=0;
     //设置滑动条的滑块位置float值
@@ -640,6 +645,11 @@
     scanCodeVC.fromFunction = fromTransfer;
     scanCodeVC.codeBlock = ^(NSString *codeText){
         _addressTf.text = codeText;
+        _amountTf.text = @"";
+    };
+    scanCodeVC.codeArrBlock = ^(NSArray *codeArr){
+        _addressTf.text = codeArr[0];
+        _amountTf.text = codeArr[1];
     };
     [self.navigationController pushViewController:scanCodeVC animated:YES];
 }
@@ -671,7 +681,7 @@
         return;
     }
     NSInteger timestampIn = [[NSDate date]timeIntervalSince1970] * 1000;
-    NSString *timestamp = [NSString stringWithFormat:@"%ld", timestampIn];
+    NSString *timestamp = [NSString stringWithFormat:@"%ld", (long)timestampIn];
     NSDictionary *applyInfoDic = @{@"currency":_currencyTf.text,
                                    @"to_address":_addressTf.text,
                                    @"amount":_amountTf.text,

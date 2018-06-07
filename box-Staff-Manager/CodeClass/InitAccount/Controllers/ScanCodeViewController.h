@@ -16,6 +16,7 @@ typedef NS_ENUM(NSInteger, FromFunction) {
 };
 
 typedef void(^Block)(NSString *codeText);
+typedef void(^BlockArr)(NSArray *codeArray);
 
 @interface ScanCodeViewController : UIViewController
 
@@ -23,11 +24,16 @@ typedef void(^Block)(NSString *codeText);
 
 @property (nonatomic, copy) Block codeBlock;
 
+@property (nonatomic, copy) BlockArr codeArrBlock;
+
 @property(nonatomic, strong)NSString *nameStr;
+
 @property(nonatomic, strong)NSString *passwordStr;
 //申请者唯一识别码
 @property(nonatomic, strong)NSString *applyer_id;
 
 @property(nonatomic, strong)CurrencyModel *model;
+
+@property(nonatomic, strong)NSString *currency;
 
 @end

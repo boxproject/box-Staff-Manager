@@ -85,7 +85,7 @@
     }];
 }
 
-#pragma mark ----- 数据请求 -----
+#pragma mark ----- 币种交易流水详情 -----
 -(void)requestData
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];

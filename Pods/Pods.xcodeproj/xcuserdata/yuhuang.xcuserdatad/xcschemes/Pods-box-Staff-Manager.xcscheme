@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FC9F10E2471F8CE99F162C7BE2570E83"
+               BlueprintIdentifier = "A60779C82C9663B7539E7ACC2BBA87DF"
                BlueprintName = "Pods-box-Staff-Manager"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "libPods-box-Staff-Manager.a">

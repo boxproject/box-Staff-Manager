@@ -444,7 +444,7 @@
             [_scanImageView removeFromSuperview];
             result = metadataObject.stringValue;
             // 当前延迟1.0秒
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 // 将扫描后的结果显示在label上
                 //self.scanResult.text = result;
                 if (_fromFunction == fromInitAccount) {
@@ -457,16 +457,25 @@
                     }
                     [self handleFromInitAccount:result];
                 }else if (_fromFunction == fromTransfer){
-                    // 隐藏遮盖
                     [SVProgressHUD dismiss];
-                    self.codeBlock(result);
+                    if ([result hasPrefix:@"iban:"]) {
+                        NSArray *icapArr = [IcapManager ConvertICAPToAddress:result];
+                        self.codeArrBlock(icapArr);
+                    }else{
+                        self.codeBlock(result);
+                    }
                     [self.navigationController popViewControllerAnimated:YES];
                 }else if (_fromFunction == fromHomeBox){
-                    // 隐藏遮盖
                     [SVProgressHUD dismiss];
                     TransferViewController *transferVC = [[TransferViewController alloc] init];
                     transferVC.mode = _model;
-                    transferVC.address = result;
+                    if ([result hasPrefix:@"iban:"]) {
+                        NSArray *icapArr = [IcapManager ConvertICAPToAddress:result];
+                        transferVC.address = icapArr[0];
+                        transferVC.amount = icapArr[1];
+                    }else{
+                        transferVC.address = result;
+                    }
                     transferVC.fromType = @"scanCode";
                     BoxNavigationController *transferNC = [[BoxNavigationController alloc] initWithRootViewController:transferVC];
                     [self presentViewController:transferNC animated:YES completion:nil];

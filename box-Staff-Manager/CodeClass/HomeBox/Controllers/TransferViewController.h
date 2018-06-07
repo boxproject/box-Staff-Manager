@@ -15,5 +15,6 @@
 @property(nonatomic, strong)CurrencyModel *mode;
 @property(nonatomic, strong)NSString *fromType;
 @property(nonatomic, strong)NSString *address;
+@property(nonatomic, strong)NSString *amount;
 
 @end

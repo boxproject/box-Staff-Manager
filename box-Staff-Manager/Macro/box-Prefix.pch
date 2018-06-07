@@ -44,6 +44,7 @@
 #import "PassWordManager.h"
 #import "AddressVerifyManager.h"
 #import "UIButton+touch.h"
+#import "IcapManager.h"
 
 typedef NS_ENUM(NSInteger, ApprovalState) {
     ApprovalAwait,   //待审批

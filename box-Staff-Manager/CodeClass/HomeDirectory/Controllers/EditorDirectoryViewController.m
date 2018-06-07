@@ -314,6 +314,9 @@
     scanCodeVC.codeBlock = ^(NSString *codeText){
         _addressTf.text = codeText;
     };
+    scanCodeVC.codeArrBlock = ^(NSArray *codeArr){
+        _addressTf.text = codeArr[0];
+    };
     [self.navigationController pushViewController:scanCodeVC animated:YES];
 }
 

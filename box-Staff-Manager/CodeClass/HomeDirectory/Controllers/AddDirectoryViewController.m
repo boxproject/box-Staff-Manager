@@ -309,6 +309,9 @@
     scanCodeVC.codeBlock = ^(NSString *codeText){
         _addressTf.text = codeText;
     };
+    scanCodeVC.codeArrBlock = ^(NSArray *codeArr){
+        _addressTf.text = codeArr[0];
+    };
     [self.navigationController pushViewController:scanCodeVC animated:YES];
 }
 
@@ -355,7 +358,7 @@
         return;
     }
     NSInteger currentTimeIn = [[NSDate date]timeIntervalSince1970] * 1000;
-    NSString *currentTime = [NSString stringWithFormat:@"%ld", currentTimeIn];
+    NSString *currentTime = [NSString stringWithFormat:@"%ld", (long)currentTimeIn];
     NSDictionary *dic = @{@"currency":_currencyTf.text,
                           @"nameTitle": _nameTf.text,
                           @"remark": _remarkTf.text,
