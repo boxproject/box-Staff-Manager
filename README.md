@@ -23,7 +23,6 @@ When initialization, level 1 employee has to be authorised by private key App, s
 ![pending approval flow](https://s3-ap-southeast-1.amazonaws.com/s3.box.images01/%E5%91%98%E5%B7%A5App-%E5%BE%85%E5%AE%A1%E6%89%B9%E8%BD%AC%E8%B4%A6.png)
 
 
-
 # BOX企业数字资产保险箱，员工APP
 BOX是一套解决企业通证安全管理的方案，可应用于企业通证管理、数字资产投资、审计风控、交易平台等领域，对各类数字资产的私钥、操作指令进行保护，从原理上解决了私钥、指令的盗取、篡改等问题。
 
