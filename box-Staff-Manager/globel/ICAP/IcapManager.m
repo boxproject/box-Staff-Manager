@@ -8,6 +8,7 @@
 
 #import "IcapManager.h"
 #import "JKBigInteger.h"
+#import "keccak.h"
 
 static const NSString *Base36Chars = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -31,19 +32,35 @@ static const NSString *Base36Chars = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     // checksum is ISO13616, Ethereum address is base-36
     JKBigInteger *bigAddr = [[JKBigInteger alloc] initWithString:[icapString substringFromIndex:4] andRadix:36];
     NSLog(@"%@", bigAddr);
-    unsigned int size = [bigAddr countBytes];
-    unsigned char bytes[size];
-    [bigAddr toByteArrayUnsigned:bytes];
-    NSMutableString *hexString = [NSMutableString stringWithCapacity:(size * 2) + 4];
-    [hexString appendFormat:@"%@", @"0x"];
-    for (int i = 0; i < size; ++i)
-    {
-        [hexString appendFormat:@"%02x", (unsigned int)bytes[i]];
+    NSString *checksum = [self checksumWithKeccak256:[bigAddr stringValueWithRadix:16]];
+    NSLog(@"checksum: %@", checksum);
+    return checksum;
+}
+
++ (NSString *)checksumWithKeccak256:(NSString *)value
+{
+    int bytes = (int)(256 / 8);
+    const char *string = [value UTF8String];
+    int size = (int) strlen(string);
+    uint8_t md[bytes];
+    keccak((uint8_t*)string, size, md, bytes);
+    NSMutableString *address = [[NSMutableString alloc] initWithCapacity:size + 4];
+    [address appendFormat:@"%@", @"0x"];
+    uint32_t len = (uint32_t)size;
+    for(uint32_t i=0; i<len; i++) {
+        uint8_t hashByte = md[i/2];
+        if (i%2 == 0) {
+            hashByte = hashByte >> 4;
+        } else {
+            hashByte &= 0xf;
+        }
+        if (string[i] > '9' && hashByte > 7) {
+            [address appendFormat:@"%c", string[i] - 32];
+        } else {
+            [address appendFormat:@"%c", string[i]];
+        }
     }
-    NSString *hex = [NSString stringWithString:hexString];
-    NSLog(@"hex: %@", hex);
-    
-    return [NSString stringWithString:hexString];
+    return address;
 }
 
 //截取iban-转账的地址、account-转账的数额、type-转账的类型
@@ -51,8 +68,12 @@ static const NSString *Base36Chars = @"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 {
     NSString *contentRegex = @"(?<=\\:).*?(?=\\?)";
     NSString *content = [self matchString:string toRegexString:contentRegex];
-    NSString *accountRegex = @"(?<=\\=).*?(?=\\&)";
-    NSString *account = [self matchString:string toRegexString:accountRegex];
+    NSRange accountRange = [string rangeOfString:@"amount"];
+    NSString *account = @"0";
+    if (accountRange.location != NSNotFound) {
+        NSString *accountRegex = @"(?<=\\=).*?(?=\\&)";
+        account = [self matchString:string toRegexString:accountRegex];
+    }
     NSRange range = [string rangeOfString:@"token="];
     NSString *type = [string substringFromIndex:(range.location + range.length)];
     NSArray *array = [NSArray arrayWithObjects:content, account, type, nil];

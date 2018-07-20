@@ -8,11 +8,6 @@
 
 #import "ApprovalBusinessTableViewCell.h"
 
-#define  ApprovalAwaitBusiness  @"待审批"
-#define  ApprovalingBusiness  @"审批中"
-#define  ApprovalSucceedBusiness  @"审批成功"
-#define  ApprovalFailBusiness  @"审批失败"
-
 @interface ApprovalBusinessTableViewCell()
 
 @property (nonatomic,strong) UILabel *approvalTitleLab;
@@ -97,12 +92,12 @@
     switch (model.progress) {
         case ApprovalAwait:
         {
-            _approvalStateLab.text = ApprovalAwaitBusiness;
+            _approvalStateLab.text = ApprovalBusinessAwait;
             break;
         }
         case Approvaling:
         {
-            _approvalStateLab.text = ApprovalingBusiness;
+            _approvalStateLab.text = ApprovalBusinessApprovaling;
             break;
         }
         case ApprovalSucceed:

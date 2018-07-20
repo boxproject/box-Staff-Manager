@@ -11,6 +11,6 @@
 @interface ProgressHUD : NSObject
 
 +(void)showProgressHUD;
-+(void)showErrorWithStatus:(NSString *)message;
++(void)showErrorWithStatus:(NSString *)message code:(NSInteger)code;
 
 @end

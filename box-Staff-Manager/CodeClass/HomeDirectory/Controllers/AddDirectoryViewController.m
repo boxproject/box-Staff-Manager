@@ -11,18 +11,6 @@
 #import "SearchAddressViewController.h"
 #import "HomeDirectoryModel.h"
 
-#define AddDirectoryVCTitle  @"新增地址"
-#define AddDirectoryVCRightTitle  @"完成"
-#define AddDirectoryCurrency  @"币种"
-#define AddDirectoryName  @"名称"
-#define AddDirectoryNameInfo  @"请输入姓名或者公司名称"
-#define AddDirectoryVCAddress  @"收款地址"
-#define AddDirectoryVCAddressInfo  @"请输入收款地址"
-#define AddDirectoryVCRemark  @"备注"
-#define AddDirectoryVCRemarkInfo  @"请输入备注"
-#define AddDirectoryVCcurrencyInfo  @"请选择币种"
-#define AddDirectoryVCError  @"新增地址失败"
-
 @interface AddDirectoryViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;

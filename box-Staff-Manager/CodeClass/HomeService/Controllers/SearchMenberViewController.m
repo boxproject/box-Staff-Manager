@@ -80,6 +80,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject:_searchField.text forKey:@"key_words"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -94,7 +95,7 @@
                 }
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -134,13 +135,13 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         SearchMenberModel *model = self.sourceArray[indexPath.row];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"替换" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:Replace style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //获取该下属下属账号详情
             [self gainAccountsInfo:model];
         }];
         [alert addAction:actionOk];
         
-        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:actionCancel];
         [self presentViewController:alert animated:YES completion:nil];
     });
@@ -152,6 +153,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:_employee_account_id forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/info" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -212,7 +214,7 @@
             //替换该员工账号
             [self replaceEmployeeAccount:model array:employeeInfoArr];
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -233,6 +235,7 @@
     [paramsDic setObject:model.app_account_id forKey:@"replacer_account_id"];
     [paramsDic setObject:cipher_texts forKey:@"cipher_texts"];
     [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/employee/account/change" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
@@ -244,7 +247,7 @@
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -259,6 +262,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:appAccountId forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/employee/info" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
             NSDictionary *dic = responseObject[@"data"];
@@ -294,7 +298,7 @@
                 complete(nil);
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         
     } fail:^(NSError *error) {
@@ -322,7 +326,7 @@
     [titleSubView addSubview:searchImagePic];
     
     _searchField = [[UITextField alloc] initWithFrame:CGRectMake(searchImagePic.frame.origin.x + 14 + 5, 0, SCREEN_WIDTH - 20 - 65 - 10- 14 -5, 30)];
-    _searchField.placeholder = @"搜索下属";
+    _searchField.placeholder = SearchSubordinates;
     _searchField.font = [UIFont systemFontOfSize:14];
     _searchField.delegate = self;
     _searchField.rightViewMode = UITextFieldViewModeWhileEditing;
@@ -331,7 +335,7 @@
     [titleSubView addSubview:self.searchField];
     
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:Cancel style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];

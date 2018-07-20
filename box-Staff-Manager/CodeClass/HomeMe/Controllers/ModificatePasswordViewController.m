@@ -7,20 +7,7 @@
 //
 
 #import "ModificatePasswordViewController.h"
-
-#define ModificatePasswordVCTitle  @"修改密码"
-#define ModificatePasswordVCoriginalPawd  @"原密码"
-#define ModificatePasswordVCoriginalPawdInfo  @"请输入原密码"
-#define ModificatePasswordVCpawdnew  @"新密码"
-#define ModificatePasswordVCpawdnewInfo  @"请输入新密码(6-12位数字、字母)"
-#define ModificatePasswordVCRenewPawd  @"新密码"
-#define ModificatePasswordVCRenewPawdInfo  @"请再次输入新密码"
-#define ModificatePasswordVCVerify  @"确认密码"
-#define ModificatePasswordVCAleartSucceed  @"修改成功"
-#define ModificatePasswordVCOriginalError  @"原密码错误"
-#define PerfectInformationVCrenewPawdError  @"密码不一致"
-#define ModificatePasswordVCCheckPwd  @"密码必须为6-12位数字和字母组成"
-
+#import "LoginBoxViewController.h"
 
 @interface ModificatePasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
@@ -38,7 +25,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
-    self.title = ModificatePasswordVCTitle;
+    self.title = ModifyPassword;
     [self createView];
     [self createBarItem];
     
@@ -80,6 +67,7 @@
     
     _originalPawdTf = [[UITextField alloc] init];
     _originalPawdTf.font = Font(14);
+    _originalPawdTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     _originalPawdTf.placeholder = ModificatePasswordVCoriginalPawdInfo;
     _originalPawdTf.delegate = self;
     _originalPawdTf.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -131,6 +119,7 @@
     _pawdnewTf.font = Font(14);
     _pawdnewTf.placeholder = ModificatePasswordVCpawdnewInfo;
     _pawdnewTf.delegate = self;
+    _pawdnewTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     _pawdnewTf.textColor = [UIColor colorWithHexString:@"#333333"];
     _pawdnewTf.keyboardType = UIKeyboardTypeAlphabet;
     _pawdnewTf.secureTextEntry = YES;
@@ -178,6 +167,7 @@
     
     _renewPawdTf = [[UITextField alloc] init];
     _renewPawdTf.font = Font(14);
+    _renewPawdTf.clearButtonMode = UITextFieldViewModeWhileEditing;
     _renewPawdTf.placeholder = ModificatePasswordVCRenewPawdInfo;
     _renewPawdTf.delegate = self;
     _renewPawdTf.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -221,9 +211,8 @@
 
 -(void)verifyAction:(UIButton *)Btn
 {
-    
-    if (![_originalPawdTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
-        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCOriginalError];
+    if ([_originalPawdTf.text isEqualToString:@""]) {
+        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCoriginalPawdInfo];
         return;
     }
     if ([_pawdnewTf.text isEqualToString:@""]) {
@@ -232,20 +221,57 @@
     }
     BOOL checkBool = [PassWordManager checkPassWord:_pawdnewTf.text];
     if (!checkBool) {
-        [WSProgressHUD showErrorWithStatus:ModificatePasswordVCCheckPwd];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCCheckPwd];
         return;
     }
     if (![_pawdnewTf.text isEqualToString:_renewPawdTf.text]) {
-        [WSProgressHUD showErrorWithStatus:PerfectInformationVCrenewPawdError];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertThree];
         return;
     }
-    [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:_pawdnewTf.text];
-    
-    [self.navigationController popViewControllerAnimated:YES];
-    [WSProgressHUD showSuccessWithStatus:ModificatePasswordVCAleartSucceed];
+    NSString *oldpwdSHA256 = [UIARSAHandler hmac: _originalPawdTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+    NSString *newpwdSHA256 = [UIARSAHandler hmac: _pawdnewTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:oldpwdSHA256 forKey:@"oldpwd"];
+    [paramsDic setObject:newpwdSHA256 forKey:@"newpwd"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
+    [ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/accounts/passwords/modify" params:paramsDic success:^(id responseObject) {
+        [WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
+            [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:_pawdnewTf.text];
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            //code == 1018时提示解冻时间戳
+            if ([dict[@"code"] integerValue] == 1018) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
+                LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+                loginVc.fromFunction = FromAppDelegate;
+                [self presentViewController:loginVc animated:YES completion:nil];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+            }
+            //输入密码错误且未被冻结
+            else if ([dict[@"code"] integerValue] == 1016) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%ld%@%@%ld%@", AccountPasswordError,[dict[@"data"][@"frozenFor"] integerValue], AccountPasswordHour, AccountPasswordAlert,[dict[@"data"][@"attempts"] integerValue], AccountPasswordTimes] code:[dict[@"code"] integerValue]];
+            }else{
+                [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
+            }
+        }
+    } fail:^(NSError *error) {
+        [WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+    }];
 }
 
-
+- (NSString *)getElapseTimeToString:(NSInteger)second{
+    NSDateFormatter  *dateformatter1 = [[NSDateFormatter alloc] init];
+    [dateformatter1 setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSTimeInterval timeInterval1 = second;
+    NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
+    NSString *dateStr1=[dateformatter1 stringFromDate:date1];
+    return dateStr1;
+}
 
 #pragma mark - createBarItem
 - (void)createBarItem{

@@ -11,18 +11,6 @@
 #import "SearchAddressViewController.h"
 #import "HomeDirectoryModel.h"
 
-#define EditorDirectoryVCTitle  @"编辑地址"
-#define EditorDirectoryVCRightTitle  @"完成"
-#define EditorDirectoryCurrency  @"币种"
-#define EditorDirectoryName  @"名称"
-#define EditorDirectoryNameInfo  @"请输入姓名或者公司名称"
-#define EditorDirectoryVCAddress  @"收款地址"
-#define EditorDirectoryVCAddressInfo  @"请输入收款地址"
-#define EditorDirectoryVCRemark  @"备注"
-#define EditorDirectoryVCRemarkInfo  @"请输入备注"
-#define EditorDirectoryVCcurrencyInfo  @"请选择币种"
-#define EditorDirectoryVCError  @"编辑地址失败"
-
 @interface EditorDirectoryViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
@@ -81,7 +69,7 @@
     UILabel *currencyLab = [[UILabel alloc] init];
     currencyLab.textAlignment = NSTextAlignmentLeft;
     currencyLab.font = Font(14);
-    currencyLab.text = EditorDirectoryCurrency;
+    currencyLab.text = AddDirectoryCurrency;
     currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [currencyView addSubview:currencyLab];
     [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -150,7 +138,7 @@
     UILabel *nameLab = [[UILabel alloc] init];
     nameLab.textAlignment = NSTextAlignmentLeft;
     nameLab.font = Font(14);
-    nameLab.text = EditorDirectoryName;
+    nameLab.text = AddDirectoryName;
     nameLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [nameView addSubview:nameLab];
     [nameLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -161,7 +149,7 @@
     }];
     
     _nameTf = [[UITextField alloc] init];
-    _nameTf.placeholder = EditorDirectoryNameInfo;
+    _nameTf.placeholder = AddDirectoryNameInfo;
     _nameTf.font = Font(14);
     _nameTf.delegate = self;
     _nameTf.keyboardType = UIKeyboardTypeDefault;
@@ -199,7 +187,7 @@
     UILabel *addressLab = [[UILabel alloc] init];
     addressLab.textAlignment = NSTextAlignmentLeft;
     addressLab.font = Font(14);
-    addressLab.text = EditorDirectoryVCAddress;
+    addressLab.text = AddDirectoryVCAddress;
     addressLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [addressView addSubview:addressLab];
     [addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -212,7 +200,7 @@
     _addressTf = [[UITextField alloc] init];
     _addressTf.font = Font(14);
     _addressTf.delegate = self;
-    _addressTf.placeholder = EditorDirectoryVCAddressInfo;
+    _addressTf.placeholder = AddDirectoryVCAddressInfo;
     _addressTf.text = _model.address;
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [addressView addSubview:_addressTf];
@@ -267,7 +255,7 @@
     UILabel *remarkLab = [[UILabel alloc] init];
     remarkLab.textAlignment = NSTextAlignmentLeft;
     remarkLab.font = Font(14);
-    remarkLab.text = EditorDirectoryVCRemark;
+    remarkLab.text = AddDirectoryVCRemark;
     remarkLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [remarkView addSubview:remarkLab];
     [remarkLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -278,7 +266,7 @@
     }];
     
     _remarkTf = [[UITextField alloc] init];
-    _remarkTf.placeholder = EditorDirectoryVCRemarkInfo;
+    _remarkTf.placeholder = AddDirectoryVCRemarkInfo;
     _remarkTf.font = Font(14);
     _remarkTf.delegate = self;
     _remarkTf.text = _model.remark;
@@ -334,7 +322,7 @@
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:EditorDirectoryVCRightTitle style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:AddDirectoryVCRightTitle style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -343,15 +331,15 @@
 #pragma mark ----- rightBarButtonItemAction -----
 - (void)rightButtonAction:(UIBarButtonItem *)buttonItem{
     if (_currencyTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCcurrencyInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCRemarkInfo];
         return;
     }
     if (_nameTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryNameInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryNameInfo];
         return;
     }
     if (_addressTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCAddressInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCAddressInfo];
         return;
     }
     BOOL checkBool = [AddressVerifyManager checkAddressVerify:_addressTf.text type:_currencyTf.text];
@@ -360,7 +348,7 @@
         return;
     }
     if (_remarkTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCRemarkInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCRemarkInfo];
         return;
     }
     

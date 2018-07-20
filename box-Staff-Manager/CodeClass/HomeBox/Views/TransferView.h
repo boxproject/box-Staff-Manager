@@ -16,7 +16,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
 @protocol TransferViewDelegate <NSObject>
 
 @optional
-- (void)transferViewDelegate:(NSDictionary *)dic;
+- (void)transferViewDelegate:(NSDictionary *)dic password:(NSString *)password;
 - (void)transferDidAchieve;
 @end
 

@@ -18,21 +18,7 @@
 #import "TransferRecordDetailViewController.h"
 #import "CurrencyView.h"
 #import "CurrencyModel.h"
-
-#define HomeBoxVCScanTitle  @"扫一扫"
-#define HomeBoxVCTransferTitle  @"转账"
-#define HomeBoxVCPaymentCodeTitle  @"付款码"
-#define HomeBoxVCPaymentCodeTitle  @"付款码"
-#define HomeBoxVCTaskTitle  @"代办任务"
-#define HomeBoxVCTransferAwait  @"待审批转账"
-#define HomeBoxVCcheckDetailBtn  @"查看详情"
-#define HomeBoxVCsystemInfo  @"系统通知"
-#define HomeBoxVCsystemUpdate  @"立即升级"
-#define HomeBoxVCTransferRecord  @"转账记录"
-#define HomeBoxVCTransferExamine @"查看全部"
-#define HomeBoxVCInitiate  @"我发起的"
-#define HomeBoxVCParticipateIn  @"我参与的"
-#define HomeBoxVCTransferSubLab  @"暂无待审批转账"
+#import "LoginBoxViewController.h"
 
 @interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate>
 
@@ -76,6 +62,39 @@
     [self createView];
     [self requesttransferAwait];
     [self requestCurrencyData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginBoxAction:) name:@"loginBox" object:nil];
+}
+
+#pragma mark  ----- token过期重新登录 -----
+-(void)loginBoxAction:(NSNotification *)notification
+{
+    UIViewController * VC = [self currentViewController];
+    LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+    loginVc.fromFunction = FromHomeBox;
+    [VC presentViewController:loginVc animated:YES completion:nil];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+}
+
+//获取Window当前显示的ViewController
+- (UIViewController*)currentViewController{
+    //获得当前活动窗口的根视图
+    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (1)
+    {
+        //根据不同的页面切换方式，逐步取得最上层的viewController
+        if ([vc isKindOfClass:[UITabBarController class]]) {
+            vc = ((UITabBarController*)vc).selectedViewController;
+        }
+        if ([vc isKindOfClass:[UINavigationController class]]) {
+            vc = ((UINavigationController*)vc).visibleViewController;
+        }
+        if (vc.presentedViewController) {
+            vc = vc.presentedViewController;
+        }else{
+            break;
+        }
+    }
+    return vc;
 }
 
 #pragma mark  ----- 币种拉取 -----
@@ -83,6 +102,7 @@
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject)
      {
          NSDictionary *dict = responseObject;
@@ -312,7 +332,7 @@
         make.right.offset(-95);
         make.height.offset(18);
     }];
-    _systemInfoSubLab.text = @"暂无系统通知";
+    _systemInfoSubLab.text = SystemInfo;
     
     _systemUpdateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_systemUpdateBtn setTitle:HomeBoxVCsystemUpdate forState:UIControlStateNormal];
@@ -414,6 +434,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:@(1) forKey:@"type"];
     [paramsDic setObject:@(0) forKey:@"progress"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -430,7 +451,7 @@
                 [_amountLab removeFromSuperview];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [_contentView.mj_header endRefreshing];
@@ -484,7 +505,6 @@
 #pragma mark ----- 立即更新 -----
 -(void)systemUpdateAction:(UIButton *)btn
 {
-    
 }
 
 #pragma mark ----- scrollview取消弹簧效果 -----
@@ -535,6 +555,7 @@
 
 -(NSMutableAttributedString *)addAttributedText:(NSString *)text
 {
+    /*
     NSString *btcStr = text;
     //创建富文本
     NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", btcStr]];
@@ -550,6 +571,11 @@
     //[attri appendAttributedString:string];
     //将图片放在第一位
     [attri insertAttributedString:string atIndex:btcStr.length];
+     */
+    NSString *btcStr = @"BOX";
+    //创建富文本
+    NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", btcStr]];
+    [attri addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#ffffff"] range:NSMakeRange(0, btcStr.length + 1)];
     return attri;
 }
 
@@ -573,10 +599,12 @@
         make.width.offset(200);
     }];
     
+    /*
     UITapGestureRecognizer *topTitleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(topTitleTapAction:)];
     _topTitleLab.userInteractionEnabled = YES;
     _topView.userInteractionEnabled = YES;
     [_topTitleLab addGestureRecognizer:topTitleTap];
+     */
 }
 
 #pragma mark ----- 查看全部 -----

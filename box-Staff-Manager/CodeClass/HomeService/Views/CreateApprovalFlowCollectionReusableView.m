@@ -7,11 +7,7 @@
 //
 
 #import "CreateApprovalFlowCollectionReusableView.h"
-
-
-#define ApprovalMenber  @"审批人员"
-#define ApprovalMenberAmount  @"需审批人数"
-
+ 
 @interface CreateApprovalFlowCollectionReusableView()
 
 @property (nonatomic,assign) NSInteger index;

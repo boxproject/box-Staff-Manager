@@ -12,11 +12,8 @@
 #import "SearchApprovalMenberViewController.h"
 #import "ApprovalBusApproversModel.h"
 
-#define AddApprovalMenberVC  @"添加审批人员"
 #define PageSize  12
 #define CellReuseIdentifier  @"AddApprovalMenber"
-#define AddApprovalMenberVCSectionOne  @"层级"
-#define AddApprovalMenberVCSectionTwo  @"人员选择"
 
 @interface AddApprovalMenberViewController ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
@@ -49,7 +46,7 @@
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"搜索" style:UIBarButtonItemStyleDone target:self action:@selector(searchMenberAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:Search style:UIBarButtonItemStyleDone target:self action:@selector(searchMenberAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -59,7 +56,7 @@
 {
     SearchApprovalMenberViewController *searchApprovalMenberVC = [[SearchApprovalMenberViewController alloc] init];
     searchApprovalMenberVC.addArray = _addArray;
-    [self.navigationController pushViewController:searchApprovalMenberVC animated:nil];
+    [self.navigationController pushViewController:searchApprovalMenberVC animated:YES];
 }
 
 -(void)backAction:(UIBarButtonItem *)rightBar
@@ -119,6 +116,7 @@
     [paramsDic setObject:account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -140,7 +138,7 @@
                 }
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -257,6 +255,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:model.app_account_id forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/employee/pubkeys/info" params:paramsDic success:^(id responseObject) {
         //[WSProgressHUD dismiss];
@@ -299,7 +298,7 @@
                 }
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         
     } fail:^(NSError *error) {

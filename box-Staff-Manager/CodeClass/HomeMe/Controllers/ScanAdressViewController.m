@@ -8,13 +8,6 @@
 
 #import "ScanAdressViewController.h"
 
-#define ScanAdressVCTitle  @"绑定码"
-#define ScanAdressVCScanLab  @"绑定二维码"
-#define ScanAdressVCDetailLab  @"用员工App扫描以上二维码，进行绑定"
-#define ScanAdressVCAuthorizeBtn  @"本机授权"
-#define ScanAdressVCAleartLab  @"为避免资金风险，请勿分享授权码给他人，截屏自动失效"
-#define ScanAdressVCIknown  @"我知道了"
-
 @interface ScanAdressViewController ()<UIScrollViewDelegate, UITextFieldDelegate,MBProgressHUDDelegate>
 {
     NSTimer *registTimer;
@@ -50,6 +43,13 @@
     [self createBarItem];
     [self createView];
     [self initProgressHUD];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(screenShotAction) name:UIApplicationUserDidTakeScreenshotNotification  object:nil];
+}
+
+#pragma mark ----- ScreenshotNotification -----
+-(void)screenShotAction
+{
+    _accountQRCodeImg.image = [CIQRCodeManager createImageWithString:[self generateAuthorizationCode]];
 }
 
 #pragma mark ----- 绑定二维码30秒变化一次 -----
@@ -74,6 +74,7 @@
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"captain_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/registrations/pending" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0 && ![dict[@"data"] isKindOfClass:[NSNull class]]) {
@@ -105,6 +106,7 @@
         NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
         [paramsDic setObject:reg_id forKey:@"reg_id"];
         [paramsDic setObject:@"1" forKey:@"consent"];
+        [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
         [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval" params:paramsDic success:^(id responseObject) {
             NSDictionary *dict = responseObject;
             if ([dict[@"code"] integerValue] == 0) {
@@ -138,7 +140,7 @@
             [paramsDic setObject:applyer_pub_key forKey:@"applyer_pub_key"];
             [paramsDic setObject:signSHA256 forKey:@"en_pub_key"];
             [paramsDic setObject:hmacSHA256 forKey:@"cipher_text"];
-            
+            [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
             [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/registrations/approval" params:paramsDic success:^(id responseObject) {
                 NSDictionary *dict = responseObject;
                 if ([dict[@"code"] integerValue] == 0) {
@@ -329,8 +331,8 @@
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
     if (_aleartView.hidden) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"返回将不再绑定正在扫描二维码的员工App" preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:ScanAdressVCAlertMessage preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
             [registTimer invalidate];
             registTimer = nil;
             [codeTimer invalidate];
@@ -338,7 +340,7 @@
             
             [self dismissViewControllerAnimated:YES completion:nil];
         }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
     }else{
         [self dismissViewControllerAnimated:YES completion:nil];

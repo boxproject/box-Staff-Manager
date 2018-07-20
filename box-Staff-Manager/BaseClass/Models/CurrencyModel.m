@@ -24,8 +24,20 @@
         if(![dict[@"address"] isKindOfClass:[NSNull class]]){
             self.address = [dict objectForKey:@"address"];
         }
+        if(![dict[@"select"] isKindOfClass:[NSNull class]]){
+            self.select = [[dict objectForKey:@"select"] boolValue];
+        }
+        if(![dict[@"state"] isKindOfClass:[NSNull class]]){
+            self.state = [[dict objectForKey:@"state"] integerValue];
+        }
+        if(![dict[@"limit"] isKindOfClass:[NSNull class]]){
+            self.limit = [dict objectForKey:@"limit"];
+        }
     }
     return self;
 }
 
 @end
+
+ 
+

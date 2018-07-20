@@ -12,5 +12,6 @@ typedef void(^ApprovalBlock)(ApprovalBusinessModel *model);
 @interface SearchApprovalViewController : UIViewController
 
 @property (nonatomic, copy) ApprovalBlock approvalBlock;
+@property (nonatomic, strong) NSString *currency;
 
 @end

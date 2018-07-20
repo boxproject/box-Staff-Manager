@@ -12,14 +12,6 @@
 #import "HomeMeViewController.h"
 #import "HomeServiceViewController.h"
 
-#define homeDirectoryVCTitle  @"地址簿"
-#define HomeServiceVCTitle  @"服务"
-#define HomeMeVCTitle  @"我"
-#define homeBoxTitle  @"BOX"
-
-#define PerfectInformationVCLaber  @"扫一扫完成授权"
-#define PerfectInformationVCSubLaber  @"扫一扫私钥App完成账号授权"
-
 @interface HomePageViewController ()<UITabBarDelegate,UITabBarControllerDelegate>
 
 @property(nonatomic, strong)HomeBoxViewController *homeBoxVC;
@@ -78,7 +70,7 @@
 #pragma mark ----- Directory -----
     self.homeDirectoryVC = [[HomeDirectoryViewController alloc]init];
     self.homeDirectoryVC.view.backgroundColor = [UIColor whiteColor];
-    self.homeDirectoryVC.tabBarItem = [[UITabBarItem alloc]initWithTitle:homeDirectoryVCTitle image:[UIImage imageNamed:@"homeDirectory_normal"] tag:1];
+    self.homeDirectoryVC.tabBarItem = [[UITabBarItem alloc]initWithTitle:HomeDirectoryVCTitle image:[UIImage imageNamed:@"homeDirectory_normal"] tag:1];
     //self.homeDirectoryVC.tabBarItem.image = [UIImage imageNamed:@"homeDirectory_normal"];
     self.homeDirectoryVC.tabBarItem.selectedImage = [[UIImage imageNamed:@"homeDirectory_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [self.homeDirectoryVC.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexString:@"#333333"]} forState:UIControlStateSelected];

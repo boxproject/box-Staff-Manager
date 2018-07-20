@@ -1,0 +1,329 @@
+/* 
+  Localizable.strings
+  box-Staff-Manager
+
+  Created by Yu Huang on 2018/6/25.
+  Copyright © 2018年 2se. All rights reserved.
+*/
+
+"PerfectInformationVCTitle" = "完善信息";
+"PerfectInformationVCNameText" = "请输入姓名";
+"PerfectInformationVCPasswordText" = "请输入密码(6-12位数字和字母组成，区分大小写)";
+"PerfectInformationVCVerifyText" = "请再次输入密码";
+"PerfectInformationVCAlertLab" = "此密码不可找回，请您牢记";
+"PerfectInformationVCConfirmBtn" = "确认提交";
+"PerfectInformationVCAlertOne" = "请完善信息";
+"PerfectInformationVCAlertTwo" = "请输入密码";
+"PerfectInformationVCAlertThree" = "密码不一致";
+"PerfectInformationVCCheckPwd" = "密码格式为6-12位数字和字母组成，区分大小写";
+"HomeServiceVCTitle" = "服务";
+"HomeServiceVCApprovalWorkflow" = "审批流";
+"HomeServiceVCAsset" = "资产查询";
+"HomeServiceVCOrganization" = "组织";
+"HomeServiceVCDepartment" = "部门";
+"DepartmentVCAddDepartment" = "添加部门";
+"DepartmentVCTitle" = "部门";
+"AddDepartmentVCTitle" = "设置部门名称";
+"Cancel" = "取消";
+"AddDepartmentVCComplete" = "完成";
+"AddDepartmentVCPlaceholder" = "请输入部门名称";
+"AddDepartmentVCAlert" = "部门名称已存在!";
+"Affirm" = "确定";
+"DepartmentVCTopTitle" = "长按拖动，可调整显示顺序";
+"delete" = "删除";
+"SureToDelete" = "确定删除？";
+"DepartmentDetailVCTitle" = "查看部门";
+"DepartmentDetailVCDepartmentlab" = "部门名称";
+"DepartmentDetailVCMember" = "部门成员";
+"Other" = "其它";
+"SelectDepartmemt" = "选择部门";
+"LoginButton" = "登录";
+"TransferVCETHAlert" = "当前，支持ETH智能合约转账的主流交易所有：币安、gate.io、ZB、HitBTC。向其他交易所转账可能导致损失。";
+"AccountLockup" = "由于您连续输错5次密码，账户已被锁定！解锁时间：";
+"AccountPasswordError" = "密码错误！连续输错5次将锁定账户";
+"AccountPasswordHour" = "小时";
+"AccountPasswordTimes" = "次";
+"AccountPasswordAlert" = "您已输错";
+"SetApprovalAmountVCTitle" = "设置审批金额";
+"LimitTimes" = "额度恢复时间";
+"LimitTimesPlaceholder" = "0～240，立即恢复额度请填写0";
+"ApplyForCurrency" = "申请币种";
+"LimitCurrencyPlaceholder" = "请输入币种申请上限";
+"LimitAlertAffirm" = "我知道了";
+"LimitAlertTitle" = "什么是额度恢复时间？";
+"LimitAlertContent" = "审批流中，可设定币种在一段时间内，申请转账的累计上限。超出时间后，转账额度即可恢复。如：设置ETH的转账上限为10，额度恢复时间为24小时，则最近24小时内，最多可累计申请10个ETH；若额度恢复时间为0，则每次最多转10个ETH，无时间限制。";
+"SearchCurrency" = "搜索币种";
+"SubmitApproval" = "提交审批";
+"LimitAlert" = "额度恢复时间超过限制 输入范围：0～240";
+"ApplyForLimit" = "申请上限";
+"PleaseInput" = "请输入";
+"Limit" = "上限";
+"viewLog" = "查看日志";
+"cancelApproval" = "作废审批流";
+"ApprovalBusinessSucceed" = "审批通过";
+"ApprovalBusinessFail" = "审批不通过";
+"Reason" = "原因";
+"SelectCurrency" = "选择币种";
+"RemainingSum" = "剩余额度";
+"TransferCancel" = "撤回申请";
+"RefuseTransfer" = "撤回转账申请";
+"RefuseTransferInfo" = "撤回的审批无法恢复，请谨慎操作！";
+"Submit" = "提交";
+"RefuseApprovalPlacehode" = "请输入撤回原因";
+"HomeMeVCTitle" = "我";
+"UserName" = "用户名";
+"AccountAddress" = "账户地址";
+"BindCode" = "绑定二维码";
+"ServerAddress" = "服务器地址";
+"Departments" = "所属部门";
+"ModifyPassword" = "修改密码";
+"AboutBOX" = "关于BOX";
+"CurrentVersion" = "当前版本号";
+"CopyAddress" = "复制地址";
+"PreserveQRCode" = "保存二维码";
+"CopyAddressSucceed" = "地址复制成功";
+"SaveFailure" = "保存失败";
+"SavePicturesucceed" = "成功保存到相册";
+"ScanAdressVCTitle" = "绑定码";
+"ScanAdressVCScanLab" = "绑定二维码";
+"ScanAdressVCDetailLab" = "用员工App扫描以上二维码，进行绑定";
+"ScanAdressVCAuthorizeBtn" = "本机授权";
+"ScanAdressVCAleartLab" = "为避免资金风险，请勿分享授权码给他人，截屏自动失效";
+"ScanAdressVCIknown" = "我知道了";
+"ScanAdressVCAlertMessage" = "返回将不再绑定正在扫描二维码的员工App";
+"ModificatePasswordVCoriginalPawd" = "原密码";
+"ModificatePasswordVCoriginalPawdInfo" = "请输入原密码";
+"ModificatePasswordVCpawdnew" = "新密码";
+"ModificatePasswordVCpawdnewInfo" = "请输入新密码(6-12位数字和字母组成，区分大小写)";
+"ModificatePasswordVCRenewPawdInfo" = "请再次输入新密码";
+"ModificatePasswordVCVerify" = "确认密码";
+"ModificatePasswordVCAleartSucceed" = "修改成功";
+"ModificatePasswordVCOriginalError" = "原密码错误";
+"ModifyServerAddressVCTitle" = "修改服务器地址";
+"ModifyServerAddressVCAddress" = "地址";
+"ModifyServerAddressVCInfo" = "请输入服务器地址";
+"ModifyServerAddressVCVerifyBtn" = "确认修改";
+"Create" = "创建";
+"ApprovalBusinessApprovaling" = "审批中";
+"ApprovalBusinessSucceed" = "审批通过";
+"ApprovalBusinessFail" = "已拒绝审批";
+"ApprovalBusinessAwait" = "待审批";
+"ApprovalBusinessDetailTitle" = "查看审批流";
+"SearchSubordinates" = "搜索下属";
+"Replace" = "替换";
+"AssetAmountVCTitle" = "资产总览";
+"Detailed" = "明细";
+"CreateApprovalFlowVCTitle" = "创建审批流";
+"CreateApprovalFlowVCflowNameLab" = "审批流名称";
+"CreateApprovalFlowVCflowNameInfo" = "请输入审批流名称";
+"CreateApprovalFlowVCflowLimitLab" = "审批金额上限";
+"CreateApprovalFlowVCflowLimitInfo" = "请输入上限金额";
+"CreateApprovalFlowVCApprovalLevels" = "审核层级";
+"CreateApprovalFlowVCAddLevels" = "添加层级";
+"CreateApprovalFlowVCAddLevelsAleart" = "请添加层级";
+"CreateApprovalFlowVCBlankAleart" = "层级人员不能为空";
+"CreateApprovalFlowVCBlankAleartZero" = "层级需审核人员不能为0";
+"CreateApprovalFlowVCSuccessAleart" = "创建成功";
+"NextStep" = "下一步";
+"AddApprovalMenberVC" = "添加审批人员";
+"AddApprovalMenberVCSectionOne" = "层级";
+"AddApprovalMenberVCSectionTwo" = "人员选择";
+"Search" = "搜索";
+"SearchMember" = "搜索人员";
+"SearchApprovalFlow" = "搜索审批流";
+"ApprovalSucceedBusiness" = "审批成功";
+"ApprovalFailBusiness" = "审批失败";
+"AssetAmountfreeze" = "冻结";
+"ApprovalMenber" = "审批人员";
+"ApprovalMenberAmount" = "需审批人数";
+"Add" = "添加";
+"Edit" = "编辑";
+"NoAddressAdded" = "还未新增地址";
+"HomeDirectoryVCTitle" = "地址簿";
+"HomeDirectoryVCAddAddress" = "新增地址";
+"AddDirectoryVCTitle" = "新增地址";
+"AddDirectoryVCRightTitle" = "完成";
+"AddDirectoryCurrency" = "币种";
+"AddDirectoryName" = "名称";
+"AddDirectoryNameInfo" = "请输入姓名或者公司名称";
+"AddDirectoryVCAddress" = "收款地址";
+"AddDirectoryVCAddressInfo" = "请输入收款地址";
+"AddDirectoryVCRemark" = "备注";
+"AddDirectoryVCRemarkInfo" = "请输入备注";
+"AddDirectoryVCcurrencyInfo" = "请选择币种";
+"AddDirectoryVCError" = "新增地址失败";
+"SearchCurrency" = "搜索币种";
+"EditorDirectoryVCTitle" = "编辑地址";
+"EditorDirectoryVCError" = "编辑地址失败";
+"SystemInfo" = "暂无系统通知";
+"HomeBoxVCScanTitle" = "扫一扫";
+"HomeBoxVCTransferTitle" = "转账";
+"HomeBoxVCPaymentCodeTitle" = "收款码";
+"HomeBoxVCTaskTitle" = "待办任务";
+"HomeBoxVCTransferAwait" = "待审批转账";
+"HomeBoxVCcheckDetailBtn" = "查看详情";
+"HomeBoxVCsystemInfo" = "系统通知";
+"HomeBoxVCsystemUpdate" = "立即升级";
+"HomeBoxVCTransferRecord" = "转账记录";
+"HomeBoxVCTransferExamine" = "查看全部";
+"HomeBoxVCInitiate" = "我发起的";
+"HomeBoxVCParticipateIn" = "我参与的";
+"HomeBoxVCTransferSubLab" = "暂无待审批转账";
+"MinersFeeLabAlert" = "请设置矿工费";
+"AmountTfAlert" = "金额超出上限";
+"TransferVCTitle" = "转账申请";
+"TransferVCApprovalProcess" = "审批流";
+"TransferVCApprovalProcessInfo" = "请选择审批流";
+"TransferVCRightTitle" = "转账记录";
+"TransferVCCurrency" = "币种";
+"TransferVCReceiptAddress" = "收款地址";
+"TransferVCReceiptAddressInfo" = "请输入或者选择收款人";
+"TransferVCAmount" = "转账数量";
+"TransferVCAmountInfo" = "请输入转账数量";
+"TransferVCApplyReason" = "申请理由";
+"TransferVCApplyReasonInfo" = "如用于XXX投资";
+"TransferVCMinersFee" = "矿工费";
+"TransferVCMinersFeeSlow" = "慢";
+"TransferVCMinersFeeFast" = "快";
+"TransferVCBtnTitle" = "提交审批";
+"tansferCodeVCTitle" = "收款码";
+"tansferCodeVCScanLab" = "收款二维码";
+"tansferCodeVCSaveAddressBtnb" = "复制收款地址";
+"tansferCodeVCSaveAddressSucced" = "复制成功";
+"TransferAwaitVCTitle" = "待审批转账";
+"TransferAwaitVCAgreeApprovalBtn" = "同意审批";
+"TransferAwaitVCRefuseApprovalBtn" = "拒绝审批";
+"TransferTopViewApprovaling" = "审批中";
+"TransferTopViewApprovalSucceed" = "审批通过";
+"TransferTopViewApprovalFail" = "已拒绝审批";
+"TransferTopViewApprovalAgreen" = "已同意审批";
+"TransferTopViewApprovalCancel" = "转账申请已撤回";
+"PrivatePasswordbackupLab" = "密码";
+"PrivatePasswordComfirm" = "确认";
+"TransferViewTitle" = "确认转账";
+"TransferViewApproval" = "审批流";
+"TransferViewCurrency" = "币种";
+"TransferViewReceiptAddress" = "收款地址";
+"TransferViewAmount" = "金额";
+"TransferViewApplyReason" = "申请理由";
+"TransferViewMinersFee" = "矿工费";
+"TransferViewBtnTitle" = "确认";
+"TransferViewBtnCommit" = "确认提交";
+"TransferViewInputTitle" = "请输入密码";
+"TransferViewAchieveTitle" = "提交审批成功";
+"TransferViewAchieveSubTitle" = "可在转账记录中查看审批进度";
+"TransferViewAchieveDid" = "完成";
+"TransferViewPutPassWord" = "请输入密码";
+"TransferViewPassWordError" = "密码不正确";
+"TransferRecordTableViewCellTransferingAwait" = "待审批";
+"TransferRecordTableViewCellTransfering" = "审批中";
+"TransferRecordTableViewCellTransferStateSucceed" = "同意审批(转账成功)";
+"TransferRecordTableViewCellTransferStateSucceedTransfing" = "同意审批(转账中)";
+"TransferRecordTableViewCellTransferStateFail" = "同意审批(转账失败)";
+"TransferRecordTableViewCellRecharge" = "充值成功";
+"TransferRecordTableViewCellTransferFail" = "拒绝审批";
+"TransferRecordTableViewCellTransferCancel" = "转账申请已撤回";
+"TransferTopViewCurrency" = "币种";
+"TransferTopViewReceiptAddress" = "收款地址";
+"TransferTopViewAmount" = "金额";
+"TransferTopViewApplyMenber" = "申请人";
+"TransferTopViewApplyReason" = "申请理由";
+"TransferTopViewMinersFee" = "矿工费";
+"TransferTopViewStateOne" = "待审批";
+"TransferTopViewStateTwo" = "审批中";
+"TransferTopViewStateThreeTransfing" = "审批通过(转账中)";
+"TransferTopViewStateThree" = "审批通过(转账成功)";
+"TransferTopViewStateFour" = "已拒绝审批";
+"TransferTopViewStateCancel" = "转账申请已撤回";
+"TransferTopViewTitle" = "审批进度：";
+"labelTipInfo" = "暂无转账记录";
+"InitAccountVCTitle" = "扫一扫";
+"PerfectInformationVCLaber" = "扫一扫完成授权";
+"PerfectInformationVCSubLaber" = "扫一扫私钥App完成账号授权";
+"EmpowermentSuccess" = "授权成功";
+"EmpowermentFailed" = "授权失败";
+"RequestError" = "请求失败";
+"Handing" = "正在处理";
+"ScanCodeWSprogress" = "注册失败";
+"ScanCodeVCTitle" = "扫一扫";
+"PerfectInformationVCTorchlight" = "轻触关闭";
+"PerfectInformationVCTorchheight" = "轻触照亮";
+"PerfectInformationVCScanResult" = "将二维码放入框内，即可自动扫描";
+"PerfectInformationVCErrorCode" = "二维码无效";
+"ApprovalBusinessCancel" = "已作废";
+"ApprovalCancelAlertTitleOne" = "作废审批流确认";
+"ApprovalCancelAlertMessageOne" = "作废的审批流无法恢复，您确定要作废吗？";
+"ApprovalCancelAlertTitleTwo" = "该审批流有正在进行中的转账申请";
+"ApprovalCancelAlertMessageTwo" = "作废审批流的同时，进行中的转账申请也将作废！您确定现在就要作废该审批流吗";
+"RefuseTransfer" = "拒绝审批";
+"RefuseTransferInfo" = "拒绝的审批无法恢复，请谨慎操作！";
+"RefuseTransferPlacehode" = "请输入拒绝原因";
+"InitiateApplication" = "发起申请";
+"SystemApprovalSucceed" = "系统审批通过";
+"SystemApprovalFail" = "系统审批不通过";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -15,18 +15,19 @@
 #import "TransferApproversModel.h"
 #import "UIARSAHandler.h"
 #import "PrivatePasswordView.h"
-
-#define TransferAwaitVCAgreeApprovalBtn  @"同意审批"
-#define TransferAwaitVCRefuseApprovalBtn  @"拒绝审批"
-#define TransferTopViewApprovaling  @"审批中"
-#define TransferTopViewApprovalSucceed  @"审批通过"
-#define TransferTopViewApprovalFail  @"已拒绝审批"
-#define TransferTopViewApprovalAgreen  @"已同意审批"
+#import "LoginBoxViewController.h"
+#import "ApprovalBusinessFooterView.h"
+#import "ViewLogViewController.h"
+ 
 #define CellReuseIdentifier  @"TransferRecordDetail"
 #define headerReusableViewIdentifier  @"TransferCollectionReusable"
 
-@interface TransferAwaitDetailViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,PrivatePasswordViewDelegate>
+@interface TransferAwaitDetailViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,PrivatePasswordViewDelegate,ApprovalBusinessFooterDelegate>
+{
+    NSString *reasonStr;
+}
 
+@property(nonatomic, strong)ApprovalBusinessFooterView *approvalBusinessFooterView;
 @property(nonatomic, strong)TransferTopView *transferTopView;
 @property(nonatomic, strong)UIButton *agreeApprovalBtn;
 @property(nonatomic, strong)UIButton *refuseApprovalBtn;
@@ -57,11 +58,11 @@
     [bar setBackgroundImage:bgImage forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = [UIColor colorWithHexString:@"#292e40"];
     [self createBarItem];
-    [self createTransferBtn];
     _approvaledInfoArray = [[NSMutableArray alloc] init];
     _aWrapper = [[DDRSAWrapper alloc] init];
     [self layoutCollectionView];
     [self createCollectionView];
+    [self createTransferBtn];
     [self requestData];
 }
 
@@ -85,7 +86,7 @@
 #pragma mark - 添加群列表
 -(void)createCollectionView
 {
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11, 8,  SCREEN_WIDTH - 22, SCREEN_HEIGHT - 8 - kTopHeight - 45) collectionViewLayout:_collectionFlowlayout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11, 8,  SCREEN_WIDTH - 22, SCREEN_HEIGHT - 8 - kTopHeight - 45 - kTabBarHeight + 49) collectionViewLayout:_collectionFlowlayout];
     [_collectionView registerClass:[TransferCollectionViewCell class] forCellWithReuseIdentifier:CellReuseIdentifier];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
@@ -145,11 +146,13 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_model.order_number forKey:@"order_number"];
     [paramsDic setObject: [BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
             _apply_info = responseObject[@"data"][@"apply_info"];
             NSInteger progress = [responseObject[@"data"][@"progress"] integerValue];
             NSString *account = responseObject[@"data"][@"applyer"];
+            NSString *applyer_uid = responseObject[@"data"][@"applyer_uid"];
             [self showBtnApprovalState:progress];
             NSDictionary *apply_infoDic = [JsonObject dictionaryWithJsonString:_apply_info];
             NSMutableDictionary *mutableDic = [NSMutableDictionary dictionary];
@@ -158,6 +161,7 @@
             [mutableDic addEntriesFromDictionary:apply_infoDic];
             [_transferTopView setValueWithData:mutableDic ];
             NSArray *approvaled_infoArr = responseObject[@"data"][@"approvaled_info"];
+            [self footerViewChange:approvaled_infoArr applyer:applyer_uid];
             for (NSDictionary *dic in approvaled_infoArr) {
                 TransferModel *model = [[TransferModel alloc] initWithDict:dic];
                 [_approvaledInfoArray addObject:model];
@@ -170,12 +174,81 @@
                 }
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
     }];
+}
+
+-(void)footerViewChange:(NSArray *)array applyer:(NSString *)applyer
+{
+    CGFloat aa = 0.0;
+    for (int i = 0; i < array.count; i ++) {
+        NSDictionary *dic = array[0];
+        TransferModel *model = [[TransferModel alloc] initWithDict:dic];
+        NSInteger approversAll = 0;
+        NSInteger approversIn = model.approversArray.count % 4;
+        if (approversIn >= 1) {
+            approversAll = model.approversArray.count / 4 + approversIn;
+        }
+        aa = aa + 30 + approversAll * 45 + 10;
+    }
+    CGFloat height = 60;
+    NSInteger type = 2;
+    if ([[BoxDataManager sharedManager].app_account_id isEqualToString:applyer]) {
+        height = 110;
+        type = 3;
+    }
+    _collectionView.contentInset = UIEdgeInsetsMake(338, 0, height + 60, 0);
+    _approvalBusinessFooterView = [[ApprovalBusinessFooterView alloc] initWithFrame: CGRectMake(0,aa, SCREEN_WIDTH - 22, height)];
+    [_approvalBusinessFooterView setValueWithStatus:type];
+    _approvalBusinessFooterView.delegate = self;
+    [_collectionView addSubview: _approvalBusinessFooterView];
+}
+
+#pragma mark ----- 撤回转账申请 -----
+- (void)cancelApprovalBusiness
+{
+    [self showInputReason];
+}
+
+-(void)showInputReason
+{
+    NSString *title = RefuseTransfer;
+    NSString *message = RefuseTransferInfo;
+    NSString *cancelTitle = Cancel;
+    NSString *submitTitle = Submit;
+    UIAlertController *alertDialog = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertDialog addTextFieldWithConfigurationHandler:^(UITextField *textField){
+        textField.placeholder = RefuseApprovalPlacehode;
+        textField.secureTextEntry = NO;
+    }];
+    UIAlertAction *submit = [UIAlertAction actionWithTitle:submitTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UITextField *textField = alertDialog.textFields.firstObject;
+        reasonStr = textField.text;
+        if ([reasonStr isEqualToString:@""]) {
+            [WSProgressHUD showErrorWithStatus:RefuseApprovalPlacehode];
+            return ;
+        }
+        _progress = 0;
+        [self showPrivatePasswordView];
+    }];
+    [alertDialog addAction:submit];
+    UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
+    [alertDialog addAction:actionCancel];
+    [self presentViewController:alertDialog animated:YES completion:nil];
+}
+
+#pragma mark ----- ViewLog -----
+- (void)enterViewLog
+{
+    ViewLogViewController *viewLogVC = [[ViewLogViewController alloc] init];
+    viewLogVC.transferAwaitModel = _model;
+    viewLogVC.type = 1;
+    UINavigationController *viewLogNC = [[UINavigationController alloc] initWithRootViewController:viewLogVC];
+    [self presentViewController:viewLogNC animated:YES completion:nil];
 }
 
 -(void)showBtnApprovalState:(NSInteger)progress
@@ -204,6 +277,12 @@
             _refuseApprovalBtn.hidden = YES;
             _approvalStateBtn.hidden = NO;
             [_approvalStateBtn setTitle:TransferTopViewApprovalSucceed forState:UIControlStateNormal];
+            break;
+        case ApprovalCancel:
+            _agreeApprovalBtn.hidden = YES;
+            _refuseApprovalBtn.hidden = YES;
+            _approvalStateBtn.hidden = NO;
+            [_approvalStateBtn setTitle:TransferTopViewApprovalCancel forState:UIControlStateNormal];
             break;
         default:
             break;
@@ -235,6 +314,12 @@
             _refuseApprovalBtn.hidden = YES;
             _approvalStateBtn.hidden = NO;
             [_approvalStateBtn setTitle:TransferTopViewApprovalAgreen forState:UIControlStateNormal];
+            break;
+        case ApprovalCancel:
+            _agreeApprovalBtn.hidden = YES;
+            _refuseApprovalBtn.hidden = YES;
+            _approvalStateBtn.hidden = NO;
+            [_approvalStateBtn setTitle:TransferTopViewApprovalCancel forState:UIControlStateNormal];
             break;
         default:
             break;
@@ -291,27 +376,45 @@
 #pragma mark ----- PrivatePasswordViewDelegate -----
 - (void)PrivatePasswordViewDelegate:(NSString *)passwordStr
 {
-    if (![passwordStr isEqualToString:[BoxDataManager sharedManager].passWord]) {
-        [WSProgressHUD showErrorWithStatus:@"密码输入错误"];
-        return;
+    if (_progress == 0) {
+        [self handleTransferApplicationCancel:passwordStr];
+    }else{
+        [self handleTransferApproval:passwordStr];
     }
-    [_privatePasswordView removeFromSuperview];
-    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:_apply_info privateStr:[BoxDataManager sharedManager].privateKeyBase64];
-    //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:_apply_info signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+}
+
+-(void)handleTransferApplicationCancel:(NSString *)passwordStr
+{
+    NSString *hmacSHA256 = [UIARSAHandler hmac: passwordStr withKey:[BoxDataManager sharedManager].encryptKey];
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
-    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:_model.order_number forKey:@"order_number"];
-    [paramsDic setObject:signSHA256 forKey:@"sign"];
-    [paramsDic setObject:@(_progress) forKey:@"progress"];
+    [paramsDic setObject:reasonStr forKey:@"reason"];
+    [paramsDic setObject:hmacSHA256 forKey:@"password"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [ProgressHUD showProgressHUD];
-    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/approval" params:paramsDic success:^(id responseObject) {
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/application/cancel" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
-            [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
-            [self showBtnApprovalingState:_progress];
+            [self showProgressWithMessage:dict[@"message"]];
+            [self showBtnApprovalingState:ApprovalCancel];
+            [_privatePasswordView removeFromSuperview];
+            [_transferTopView setValueWithtateCancel];
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            //code == 1018时提示解冻时间戳
+            if ([dict[@"code"] integerValue] == 1018) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
+                LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+                loginVc.fromFunction = FromAppDelegate;
+                [self presentViewController:loginVc animated:YES completion:nil];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+            }
+            //输入密码错误且未被冻结
+            else if ([dict[@"code"] integerValue] == 1016) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%ld%@%@%ld%@", AccountPasswordError,[dict[@"data"][@"frozenFor"] integerValue], AccountPasswordHour, AccountPasswordAlert,[dict[@"data"][@"attempts"] integerValue], AccountPasswordTimes] code:[dict[@"code"] integerValue]];
+            }else{
+                [self showProgressWithMessage:dict[@"message"]];
+            }
         }
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];
@@ -319,17 +422,113 @@
     }];
 }
 
+-(void)showProgressWithMessage:(NSString *)message
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)handleTransferApproval:(NSString *)passwordStr
+{
+    /*
+     if (![passwordStr isEqualToString:[BoxDataManager sharedManager].passWord]) {
+     [WSProgressHUD showErrorWithStatus:@"密码输入错误"];
+     return;
+     }
+     */
+    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:_apply_info privateStr:[BoxDataManager sharedManager].privateKeyBase64];
+    //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:_apply_info signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+    NSString *hmacSHA256 = [UIARSAHandler hmac: passwordStr withKey:[BoxDataManager sharedManager].encryptKey];
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:_model.order_number forKey:@"order_number"];
+    [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [paramsDic setObject:@(_progress) forKey:@"progress"];
+    [paramsDic setObject:hmacSHA256 forKey:@"password"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
+    if (_progress == 2) {
+        [paramsDic setObject:reasonStr forKey:@"reason"];
+    }
+    [ProgressHUD showProgressHUD];
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/approval" params:paramsDic success:^(id responseObject) {
+        [WSProgressHUD dismiss];
+        NSDictionary *dict = responseObject;
+        if ([dict[@"code"] integerValue] == 0) {
+            [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
+            [self showBtnApprovalingState:_progress];
+            [_privatePasswordView removeFromSuperview];
+        }else{
+            //code == 1018时提示解冻时间戳
+            if ([dict[@"code"] integerValue] == 1018) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
+                LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+                loginVc.fromFunction = FromAppDelegate;
+                [self presentViewController:loginVc animated:YES completion:nil];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+            }
+            //输入密码错误且未被冻结
+            else if ([dict[@"code"] integerValue] == 1016) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%ld%@%@%ld%@", AccountPasswordError,[dict[@"data"][@"frozenFor"] integerValue], AccountPasswordHour, AccountPasswordAlert,[dict[@"data"][@"attempts"] integerValue], AccountPasswordTimes] code:[dict[@"code"] integerValue]];
+            }else{
+                [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
+            }
+        }
+    } fail:^(NSError *error) {
+        [WSProgressHUD dismiss];
+        NSLog(@"%@", error.description);
+    }];
+}
+
+- (NSString *)getElapseTimeToString:(NSInteger)second{
+    NSDateFormatter  *dateformatter1 = [[NSDateFormatter alloc] init];
+    [dateformatter1 setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSTimeInterval timeInterval1 = second;
+    NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
+    NSString *dateStr1=[dateformatter1 stringFromDate:date1];
+    return dateStr1;
+}
+
 #pragma mark -----  同意审批/拒绝审批 -----
 -(void)approvalAction:(UIButton *)btn
 {
     if (btn.tag == 1001) {
         _progress = 3;
+        [self showPrivatePasswordView];
     }else{
         _progress= 2;
+        [self showInputTransferReason];
     }
+}
+
+-(void)showPrivatePasswordView
+{
     _privatePasswordView = [[PrivatePasswordView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     _privatePasswordView.delegate = self;
     [[UIApplication sharedApplication].keyWindow addSubview:_privatePasswordView];
+}
+
+-(void)showInputTransferReason
+{
+    NSString *title = RefuseTransfer;
+    NSString *message = RefuseTransferInfo;
+    NSString *cancelTitle = Cancel;
+    NSString *submitTitle = Submit;
+    UIAlertController *alertDialog = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertDialog addTextFieldWithConfigurationHandler:^(UITextField *textField){
+        textField.placeholder = RefuseTransferPlacehode;
+        textField.secureTextEntry = NO;
+    }];
+    UIAlertAction *submit = [UIAlertAction actionWithTitle:submitTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UITextField *textField = alertDialog.textFields.firstObject;
+        reasonStr = textField.text;
+        [self showPrivatePasswordView];
+    }];
+    [alertDialog addAction:submit];
+    UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil];
+    [alertDialog addAction:actionCancel];
+    [self presentViewController:alertDialog animated:YES completion:nil];
 }
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {

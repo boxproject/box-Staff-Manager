@@ -15,22 +15,7 @@
 #import "HomeDirectoryViewController.h"
 #import "ApprovalBusinessModel.h"
 #import "CurrencyView.h"
-
-#define TransferVCTitle  @"转账"
-#define TransferVCApprovalProcess  @"审批流"
-#define TransferVCApprovalProcessInfo  @"请选择审批流"
-#define TransferVCRightTitle  @"转账记录"
-#define TransferVCCurrency  @"币种"
-#define TransferVCReceiptAddress  @"收款地址"
-#define TransferVCReceiptAddressInfo  @"请输入或者选择收款人"
-#define TransferVCAmount  @"金额"
-#define TransferVCAmountInfo  @"请输入转账金额"
-#define TransferVCApplyReason  @"申请理由"
-#define TransferVCApplyReasonInfo  @"如用于XXX投资"
-#define TransferVCMinersFee  @"矿工费"
-#define TransferVCMinersFeeSlow  @"慢"
-#define TransferVCMinersFeeFast  @"快"
-#define TransferVCBtnTitle  @"提交审批"
+#import "LoginBoxViewController.h"
 
 @interface TransferViewController ()<UITextFieldDelegate,UIScrollViewDelegate,TransferViewDelegate,CurrencyViewDelegate>
 @property(nonatomic, strong)DDRSAWrapper *aWrapper;
@@ -50,7 +35,10 @@
 @property (nonatomic,strong)ApprovalBusinessModel *approvalBusinessModel;
 @property (nonatomic, strong)TransferView *transferView;
 @property (nonatomic,strong)CurrencyView *currencyView;
-
+@property (nonatomic, strong) ValuePickerView *pickerView;
+@property (nonatomic, strong) UILabel *remainingSumLab;
+@property (nonatomic, strong) NSMutableArray *currencyArray;
+@property (nonatomic, strong) NSString *amountStr;
 @end
 
 @implementation TransferViewController
@@ -59,6 +47,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
+    _pickerView = [[ValuePickerView alloc] init];
+    _currencyArray = [[NSMutableArray alloc] init];
     [self createTitleView];
     [self createBarItem];
     [self createView];
@@ -78,6 +68,7 @@
 
 -(NSMutableAttributedString *)attributedStringWithImage:(NSString *)string
 {
+    /*
     NSString *str = [NSString stringWithFormat:@"%@%@", string, TransferVCTitle];
     //创建富文本
     NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", str]];
@@ -93,6 +84,11 @@
     //[attri appendAttributedString:string];
     //将图片放在第一位
     [attri insertAttributedString:stringAt atIndex:str.length];
+     */
+    NSString *str = TransferVCTitle;
+    //创建富文本
+    NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", str]];
+    [attri addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"] range:NSMakeRange(0, str.length + 1)];
     return attri;
 }
 
@@ -109,10 +105,12 @@
     _topTitleLab.numberOfLines = 1;
     [_viewLayer addSubview:_topTitleLab];
    
+    /*
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, 200, 30);
     [button addTarget:self action:@selector(topTitleAction:) forControlEvents:UIControlEventTouchUpInside];
     [_viewLayer addSubview:button];
+     */
 }
 
 
@@ -157,6 +155,20 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
+-(void)showProgressWithMessage:(NSString *)message
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {
+    }]];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+    /*
+    if ([_currencyTf.text isEqualToString:@"ETH"]) {
+        [self showProgressWithMessage: TransferVCETHAlert];
+    }
+     */
+}
+
 -(void)createView
 {
     _contentView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, kTopHeight - 64, SCREEN_WIDTH, SCREEN_HEIGHT - (kTopHeight - 64))];
@@ -167,12 +179,84 @@
     _contentView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:_contentView];
     
+    //币种
+    UIView *currencyView = [[UIView alloc] init];
+    currencyView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
+    [_contentView addSubview:currencyView];
+    [currencyView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(15);
+        make.left.offset(0);
+        make.width.offset(SCREEN_WIDTH);
+        make.height.offset(52);
+    }];
+    
+    UILabel *currencyLab = [[UILabel alloc] init];
+    currencyLab.textAlignment = NSTextAlignmentLeft;
+    currencyLab.font = Font(14);
+    currencyLab.text = TransferVCCurrency;
+    currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [currencyView addSubview:currencyLab];
+    [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(0);
+        make.bottom.offset(0);
+        make.left.offset(15);
+        make.width.offset(60);
+    }];
+    
+    _currencyTf = [[UITextField alloc] init];
+    _currencyTf.font = Font(14);
+    //_currencyTf.text = _mode.currency;
+    _currencyTf.placeholder = AddDirectoryVCcurrencyInfo;
+    _currencyTf.delegate = self;
+    _currencyTf.textColor = [UIColor colorWithHexString:@"#333333"];
+    _currencyTf.keyboardType = UIKeyboardTypeAlphabet;
+    [_currencyTf addTarget:self
+                    action:@selector(textFieldDidChange:)
+          forControlEvents:UIControlEventEditingChanged];
+    [currencyView addSubview:_currencyTf];
+    [_currencyTf mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(currencyLab.mas_right).offset(15);
+        make.right.offset(-16);
+        make.top .offset(0);
+        make.bottom.offset(0);
+    }];
+    
+    UIImageView *rightImgOne = [[UIImageView alloc] init];
+    rightImgOne.image = [UIImage imageNamed:@"right_icon"];
+    [currencyView addSubview:rightImgOne];
+    [rightImgOne mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.offset(-15);
+        make.centerY.equalTo(currencyLab);
+        make.width.offset(20);
+        make.height.offset(22);
+    }];
+    
+    UIButton *selectCurrencyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [selectCurrencyBtn addTarget:self action:@selector(selectCurrencyAction:) forControlEvents:UIControlEventTouchUpInside];
+    [currencyView addSubview:selectCurrencyBtn];
+    [selectCurrencyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(0);
+        make.left.offset(0);
+        make.right.offset(0);
+        make.bottom.offset(0);
+    }];
+    
+    UIView *lineOne = [[UIView alloc] init];
+    lineOne.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [_contentView addSubview:lineOne];
+    [lineOne mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(currencyView.mas_bottom).offset(0);
+        make.left.offset(15);
+        make.width.offset(SCREEN_WIDTH - 30);
+        make.height.offset(1);
+    }];
+    
     //审批流
     UIView *approvalProcessView = [[UIView alloc] init];
     approvalProcessView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [_contentView addSubview:approvalProcessView];
     [approvalProcessView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(15);
+        make.top.equalTo(lineOne.mas_bottom).offset(0);
         make.left.offset(0);
         make.width.offset(SCREEN_WIDTH);
         make.height.offset(52);
@@ -216,7 +300,6 @@
         make.centerY.equalTo(approvalProcessView);
         make.width.offset(20);
         make.height.offset(22);
-        
     }];
     
     UIButton *approvalProcessBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -238,64 +321,13 @@
         make.width.offset(SCREEN_WIDTH - 30);
         make.height.offset(1);
     }];
-
-    //币种
-    UIView *currencyView = [[UIView alloc] init];
-    currencyView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
-    [_contentView addSubview:currencyView];
-    [currencyView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(line.mas_bottom).offset(0);
-        make.left.offset(0);
-        make.width.offset(SCREEN_WIDTH);
-        make.height.offset(52);
-    }];
-    
-    UILabel *currencyLab = [[UILabel alloc] init];
-    currencyLab.textAlignment = NSTextAlignmentLeft;
-    currencyLab.font = Font(14);
-    currencyLab.text = TransferVCCurrency;
-    currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [currencyView addSubview:currencyLab];
-    [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(0);
-        make.bottom.offset(0);
-        make.left.offset(15);
-        make.width.offset(60);
-    }];
-    
-    _currencyTf = [[UITextField alloc] init];
-    _currencyTf.font = Font(14);
-    _currencyTf.text = _mode.currency;
-    _currencyTf.delegate = self;
-    _currencyTf.textColor = [UIColor colorWithHexString:@"#333333"];
-    _currencyTf.keyboardType = UIKeyboardTypeAlphabet;
-    [_currencyTf addTarget:self
-                           action:@selector(textFieldDidChange:)
-                 forControlEvents:UIControlEventEditingChanged];
-    [currencyView addSubview:_currencyTf];
-    [_currencyTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(currencyLab.mas_right).offset(15);
-        make.right.offset(-16);
-        make.top .offset(0);
-        make.bottom.offset(0);
-    }];
-    
-    UIView *lineOne = [[UIView alloc] init];
-    lineOne.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
-    [_contentView addSubview:lineOne];
-    [lineOne mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(currencyView.mas_bottom).offset(0);
-        make.left.offset(15);
-        make.width.offset(SCREEN_WIDTH - 30);
-        make.height.offset(1);
-    }];
     
     //收款地址
     UIView *addressView = [[UIView alloc] init];
     addressView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [_contentView addSubview:addressView];
     [addressView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineOne.mas_bottom).offset(0);
+        make.top.equalTo(line.mas_bottom).offset(0);
         make.left.offset(0);
         make.width.offset(SCREEN_WIDTH);
         make.height.offset(52);
@@ -323,8 +355,8 @@
     }
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [_addressTf addTarget:self
-                    action:@selector(textFieldDidChange:)
-          forControlEvents:UIControlEventEditingChanged];
+                   action:@selector(textFieldDidChange:)
+         forControlEvents:UIControlEventEditingChanged];
     [addressView addSubview:_addressTf];
     [_addressTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(addressLab.mas_right).offset(15);
@@ -407,8 +439,21 @@
         make.width.offset(60);
     }];
     
+    _remainingSumLab = [[UILabel alloc] init];
+    _remainingSumLab.textAlignment = NSTextAlignmentRight;
+    _remainingSumLab.font = Font(12);
+    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, @"0"];
+    _remainingSumLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [amountView addSubview:_remainingSumLab];
+    [_remainingSumLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(0);
+        make.bottom.offset(0);
+        make.right.offset(-15);
+    }];
+    
     _amountTf = [[UITextField alloc] init];
     _amountTf.placeholder = TransferVCAmountInfo;
+    _amountTf.tag = 101;
     _amountTf.font = Font(14);
     if (_amount == nil) {
         _amountTf.text = @"0";
@@ -424,7 +469,7 @@
     [amountView addSubview:_amountTf];
     [_amountTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(amountLab.mas_right).offset(15);
-        make.right.offset(-16);
+        make.right.equalTo(_remainingSumLab.mas_left).offset(8);
         make.top .offset(0);
         make.bottom.offset(0);
     }];
@@ -606,15 +651,85 @@
         _commitBtn.enabled = NO;
         _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
     }
+    if (textField.tag == 101) {
+        NSDictionary *dic =  _approvalBusinessModel.flow_limit[0];
+        CGFloat limitFloat = [dic[@"limit"] floatValue];
+        CGFloat limitAmount = limitFloat - [_amountTf.text floatValue];
+        if (limitAmount < 0) {
+            _amountTf.text = _amountStr;
+            _remainingSumLab.font = Font(12);
+            _remainingSumLab.text = [NSString stringWithFormat:@"%@：%f", RemainingSum, limitFloat];
+        }
+        [self calculateLimitAmount];
+    }
+}
+
+-(void)calculateLimitAmount
+{
+    NSDictionary *dic =  _approvalBusinessModel.flow_limit[0];
+    CGFloat limitFloat = [dic[@"limit"] floatValue];
+    CGFloat limitAmount = limitFloat - [_amountTf.text floatValue];
+    _remainingSumLab.font = Font(12);
+    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%f", RemainingSum, limitAmount];
+    _amountStr = _amountTf.text;
+}
+
+#pragma mark ----- 选择币种 -----
+-(void)selectCurrencyAction:(UIButton *)btn
+{
+    [self requestCurrencyList];
+}
+
+-(void)showPickerView
+{
+    self.pickerView = [[ValuePickerView alloc]init];
+    self.pickerView.dataSource = _currencyArray;
+    self.pickerView.pickerTitle = SelectCurrency;
+    __weak typeof(self) weakSelf = self;
+    self.pickerView.valueDidSelect = ^(PickerModel *pickerModel){
+        weakSelf.currencyTf.text = pickerModel.title;
+    };
+    [self.pickerView show];
+}
+
+#pragma mark  ----- 币种拉取 -----
+-(void)requestCurrencyList
+{
+    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
+    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
+    [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject)
+     {
+         NSDictionary *dict = responseObject;
+         if ([dict[@"code"] integerValue] == 0) {
+             [_currencyArray removeAllObjects];
+             for (NSDictionary *dataDic in dict[@"data"][@"currency_list"]) {
+                 CurrencyModel *model = [[CurrencyModel alloc] initWithDict:dataDic];
+                 PickerModel *pickerModel = [[PickerModel alloc] init];
+                 pickerModel.title = model.currency;
+                 [_currencyArray addObject:pickerModel];
+             }
+             [self showPickerView];
+         }else{
+             [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
+         }
+     } fail:^(NSError *error) {
+         NSLog(@"%@", error.description);
+     }];
 }
 
 #pragma mark ----- currencyAction -----
 -(void)approvalProcessAction:(UIButton *)btn
 {
+    if ([_currencyTf.text isEqualToString:@""]) {
+        return;
+    }
     SearchApprovalViewController *searchApprovalVc = [[SearchApprovalViewController alloc] init];
+    searchApprovalVc.currency = _currencyTf.text;
     searchApprovalVc.approvalBlock = ^(ApprovalBusinessModel *model){
         _approvalProcessTf.text = model.flow_name;
         _approvalBusinessModel = model;
+        [self calculateLimitAmount];
     };
     [self.navigationController pushViewController:searchApprovalVc animated:YES];
 }
@@ -650,6 +765,7 @@
     scanCodeVC.codeArrBlock = ^(NSArray *codeArr){
         _addressTf.text = codeArr[0];
         _amountTf.text = codeArr[1];
+        [self calculateLimitAmount];
     };
     [self.navigationController pushViewController:scanCodeVC animated:YES];
 }
@@ -669,15 +785,17 @@
         [WSProgressHUD showErrorWithStatus:AddressVerifyETHError];
         return;
     }
+    /*
     CGFloat amountFloat= [_amountTf.text floatValue];
     CGFloat flowLimit = [_approvalBusinessModel.single_limit floatValue];
     if (amountFloat > flowLimit) {
-        [WSProgressHUD showErrorWithStatus:@"金额超出上限"];
+        [WSProgressHUD showErrorWithStatus:AmountTfAlert];
         return;
     }
+     */
     CGFloat minerFloat = [_minersFeeLab.text floatValue];
     if (minerFloat == 0.0) {
-        [WSProgressHUD showErrorWithStatus:@"请设置矿工费"];
+        [WSProgressHUD showErrorWithStatus:MinersFeeLabAlert];
         return;
     }
     NSInteger timestampIn = [[NSDate date]timeIntervalSince1970] * 1000;
@@ -709,16 +827,19 @@
 }
 
 #pragma mark -----  TransferViewDelegate -----
-- (void)transferViewDelegate:(NSDictionary *)dic
+- (void)transferViewDelegate:(NSDictionary *)dic password:(NSString *)password
 {
     NSString *applyInfo = [JsonObject dictionaryToJson:dic];
     NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:applyInfo privateStr:[BoxDataManager sharedManager].privateKeyBase64];
     //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:applyInfo signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
+    NSString *hmacSHA256 = [UIARSAHandler hmac: password withKey:[BoxDataManager sharedManager].encryptKey];
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:applyInfo forKey:@"apply_info"];
     [paramsDic setObject:_approvalBusinessModel.flow_id forKey:@"flow_id"];
     [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [paramsDic setObject:hmacSHA256 forKey:@"password"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/application" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
@@ -727,12 +848,33 @@
             [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
             [_transferView createAchieveView];
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
-        }
+            //code == 1018时提示解冻时间戳
+            if ([dict[@"code"] integerValue] == 1018) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
+                LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+                loginVc.fromFunction = FromAppDelegate;
+                [self presentViewController:loginVc animated:YES completion:nil];
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+            }
+            //输入密码错误且未被冻结
+            else if ([dict[@"code"] integerValue] == 1016) {
+                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%ld%@%@%ld%@", AccountPasswordError,[dict[@"data"][@"frozenFor"] integerValue], AccountPasswordHour, AccountPasswordAlert,[dict[@"data"][@"attempts"] integerValue], AccountPasswordTimes] code:[dict[@"code"] integerValue]];
+            }else{
+                [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
+            }        }
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];
         NSLog(@"%@", error.description);
     }];
+}
+
+- (NSString *)getElapseTimeToString:(NSInteger)second{
+    NSDateFormatter  *dateformatter1 = [[NSDateFormatter alloc] init];
+    [dateformatter1 setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSTimeInterval timeInterval1 = second;
+    NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
+    NSString *dateStr1=[dateformatter1 stringFromDate:date1];
+    return dateStr1;
 }
 
 

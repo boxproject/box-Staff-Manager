@@ -7,19 +7,7 @@
 //
 
 #import "TransferTopView.h"
-
-#define TransferTopViewCurrency  @"币种"
-#define TransferTopViewReceiptAddress  @"收款地址"
-#define TransferTopViewAmount  @"金额"
-#define TransferTopViewApplyMenber  @"申请人"
-#define TransferTopViewApplyReason  @"申请理由"
-#define TransferTopViewMinersFee  @"矿工费"
-#define TransferTopViewStateOne  @"待审批"
-#define TransferTopViewStateTwo  @"审批中"
-#define TransferTopViewStateThreeTransfing  @"审批通过(转账中)"
-#define TransferTopViewStateThree  @"审批通过(转账成功)"
-#define TransferTopViewStateFour  @"已拒绝审批"
-#define TransferTopViewTitle  @"审批进度："
+ 
 
 @interface TransferTopView ()<UITextFieldDelegate>
 
@@ -45,7 +33,6 @@
     }
     return self;
 }
-
 
 -(void)createView:(NSDictionary *)dic
 {
@@ -353,12 +340,21 @@
                 _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThree];
             }
             break;
+        case 4:
+            _stateLab.text = TransferTopViewStateCancel;
+            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
+            break;
+            
         default:
             break;
     }
 }
 
-
+-(void)setValueWithtateCancel
+{
+    _stateLab.text = TransferTopViewStateCancel;
+    _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
+}
 
 
 /*

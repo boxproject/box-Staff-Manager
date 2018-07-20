@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "PerfectInformationViewController.h"
 #import "HomePageViewController.h"
+#import "LoginBoxViewController.h"
 
 @interface AppDelegate ()
 
@@ -63,6 +64,13 @@
         {
             HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
             self.window.rootViewController = homePageVC;
+            break;
+        }
+        case LoginState:
+        {
+            LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+            loginVc.fromFunction = FromAppDelegate;
+            self.window.rootViewController = loginVc;
             break;
         }
             

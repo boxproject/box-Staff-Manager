@@ -7,13 +7,17 @@
 //
 
 #import "ApprovalBusinessTopView.h"
+#import "CurrencyDetailTableViewCell.h"
+ 
+#define CellReuseIdentifier  @"CurrencyDetailTableViewCell"
 
-#define ApprovalBusinessTopViewAmountlimit  @"金额上限"
-
-@interface ApprovalBusinessTopView ()
+@interface ApprovalBusinessTopView ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic,strong)UILabel *leftLab;
 @property (nonatomic,strong)UILabel *rightLab;
+@property (nonatomic,strong)UILabel *limitLab;
+@property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)NSMutableArray *sourceArray;
 
 @end
 
@@ -21,11 +25,11 @@
 -(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic{
     self = [super initWithFrame:frame];
     if (self) {
+        _sourceArray = [[NSMutableArray alloc] init];
         [self createView:dic];
     }
     return self;
 }
-
 
 -(void)createView:(NSDictionary *)dic
 {
@@ -63,14 +67,13 @@
     
     _leftLab = [[UILabel alloc] init];
     _leftLab.textAlignment = NSTextAlignmentLeft;
-    _leftLab.font = Font(14);
+    _leftLab.font = Font(13);
     _leftLab.text = @"";
-    _leftLab.textColor = [UIColor colorWithHexString:@"#2b3350"];
+    _leftLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [self addSubview:_leftLab];
     [_leftLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(img);
         make.left.equalTo(img.mas_right).offset(8);
-        make.right.offset(-130);
         make.height.offset(20);
     }];
     
@@ -78,7 +81,7 @@
     _rightLab.textAlignment = NSTextAlignmentRight;
     _rightLab.font = Font(13);
     _rightLab.text = @"";
-    _rightLab.textColor = [UIColor colorWithHexString:@"#2b3350"];
+    _rightLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [self addSubview:_rightLab];
     [_rightLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(img);
@@ -96,19 +99,143 @@
         make.right.offset(-15);
         make.height.offset(1);
     }];
-   
+    
+    UILabel *limitTimeLab = [[UILabel alloc] init];
+    limitTimeLab.textAlignment = NSTextAlignmentLeft;
+    limitTimeLab.font = Font(14);
+    limitTimeLab.text = LimitTimes;
+    limitTimeLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [self addSubview:limitTimeLab];
+    [limitTimeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(line.mas_bottom).offset(13);
+        make.height.offset(20);
+        make.left.offset(15);
+    }];
+    
+    _limitLab = [[UILabel alloc] init];
+    _limitLab.textAlignment = NSTextAlignmentRight;
+    _limitLab.font = Font(14);
+    _limitLab.textColor = [UIColor colorWithHexString:@"#2b335"];
+    [self addSubview:_limitLab];
+    [_limitLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(limitTimeLab);
+        make.height.offset(20);
+        make.right.offset(-33);
+    }];
+    
+    UIImageView *queryImg = [[UIImageView alloc] init];
+    queryImg.image = [UIImage imageNamed:@"icon_question"];
+    [self addSubview:queryImg];
+    [queryImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.offset(-15);
+        make.centerY.equalTo(_limitLab);
+        make.width.offset(12);
+        make.height.offset(12);
+        
+    }];
+    
+    UIButton *queryBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [queryBtn addTarget:self action:@selector(queryBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:queryBtn];
+    [queryBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(_limitLab);
+        make.right.offset(-5);
+        make.width.offset(35);
+        make.height.offset(50);
+    }];
+    
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:(UITableViewStylePlain)];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.showsHorizontalScrollIndicator = NO;
+    _tableView.scrollEnabled  = NO;
+    [self addSubview:_tableView];
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(0);
+        make.top.equalTo(limitTimeLab.mas_bottom).offset(4);
+        make.right.offset(-0);
+        make.bottom.offset(-10);
+    }];
+    [_tableView registerClass:[CurrencyDetailTableViewCell class] forCellReuseIdentifier:CellReuseIdentifier];
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    UIView *lineTwo = [[UIView alloc]init];
+    lineTwo.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [self addSubview:lineTwo];
+    [lineTwo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.offset(-13);
+        make.left.offset(15);
+        make.right.offset(-15);
+        make.height.offset(1);
+    }];
+}
+
+-(void)queryBtnAction:(UIButton *)btn
+{
+    if ([self.delegate respondsToSelector:@selector(queryForLimitTime)]) {
+        [self.delegate queryForLimitTime];
+    }
 }
 
 -(void)setValueWithData:(NSDictionary *)dic
 {
     NSString *flow_name = dic[@"flow_name"];
-    NSString *single_limit = dic[@"single_limit"];
+    NSString *period = dic[@"period"];
+    NSArray *flowLimitArr = dic[@"flow_limit"];
     _leftLab.text = flow_name;
-    _rightLab.text = [NSString stringWithFormat:@"%@ %@", ApprovalBusinessTopViewAmountlimit, single_limit];
+    _limitLab.text = [NSString stringWithFormat:@"%@%@", period, AccountPasswordHour];
+    NSInteger progress = [dic[@"progress"] integerValue];
+    switch (progress) {
+         case ApprovalAwait:
+            _rightLab.text = ApprovalBusinessAwait;
+            break;
+        case Approvaling:
+            _rightLab.text = ApprovalBusinessApprovaling;
+            break;
+        case ApprovalFail:
+            _rightLab.text = ApprovalBusinessFail;
+            break;
+        case ApprovalSucceed:
+            _rightLab.text = ApprovalBusinessSucceed;
+            break;
+        case ApprovalCancel:
+            _rightLab.text = ApprovalBusinessCancel;
+            break;
+        default:
+            break;
+    }
+    for (NSDictionary *flowLimitDic in flowLimitArr) {
+        CurrencyModel *model = [[CurrencyModel alloc] initWithDict:flowLimitDic];
+        [_sourceArray addObject:model];
+    }
+    [self.tableView reloadData];
+}
+
+-(void)setValueWithtateCancel
+{
+    _rightLab.text = ApprovalBusinessCancel;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.sourceArray.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 30;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    CurrencyDetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
+    CurrencyModel *model = self.sourceArray[indexPath.row];
+    cell.model = model;
+    [cell setDataWithModel:model];
+    return cell;
 }
 
 
-
+ 
 
 /*
 // Only override drawRect: if you perform custom drawing.

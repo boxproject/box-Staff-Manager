@@ -9,12 +9,6 @@
 #import "InitAccountViewController.h"
 #import "ScanCodeViewController.h"
 
-#define InitAccountVCTitle  @"扫一扫"
-#define PerfectInformationVCLaber  @"扫一扫完成授权"
-#define PerfectInformationVCSubLaber  @"扫一扫私钥App完成账号授权"
- 
-
-
 @interface InitAccountViewController ()
 /** 开始扫描 */
 @property(nonatomic, strong)UIButton *scanButton;
@@ -86,7 +80,6 @@
     }];
     
     _scanButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //[_scanButton setTitle:@"开始扫描" forState:UIControlStateNormal];
     [_scanButton setImage:[UIImage imageNamed:@"startScanImg"] forState:UIControlStateNormal];
     _scanButton.titleLabel.font = Font(17);
     [_scanButton setTitleColor:kBlueColor forState:UIControlStateNormal];

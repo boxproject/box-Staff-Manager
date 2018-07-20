@@ -13,13 +13,16 @@
 #import "TransferCollectionViewCell.h"
 #import "TransferModel.h"
 #import "TransferApproversModel.h"
+#import "ApprovalBusinessFooterView.h"
+#import "ViewLogViewController.h"
 
 #define CellReuseIdentifier  @"TransferRecordDetail"
 #define headerReusableViewIdentifier  @"TransferCollectionReusable"
 
-@interface TransferRecordDetailViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface TransferRecordDetailViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,ApprovalBusinessFooterDelegate>
 
 @property(nonatomic, strong)TransferTopView *transferTopView;
+@property(nonatomic, strong)ApprovalBusinessFooterView *approvalBusinessFooterView;
 //布局对象
 @property (nonatomic, strong) UICollectionViewFlowLayout *collectionFlowlayout;
 @property (nonatomic, strong) UICollectionView *collectionView;
@@ -127,6 +130,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:_model.order_number forKey:@"order_number"];
     [paramsDic setObject: [BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
             NSString *apply_info = responseObject[@"data"][@"apply_info"];
@@ -141,17 +145,48 @@
             [mutableDic addEntriesFromDictionary:apply_infoDic];
             [_transferTopView setValueWithData:mutableDic ];
             NSArray *approvaled_infoArr = responseObject[@"data"][@"approvaled_info"];
+            [self footerViewChange:approvaled_infoArr];
             for (NSDictionary *dic in approvaled_infoArr) {
                 TransferModel *model = [[TransferModel alloc] initWithDict:dic];
                 [_approvaledInfoArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         [self.collectionView reloadData];
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
     }];
+}
+
+-(void)footerViewChange:(NSArray *)array
+{
+    CGFloat aa = 0.0;
+    for (int i = 0; i < array.count; i ++) {
+        NSDictionary *dic = array[0];
+        TransferModel *model = [[TransferModel alloc] initWithDict:dic];
+        NSInteger approversAll = 0;
+        NSInteger approversIn = model.approversArray.count % 4;
+        if (approversIn >= 1) {
+            approversAll = model.approversArray.count / 4 + approversIn;
+        }
+        aa = aa + 30 + approversAll * 45 + 10;
+    }
+    _collectionView.contentInset = UIEdgeInsetsMake(338, 0, 100, 0);
+    _approvalBusinessFooterView = [[ApprovalBusinessFooterView alloc] initWithFrame: CGRectMake(0,aa, SCREEN_WIDTH - 22, 60)];
+    [_approvalBusinessFooterView setValueWithStatus:ApprovalFooterTransfer];
+    _approvalBusinessFooterView.delegate = self;
+    [_collectionView addSubview: _approvalBusinessFooterView];
+}
+
+#pragma mark ----- ViewLog -----
+- (void)enterViewLog
+{
+    ViewLogViewController *viewLogVC = [[ViewLogViewController alloc] init];
+    viewLogVC.transferAwaitModel = _model;
+    viewLogVC.type = 1;
+    UINavigationController *viewLogNC = [[UINavigationController alloc] initWithRootViewController:viewLogVC];
+    [self presentViewController:viewLogNC animated:YES completion:nil];
 }
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {

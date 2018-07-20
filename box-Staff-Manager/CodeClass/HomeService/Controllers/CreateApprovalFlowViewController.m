@@ -13,21 +13,10 @@
 #import "ApprovalBusApproversModel.h"
 #import "MenberInfoModel.h"
 #import "AddApprovalMenberViewController.h"
+#import "SetApprovalAmountViewController.h"
 
 #define CellReuseIdentifier  @"CreateApprovalFlow"
 #define headerReusableViewIdentifier  @"CreateApprovalFlow"
-#define CreateApprovalFlowVCTitle  @"创建审批流"
-#define CreateApprovalFlowVCflowNameLab  @"审批流名称"
-#define CreateApprovalFlowVCflowNameInfo  @"请输入审批流名称"
-#define CreateApprovalFlowVCflowLimitLab  @"审批金额上限"
-#define CreateApprovalFlowVCflowLimitInfo  @"请输入上限金额"
-#define CreateApprovalFlowVCApprovalLevels  @"审核层级"
-#define CreateApprovalFlowVCAddLevels  @"添加层级"
-#define CreateApprovalFlowVCAddLevelsAleart  @"请添加层级"
-#define CreateApprovalFlowVCBlankAleart  @"层级人员不能为空"
-#define CreateApprovalFlowVCBlankAleartZero  @"层级需审核人员不能为0"
-#define CreateApprovalFlowVCSuccessAleart  @"创建成功"
-#define CreateApprovalFlowVCCommit  @"提交审批"
 
 @interface CreateApprovalFlowViewController ()<UITextFieldDelegate,UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,CreateApprovalFlowCellDelegate>
 {
@@ -80,6 +69,7 @@
 -(void)getEmployeeInfo{
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/employee/pubkeys/list" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
             NSArray *dataArray = responseObject[@"data"];
@@ -147,13 +137,13 @@
 #pragma mark - 添加群列表
 -(void)createCollectionView
 {
-    _headerView = [[UIView alloc] initWithFrame: CGRectMake(11, 8, SCREEN_WIDTH - 22, 183)];
+    _headerView = [[UIView alloc] initWithFrame: CGRectMake(11, 8, SCREEN_WIDTH - 22, 183 - 50)];
     _headerView.layer.cornerRadius = 3.0f;
     _headerView.layer.masksToBounds = YES;
     _headerView.backgroundColor = kWhiteColor;
     [self.view addSubview: _headerView];
     [self createHeaderView];
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11, 188,  SCREEN_WIDTH - 22, SCREEN_HEIGHT - 188 - kTopHeight - 45) collectionViewLayout:_collectionFlowlayout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11, 188 - 50,  SCREEN_WIDTH - 22, SCREEN_HEIGHT - 188 - kTopHeight - 45 + 50 + (-kTabBarHeight + 49)) collectionViewLayout:_collectionFlowlayout];
     [_collectionView registerClass:[CreateApprovalFlowCollectionViewCell class] forCellWithReuseIdentifier:CellReuseIdentifier];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
@@ -165,9 +155,11 @@
     [_collectionView registerClass:[CreateApprovalFlowCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerReusableViewIdentifier];
     _commitBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_commitBtn setTitleColor:[UIColor colorWithHexString:@"#ffffff"] forState:UIControlStateNormal];
-    _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+    //_commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+    _commitBtn.enabled = NO;
+    _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
     _commitBtn.titleLabel.font = Font(15);
-    [_commitBtn setTitle:CreateApprovalFlowVCCommit forState:UIControlStateNormal];
+    [_commitBtn setTitle:NextStep forState:UIControlStateNormal];
     [_commitBtn addTarget:self action:@selector(commitAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_commitBtn];
     [_commitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -262,6 +254,7 @@
         make.height.offset(1);
     }];
     
+    /*
     //审批金额上限
     UILabel *flowLimitLab = [[UILabel alloc] init];
     flowLimitLab.textAlignment = NSTextAlignmentLeft;
@@ -303,6 +296,7 @@
         make.width.offset(SCREEN_WIDTH - 22 - 30);
         make.height.offset(1);
     }];
+     */
     
     //审核层级
     UILabel *levelsLab = [[UILabel alloc] init];
@@ -312,7 +306,7 @@
     levelsLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_headerView addSubview:levelsLab];
     [levelsLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineTwo.mas_bottom).offset(15);
+        make.top.equalTo(lineOne.mas_bottom).offset(15);
         make.height.offset(20);
         make.left.offset(14);
         make.width.offset(90);
@@ -381,10 +375,12 @@
         [WSProgressHUD showErrorWithStatus:CreateApprovalFlowVCflowNameInfo];
         return;
     }
+    /*
     if ([_flowLimitTf.text isEqualToString:@""]) {
         [WSProgressHUD showErrorWithStatus:CreateApprovalFlowVCflowLimitInfo];
         return;
     }
+     */
     if (_approvaledInfoArray.count == 0) {
         [WSProgressHUD showErrorWithStatus:CreateApprovalFlowVCAddLevelsAleart];
         return;
@@ -415,32 +411,15 @@
             return;
         }
     }
+    
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:_flowNameTf.text forKey:@"flow_name"];
-    [dic setObject:_flowLimitTf.text forKey:@"single_limit"];
+    [dic setObject:@"" forKey:@"single_limit"];
     [dic setObject:_commitInfoArray forKey:@"approval_info"];
-    
-    NSString *dicString = [JsonObject dictionaryToJson:dic];
-    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:dicString privateStr:[BoxDataManager sharedManager].privateKeyBase64];
-    //BOOL veryOK = [_aWrapper PKCSVerifyBytesSHA256withRSA:dicString signature:signSHA256 publicStr:[BoxDataManager sharedManager].publicKeyBase64];
-    NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc] init];
-    [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
-    [paramsDic setObject:dicString forKey:@"flow"];
-    [paramsDic setObject:signSHA256 forKey:@"sign"];
-    
-    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/business/flow" params:paramsDic success:^(id responseObject) {
-        if ([responseObject[@"code"] integerValue] == 0) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-            [WSProgressHUD showSuccessWithStatus:responseObject[@"message"]];
-            if ([self.delegate respondsToSelector:@selector(createApprovalSucceed)]) {
-                [self.delegate createApprovalSucceed];
-            }
-        }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
-        }
-    } fail:^(NSError *error) {
-        NSLog(@"%@", error.description);
-    }];
+    SetApprovalAmountViewController *setApprovalAmountVc = [[SetApprovalAmountViewController alloc] init];
+    setApprovalAmountVc.paramDic = dic;
+    UINavigationController *setApprovalAmountNc = [[UINavigationController alloc] initWithRootViewController:setApprovalAmountVc];
+    [self presentViewController:setApprovalAmountNc animated:YES completion:nil];
 }
 
 #pragma mark ----- 添加层级 -----
@@ -505,13 +484,13 @@
 #pragma mark ----- textFieldDidChange -----
 - (void)textFieldDidChange:(UITextField *)textField
 {
-//    if (_approvalProcessTf.text.length > 0 && _currencyTf.text.length > 0 && _addressTf.text.length > 0 && _amountTf.text.length > 0 && _applyReasonTf.text.length > 0) {
-//        _commitBtn.enabled = YES;
-//        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
-//    }else{
-//        _commitBtn.enabled = NO;
-//        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
-//    }
+    if (_flowNameTf.text.length > 0) {
+        _commitBtn.enabled = YES;
+        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+    }else{
+        _commitBtn.enabled = NO;
+        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+    }
 }
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {

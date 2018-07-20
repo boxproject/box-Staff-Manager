@@ -8,9 +8,6 @@
 
 #import "PrivatePasswordView.h"
 
-#define PrivatePasswordbackupLab @"密码"
-#define PrivatePasswordComfirm @"确认"
-
 @interface PrivatePasswordView ()<UITextFieldDelegate>
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
@@ -99,7 +96,7 @@
     _passwordTf.backgroundColor = [UIColor colorWithHexString:@"#f7f8f9"];
     _passwordTf.delegate = self;
     _passwordTf.clearButtonMode=UITextFieldViewModeWhileEditing;
-    NSString *backupText = @"请输入密码";
+    NSString *backupText = PerfectInformationVCAlertTwo;
     NSMutableAttributedString *backupHolder = [[NSMutableAttributedString alloc] initWithString:backupText];
     [backupHolder addAttribute:NSForegroundColorAttributeName
                          value:[UIColor colorWithHexString:@"#cccccc"]
@@ -187,7 +184,7 @@
 -(void)confirmAction:(UIButton *)btn
 {
     if ([_passwordTf.text isEqualToString:@""]) {
-        [WSProgressHUD showErrorWithStatus:@"请输入密码"];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertTwo];
         return;
     }
     if ([self.delegate respondsToSelector:@selector(PrivatePasswordViewDelegate:)]) {

@@ -8,23 +8,6 @@
 
 #import "TransferView.h"
 
-#define TransferViewTitle  @"确认转账"
-#define TransferViewApproval  @"审批流"
-#define TransferViewCurrency  @"币种"
-#define TransferViewReceiptAddress  @"收款地址"
-#define TransferViewAmount  @"金额"
-#define TransferViewApplyReason  @"申请理由"
-#define TransferViewMinersFee  @"矿工费"
-#define TransferViewBtnTitle  @"确认"
-#define TransferViewBtnCommit  @"确认提交"
-#define TransferViewInputTitle  @"请输入密码"
-#define TransferViewAchieveTitle  @"提交审批成功"
-#define TransferViewAchieveSubTitle  @"可在转账记录中查看审批进度"
-#define TransferViewAchieveDid  @"完成"
-#define TransferViewPutPassWord  @"请输入密码"
-#define TransferViewPassWordError  @"密码不正确"
-
-
 @interface TransferView ()<UITextFieldDelegate>
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
@@ -410,6 +393,7 @@
     _passwordTf = [[UITextField alloc] init];
     _passwordTf.delegate = self;
     _passwordTf.font = Font(14);
+    _passwordTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     _passwordTf.placeholder = TransferViewInputTitle;
     _passwordTf.keyboardType = UIKeyboardTypeAlphabet;
     _passwordTf.secureTextEntry = YES;
@@ -530,12 +514,14 @@
         [WSProgressHUD showErrorWithStatus:TransferViewPutPassWord];
         return;
     }
+    /*
     if (![_passwordTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
         [WSProgressHUD showErrorWithStatus:TransferViewPassWordError];
         return;
     }
-    if ([self.delegate respondsToSelector:@selector(transferViewDelegate:)]) {
-        [self.delegate transferViewDelegate:_dict];
+     */
+    if ([self.delegate respondsToSelector:@selector(transferViewDelegate:password:)]) {
+        [self.delegate transferViewDelegate:_dict  password:_passwordTf.text];
     }
 }
 

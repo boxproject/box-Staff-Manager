@@ -13,8 +13,7 @@
 
 #define PageSize  12
 #define CellReuseIdentifier  @"AssetAmount"
-#define AssetAmountVCTitle  @"资产总览"
- 
+
 @interface AssetAmountViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic,strong) UITableView *tableView;
@@ -96,11 +95,16 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/balance" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             if (_page == 1) {
                 [_sourceArray removeAllObjects];
+            }
+            if([dict[@"data"] isKindOfClass:[NSNull class]]){
+                [self reloadAction];
+                return ;
             }
             for (NSDictionary *dataDic in dict[@"data"]) {
                 AssetAmountModel *model = [[AssetAmountModel alloc] initWithDict:dataDic];
@@ -109,7 +113,7 @@
             [self.tableView reloadData];
             
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {

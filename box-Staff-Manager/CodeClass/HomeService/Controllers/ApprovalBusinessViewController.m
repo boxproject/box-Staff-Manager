@@ -14,8 +14,6 @@
 
 #define PageSize  12
 #define CellReuseIdentifier  @"ApprovalBusiness"
-#define ApprovalBusinessVCTitle  @"审批流"
-#define ApprovalBusinessVCCreateBtn  @"创建"
 
 @interface ApprovalBusinessViewController ()<UITableViewDelegate, UITableViewDataSource,CreateApprovalFlowDelegate>
 
@@ -32,11 +30,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
-    self.title = ApprovalBusinessVCTitle;
+    self.title = HomeServiceVCApprovalWorkflow;
     _sourceArray = [[NSMutableArray alloc] init];
     _page = 1;
     [self createView];
     [self requestData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createApprovalSucceed:) name:@"createApprovalSucceed" object:nil];
+}
+
+-(void)createApprovalSucceed:(NSNotification *)notification
+{
+    [self.tableView.mj_header beginRefreshing];
 }
 
 #pragma mark ----- 数据请求 -----
@@ -46,6 +50,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/business/flows/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -58,7 +63,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -81,7 +86,6 @@
         [self.tableView.mj_footer endRefreshing];
     });
 }
-
 
 -(void)createView
 {
@@ -108,7 +112,7 @@
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:ApprovalBusinessVCCreateBtn style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:Create style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
     if ([[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
        self.navigationItem.rightBarButtonItem = buttonRight;
     }
@@ -127,6 +131,7 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
