@@ -12,7 +12,6 @@
 #import "AddDepartmentViewController.h"
 #import "DepartmentDetailViewController.h"
 
-
 #define PageSize  12
 #define CellReuseIdentifier  @"Department"
 
@@ -55,6 +54,9 @@
             NSArray *listArray = dict[@"data"][@"list"];
             for (NSDictionary *listDic in listArray) {
                 DepartmentModel *model = [[DepartmentModel alloc] initWithDict:listDic];
+                if ([model.Name isEqualToString:@"其他"]) {
+                    model.Name = Other;
+                }
                 [_sourceArray addObject:model];
             }
         }else{
@@ -220,8 +222,6 @@
     }];
     [self headerReflesh];
 }
-
-
 
 #pragma mark ----- AddDepartmentDelegate -----
 - (void)addDepartmentReflesh

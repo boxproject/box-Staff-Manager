@@ -14,4 +14,6 @@
 
 @property (nonatomic,assign) NSInteger ID;
 
+@property (nonatomic,strong) NSString *content;
+
 @end

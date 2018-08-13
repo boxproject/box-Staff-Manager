@@ -10,7 +10,9 @@
 #import "TransferModel.h"
 
 @interface TransferCollectionReusableView : UICollectionReusableView
-
+{
+    NSString *language;
+}
 @property (nonatomic, strong) UILabel *leftLable;
 @property (nonatomic, strong) UILabel *rightLable;
 @property (nonatomic, strong) UIImageView *img;

@@ -11,7 +11,9 @@
 #import "LoginBoxViewController.h"
 
 @interface PerfectInformationViewController ()<UIScrollViewDelegate, UITextFieldDelegate>
-
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 @property(nonatomic, strong)UIScrollView *contentView;
 /** 姓名 */
 @property (nonatomic,strong)UITextField *nameTf;
@@ -34,6 +36,7 @@
     self.title = PerfectInformationVCTitle;
     self.view.backgroundColor = [UIColor whiteColor];
     [self createView];
+    returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] initWithViewController:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -102,7 +105,10 @@
                         range:NSMakeRange(0, passwordText.length)];
     [passwordholder addAttribute:NSFontAttributeName
                         value:Font(14)
-                        range:NSMakeRange(0, passwordText.length)];
+                        range:NSMakeRange(0, 5)];
+    [passwordholder addAttribute:NSFontAttributeName
+                           value:Font(13)
+                           range:NSMakeRange(5, passwordText.length - 5)];
     _passwordTf.attributedPlaceholder = passwordholder;
     _passwordTf.keyboardType = UIKeyboardTypeAlphabet;
     _passwordTf.secureTextEntry = YES;
@@ -245,7 +251,7 @@
     if (textField.tag == 100) {
         // 需要限制的长度
         NSUInteger maxLength = 0;
-        maxLength = 20;
+        maxLength = 12;
         if (maxLength == 0) return;
         // text field 的内容
         NSString *contentText = textField.text;
@@ -284,6 +290,11 @@
         return NO;
     }
     return YES;
+}
+
+-(void)dealloc
+{
+    returnKeyHandler = nil;
 }
 
 - (void)didReceiveMemoryWarning {

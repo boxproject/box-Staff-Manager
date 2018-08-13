@@ -24,6 +24,9 @@
         if(![dict[@"ID"] isKindOfClass:[NSNull class]]){
             self.ID = [[dict objectForKey:@"ID"] integerValue];
         }
+        if(![dict[@"content"] isKindOfClass:[NSNull class]]){
+            self.content = [dict objectForKey:@"content"];
+        }
     }
     return self;
 }

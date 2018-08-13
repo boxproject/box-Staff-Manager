@@ -23,6 +23,7 @@
     //启动页延时
     //sleep(2);
     [NSThread sleepForTimeInterval:2.0];
+    [self getCurrentLanguage];
     //网络监测
     [self monitorReachabilityStatus];
     [self initIQKeyboardManager];
@@ -38,6 +39,20 @@
     manager.shouldResignOnTouchOutside = YES;
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     manager.enableAutoToolbar = YES;
+}
+
+//保存当前使用语言到NSUserDefaults
+-(void)getCurrentLanguage
+{
+    if (![[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"]) {
+        NSArray *languages = [NSLocale preferredLanguages];
+        NSString *language = [languages objectAtIndex:0];
+        if ([language hasPrefix:@"zh-Hans"]) {//开头匹配
+            [[NSUserDefaults standardUserDefaults] setObject:@"zh-Hans" forKey:@"appLanguage"];
+        }else{
+            [[NSUserDefaults standardUserDefaults] setObject:@"en" forKey:@"appLanguage"];
+        }
+    }
 }
 
 //启动跳转的VC

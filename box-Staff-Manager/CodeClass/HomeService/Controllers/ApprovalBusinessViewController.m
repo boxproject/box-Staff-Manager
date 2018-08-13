@@ -7,7 +7,7 @@
 //
 
 #import "ApprovalBusinessViewController.h"
-#import "ApprovalBusinessModel.h"
+#import "ApprovalBusinessModel.h" 
 #import "ApprovalBusinessTableViewCell.h"
 #import "ApprovalBusinessDetailViewController.h"
 #import "CreateApprovalFlowViewController.h"
@@ -118,7 +118,6 @@
     }
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
-    
 }
 
 #pragma mark ----- rightBarButtonItemAction -----
@@ -141,6 +140,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh

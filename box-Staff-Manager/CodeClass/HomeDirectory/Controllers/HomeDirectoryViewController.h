@@ -15,5 +15,6 @@ typedef void(^Block)(NSString *address);
 @property(nonatomic, strong)NSString *type;
 @property (nonatomic, copy) Block addressBlock;
 @property(nonatomic, strong)CurrencyModel *model;
+@property(nonatomic, strong)NSString *currency;
 
 @end

@@ -14,13 +14,7 @@
 #import "PerfectInformationViewController.h"
 
 #define ScanSize   [[UIScreen mainScreen] bounds].size.width - 70
-#define ScanCodeWSprogress  @"注册失败"
-#define ScanCodeVCTitle  @"扫一扫"
-#define PerfectInformationVCTorchlight  @"轻触关闭"
-#define PerfectInformationVCTorchheight  @"轻触照亮"
-#define PerfectInformationVCScanResult  @"将二维码放入框内，即可自动扫描"
-#define PerfectInformationVCErrorCode  @"二维码无效"
-
+ 
 @interface ScanCodeViewController () <AVCaptureMetadataOutputObjectsDelegate,CALayerDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 {
     NSTimer *timer;
@@ -168,7 +162,7 @@
         make.centerX.equalTo(self.scanView);
         make.bottom.equalTo(self.scanView.mas_bottom).offset(-15);
         make.height.offset(60);
-        make.width.offset(60);
+        make.width.offset(100);
     }];
     _isOpen = NO;
     _torchBtn.hidden = YES;
@@ -590,6 +584,7 @@
 
 -(void)handleError
 {
+    [SVProgressHUD dismiss];
     [WSProgressHUD showErrorWithStatus:RequestError];
     for (UIViewController *controller in self.navigationController.viewControllers) {
         if ([controller isKindOfClass:[PerfectInformationViewController class]]) {
@@ -641,8 +636,8 @@
                     [[BoxDataManager sharedManager] saveDataWithCoding:@"token" codeValue:token];
                     [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
                     [[BoxDataManager sharedManager] saveDataWithCoding:@"depth" codeValue:[NSString stringWithFormat:@"%ld", depth]];
-                    HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-                    [self presentViewController:homePageVC animated:YES completion:nil];
+                    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                    [delegate launchJumpVC];
                 });
             }
         }else {
@@ -727,9 +722,8 @@
                 [[BoxDataManager sharedManager] saveDataWithCoding:@"depth" codeValue:[NSString stringWithFormat:@"%ld", depth]];
                 [[BoxDataManager sharedManager] saveDataWithCoding:@"token" codeValue:token];
                 [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
-                HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-                [self presentViewController:homePageVC animated:YES completion:nil];
-
+                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                [delegate launchJumpVC];
             }
         }else {
             // 隐藏遮盖

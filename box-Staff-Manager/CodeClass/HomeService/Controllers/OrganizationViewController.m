@@ -34,7 +34,9 @@
     if (_app_account_id == nil) {
         self.title = [BoxDataManager sharedManager].applyer_account;
         _aWrapper = [[DDRSAWrapper alloc] init];
-        [self getEmployeeInfo];
+        if ([[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
+            [self getEmployeeInfo];
+        }
     }else{
         self.title = _searchMenberModel.account;;
     }
@@ -167,6 +169,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh

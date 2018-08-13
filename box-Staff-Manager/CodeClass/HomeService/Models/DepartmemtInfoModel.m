@@ -32,6 +32,12 @@
         if(![dict[@"BranchID"] isKindOfClass:[NSNull class]]){
             self.BranchID = [[dict objectForKey:@"BranchID"] integerValue];
         }
+        if(![dict[@"select"] isKindOfClass:[NSNull class]]){
+            self.select = [[dict objectForKey:@"select"] boolValue];
+        }
+        if(![dict[@"state"] isKindOfClass:[NSNull class]]){
+            self.state = [[dict objectForKey:@"state"] integerValue];
+        }
     }
     return self;
 }

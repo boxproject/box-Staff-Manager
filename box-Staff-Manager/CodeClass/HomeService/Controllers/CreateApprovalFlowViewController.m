@@ -12,11 +12,12 @@
 #import "ApprovalBusinessDetailModel.h"
 #import "ApprovalBusApproversModel.h"
 #import "MenberInfoModel.h"
-#import "AddApprovalMenberViewController.h"
 #import "SetApprovalAmountViewController.h"
+#import "AddApprovalMemberViewController.h"
 
 #define CellReuseIdentifier  @"CreateApprovalFlow"
 #define headerReusableViewIdentifier  @"CreateApprovalFlow"
+#define approvalMaxCount  10
 
 @interface CreateApprovalFlowViewController ()<UITextFieldDelegate,UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,CreateApprovalFlowCellDelegate>
 {
@@ -63,6 +64,8 @@
     [self createCollectionView];
     [self getEmployeeInfo];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addMenber:) name:@"addMenber" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewEditChanged:) name:UITextFieldTextDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteSection:) name:@"deleteSection" object:nil];
 }
 
 #pragma mark ----- 根节点获取非直属下属的公钥信息 -----
@@ -209,6 +212,42 @@
     return reusableView;
 }
 
+#pragma mark ----- CreateApprovalFlowCollectionReusableDelegate -----
+-(void)deleteSection:(NSNotification *)notification
+{
+    NSInteger section = [notification.object integerValue];
+    ApprovalBusinessDetailModel *approvalBusinessDetailModel = _approvaledInfoArray[section];
+    if(approvalBusinessDetailModel.approvers.count == 1){
+        [_approvaledInfoArray removeObjectAtIndex:section];
+        [self.collectionView reloadData];
+        if (_approvaledInfoArray.count < approvalMaxCount) {
+            _addLevelsBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+            _addLevelsBtn.enabled = YES;
+        }
+    }else if(approvalBusinessDetailModel.approvers.count > 1){
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:SureToDeleteSection preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            [_approvaledInfoArray removeObjectAtIndex:section];
+            [self.collectionView reloadData];
+            if (_approvaledInfoArray.count < approvalMaxCount) {
+                _addLevelsBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+                _addLevelsBtn.enabled = YES;
+            }
+            for (ApprovalBusApproversModel *approvalBusApproversModel in approvalBusinessDetailModel.approvers) {
+                for (int i = 0; i < _addMenberArray.count; i ++) {
+                    ApprovalBusApproversModel *model = _addMenberArray[i];
+                    if ([approvalBusApproversModel.app_account_id isEqualToString:model.app_account_id] ) {
+                        [_addMenberArray removeObjectAtIndex:i];
+                    }
+                }
+            }
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    [self submitStatus];
+}
+
 #pragma mark ----- createHeaderView -----
 -(void)createHeaderView
 {
@@ -309,7 +348,7 @@
         make.top.equalTo(lineOne.mas_bottom).offset(15);
         make.height.offset(20);
         make.left.offset(14);
-        make.width.offset(90);
+        //make.width.offset(90);
     }];
     
     _addLevelsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -368,6 +407,33 @@
     }
 }
 
+-(void)textViewEditChanged:(NSNotification *)notification{
+    UITextField *textField = (UITextField *)notification.object;
+    if (textField == _flowNameTf) {
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 30;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }
+}
+
 #pragma mark ----- 提交审批 -----
 -(void)commitAction:(UIButton *)btn
 {
@@ -422,10 +488,27 @@
     [self presentViewController:setApprovalAmountNc animated:YES completion:nil];
 }
 
+-(void)submitStatus
+{
+    BOOL commitBtnEnabled = NO;
+    for (ApprovalBusinessDetailModel *approvalBusinessDetailModel in _approvaledInfoArray) {
+        if (approvalBusinessDetailModel.approvers.count >= 1) {
+            if(approvalBusinessDetailModel.approvers.count == 1){
+                _commitBtn.enabled = NO;
+                _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+                commitBtnEnabled = YES;
+            }
+        }
+    }
+    if (!commitBtnEnabled) {
+        _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
+        _commitBtn.enabled = YES;
+    }
+}
+
 #pragma mark ----- 添加层级 -----
 -(void)addLevelsAction:(UIButton *)btn
 {
-
     NSDictionary *dic = @{
                           @"require":@(0),@"total":@(0),@"approvers":@[@{
                                                                            @"account":@"",
@@ -439,23 +522,31 @@
     ApprovalBusinessDetailModel *model = [[ApprovalBusinessDetailModel alloc] initWithDict:dic];
     [_approvaledInfoArray addObject:model];
     [self.collectionView reloadData];
+    if (_approvaledInfoArray.count >= approvalMaxCount) {
+        _addLevelsBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+        _addLevelsBtn.enabled = NO;
+    }
+    [self submitStatus];
 }
 
 -(void)addMenber:(NSNotification *)notification
 {
-    ApprovalBusApproversModel *approvalBusApproversModel = notification.object;
-    [_addMenberArray addObject:approvalBusApproversModel];
-    ApprovalBusinessDetailModel *approvalBusinessDetailModel = _approvaledInfoArray[addIndexPath.section];
-    approvalBusinessDetailModel.total = addIndexPath.row + 1;
-    [approvalBusinessDetailModel.approvers insertObject:approvalBusApproversModel atIndex:addIndexPath.row];
+    NSArray *arr = notification.object;
+    for (ApprovalBusApproversModel *approvalBusApproversModel in arr) {
+        [_addMenberArray addObject:approvalBusApproversModel];
+        ApprovalBusinessDetailModel *approvalBusinessDetailModel = _approvaledInfoArray[addIndexPath.section];
+        approvalBusinessDetailModel.total = addIndexPath.row + arr.count;
+        [approvalBusinessDetailModel.approvers insertObject:approvalBusApproversModel atIndex:addIndexPath.row];
+    }
     [self.collectionView reloadData];
+    [self submitStatus];
 }
 
 #pragma mark ----- CreateApprovalFlowCellDelegate - addMenberAction  -----
 - (void)addMenberAction:(NSIndexPath *)indexPath
 {
     addIndexPath = indexPath;
-    AddApprovalMenberViewController *addApprovalMenberVC = [[AddApprovalMenberViewController alloc] init];
+    AddApprovalMemberViewController *addApprovalMenberVC = [[AddApprovalMemberViewController alloc] init];
     addApprovalMenberVC.addArray = _addMenberArray;
     UINavigationController *addApprovalMenberNC = [[UINavigationController alloc] initWithRootViewController:addApprovalMenberVC];
     [self presentViewController:addApprovalMenberNC animated:YES completion:nil];
@@ -479,6 +570,7 @@
     }
     approvalBusinessDetailModel.total = approvalBusinessDetailModel.approvers.count - 1;
     [self.collectionView reloadData];
+    [self submitStatus];
 }
 
 #pragma mark ----- textFieldDidChange -----
@@ -491,6 +583,7 @@
         _commitBtn.enabled = NO;
         _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
     }
+    [self submitStatus];
 }
 
 - (UIImage *) imageWithFrame:(CGRect)frame alphe:(CGFloat)alphe {

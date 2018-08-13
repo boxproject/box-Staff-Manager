@@ -22,4 +22,12 @@
     return YES;
 }
 
++(NSString *)handleAddress:(NSString *)address
+{
+    NSString *str1 = [address substringToIndex:12];
+    NSString *str2 = [address substringFromIndex:address.length - 12];
+    NSString *str3 = [NSString stringWithFormat:@"%@...%@", str1, str2];
+    return str3;
+}
+
 @end

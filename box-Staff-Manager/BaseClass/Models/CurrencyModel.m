@@ -33,6 +33,9 @@
         if(![dict[@"limit"] isKindOfClass:[NSNull class]]){
             self.limit = [dict objectForKey:@"limit"];
         }
+        if(![dict[@"tokenAddr"] isKindOfClass:[NSNull class]]){
+            self.tokenAddr = [dict objectForKey:@"tokenAddr"];
+        }
     }
     return self;
 }

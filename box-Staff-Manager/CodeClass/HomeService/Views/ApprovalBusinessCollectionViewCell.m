@@ -26,7 +26,6 @@
     return self;
 }
 
-
 -(void)createView
 {
     _view = [[UIView alloc] init];

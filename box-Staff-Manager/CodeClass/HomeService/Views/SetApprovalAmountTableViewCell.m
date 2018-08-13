@@ -13,7 +13,7 @@
     NSIndexPath *addIndexPath;
 }
 @property (nonatomic,strong) UILabel *titleLab;
-@property (nonatomic,strong) UITextField *textField;
+@property (nonatomic,strong) LimitAmountTextField *textField;
 
 @end
 
@@ -41,7 +41,7 @@
         make.bottom.offset(0);
     }];
   
-    _textField = [[UITextField alloc]init];
+    _textField = [[LimitAmountTextField alloc]init];
     _textField.backgroundColor = [UIColor whiteColor];
     _textField.font = Font(14);
     _textField.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -71,10 +71,36 @@
 
 -(void)textViewEditChanged
 {
+    
     if ([self.delegate respondsToSelector:@selector(textViewEdit:indexPath:)]) {
         [self.delegate textViewEdit:_textField.text indexPath:addIndexPath];
     }
     
+}
+
+//限制小数位数
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField ==_textField) {
+        //判断小数点的位数
+        NSRange ran=[textField.text rangeOfString:@"."];
+        NSInteger tt=range.location-ran.location;
+        if ([textField.text rangeOfString:@"."].location == NSNotFound) {
+            if (![string isEqualToString:@"."]) {
+                if (range.location >= 11) {
+                    return NO;
+                }
+            }
+            return YES;
+        }else{
+            if (tt <= 2){
+                return YES;
+            }else{
+                return NO;
+            }
+        }
+    }
+    return YES;
 }
 
 - (void)setDataWithModel:(CurrencyModel *)model indexPath:(NSIndexPath *)indexPath
@@ -83,6 +109,8 @@
     _titleLab.text = model.currency;
     if (model.limit != nil) {
         _textField.text = model.limit;
+    }else{
+        _textField.text = @"";
     }
 }
 

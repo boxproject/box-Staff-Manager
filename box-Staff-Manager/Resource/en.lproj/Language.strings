@@ -1,0 +1,322 @@
+/* 
+  Language.strings
+  box-Staff-Manager
+
+  Created by Yu Huang on 2018/7/25.
+  Copyright © 2018年 2se. All rights reserved.
+*/
+
+"PerfectInformationVCTitle" = "Complete Information";
+"PerfectInformationVCNameText" = "Name";
+"PerfectInformationVCPasswordText" = "Password(6-12 characters and case-sensitive)";
+"PerfectInformationVCVerifyText" = "Password again";
+"PerfectInformationVCAlertLab" = "Password can’t be retrieved. Remember and keep it safe!";
+"PerfectInformationVCConfirmBtn" = "Submit";
+"PerfectInformationVCAlertOne" = "Complete Information";
+"PerfectInformationVCAlertTwo" = "Password";
+"PerfectInformationVCAlertThree" = "Passwords do not match";
+"PerfectInformationVCCheckPwd" = "Password (6-12 characters and case-sensitive)";
+
+"InitAccountVCTitle" = "Scan";
+"PerfectInformationVCLaber" = "Scan to authorize";
+"PerfectInformationVCSubLaber" = "Scan QR code to complete authorization.";
+
+"HomeBoxVCScanTitle" = "Scan QR code";
+"HomeBoxVCTransferTitle" = "Transfer";
+"HomeBoxVCPaymentCodeTitle" = "My QR Code";
+"HomeBoxVCTaskTitle" = "To-do Tasks";
+"HomeBoxVCTransferAwait" = "Pending Transfers";
+"HomeBoxVCcheckDetailBtn" = "Details";
+"HomeBoxVCsystemInfo" = "Notifications";
+"SystemInfo" = "No Information";
+"HomeBoxVCsystemUpdate" = "Update";
+"HomeBoxVCTransferRecord" = "History";
+"HomeBoxVCTransferExamine" = "View All";
+"HomeBoxVCInitiate" = "I started";
+"HomeBoxVCParticipateIn" = "I am involved";
+"HomeBoxVCTransferSubLab" = "No Application";
+
+"HomeDirectoryVCTitle" = " Address";
+"HomeServiceVCTitle" = "Service";
+"HomeMeVCTitle" = "Me";
+
+"EmpowermentSuccess" = "Authorization successful";
+"EmpowermentFailed" = "Authorization Failed";
+"RequestError" = "Request Failed";
+"Handing" = "Processing";
+"ScanCodeWSprogress" = "Sign-up Failed";
+"ScanCodeVCTitle" = "Scan QR code";
+"PerfectInformationVCTorchlight" = "Flashlight On";
+"PerfectInformationVCTorchheight" = "Flashlight Off";
+"PerfectInformationVCScanResult" = "Put QR code in the scan area";
+"PerfectInformationVCErrorCode" = "Invalid QR code";
+
+"MinersFeeLabAlert" = "Set fee";
+"AmountTfAlert" = "Exceeds the limit";
+"TransferVCTitle" = "Application";
+"TransferVCRightTitle" = "History";
+"TransferVCCurrency" = "Asset";
+"TransferVCApprovalProcess" = "Flow";
+"TransferVCApprovalProcessInfo" = "Select flow";
+"TransferVCReceiptAddress" = "To";
+"TransferVCReceiptAddressInfo" = "Enter address or select payee";
+"TransferVCAmount" = "Amount";
+"TransferVCAmountInfo" = "Enter amount";
+"RemainingSum" = "Balance";
+"TransferVCApplyReason" = "Reason";
+"TransferVCApplyReasonInfo" = "E.g., For XXX investment";
+"TransferVCMinersFee" = "Fee";
+"TransferVCMinersFeeSlow" = "Slow";
+"TransferVCMinersFeeFast" = "Fast";
+"TransferVCBtnTitle" = "Submit";
+"TransferVCETHAlert" = "Currently, exchanges that can support ETH Smart Contract Transfers are: Binance, gate.io, ZB, HitBTC. Transfer to other exchanges may cause losses";
+
+"TransferViewTitle" = "Transfer";
+"TransferViewApproval" = "Flow";
+"TransferViewCurrency" = "Asset";
+"TransferViewReceiptAddress" = "To";
+"TransferViewAmount" = "Amount";
+"ContractAddress" = "Contract Address";
+"TransferViewApplyReason" = "Reason";
+"TransferViewMinersFee" = "Fee";
+"TransferViewBtnTitle" = "Confirm";
+"TransferViewInputTitle" = "Password";
+"TransferViewPasswordHolder" = "Enter your password";
+"TransferViewBtnCommit" = "Submit";
+"TransferViewAchieveTitle" = "Submit Successfully";
+"TransferViewAchieveSubTitle" = "You can view your approval progress from History";
+"TransferViewAchieveDid" = "Done";
+"TransferViewPutPassWord" = "Enter your password";
+"TransferViewPassWordError" = "Wrong password";
+
+"TransferRecordTableViewCellTransferingAwait" = "Pending";
+"TransferRecordTableViewCellTransfering" = "Being approved";
+"TransferRecordTableViewCellTransferStateSucceed" = "Approved(successful)";
+"TransferRecordTableViewCellTransferStateSucceedTransfing" = "Approved(being transferred)";
+"TransferRecordTableViewCellTransferStateFail" = "Approved(failed)";
+"TransferRecordTableViewCellRecharge" = "Recharge Successful";
+"TransferRecordTableViewCellTransferFail" = " Rejected";
+"TransferRecordTableViewCellTransferCancel" = "Revoked";
+
+"TransferTopViewApprovaling" = "Being approved";
+"TransferTopViewApprovalSucceed" = "Approved";
+"TransferTopViewApprovalFail" = "Rejected";
+"TransferTopViewApprovalAgreen" = "Approved";
+"TransferTopViewApprovalCancel" = "Transfer Application has been Revoked.";
+"TransferTopViewCurrency" = "Asset";
+"TransferTopViewReceiptAddress" = "To";
+"TransferTopViewAmount" = "Amount";
+"TransferTopViewApplyMenber" = "Applicant";
+"TransferTopViewApplyReason" = "Reason";
+"TransferTopViewMinersFee" = "Fee";
+"ApplyForTime" = "Date";
+"TransferTopViewStateOne" = "Pending";
+"TransferTopViewStateTwo" = "Being approved";
+"TransferTopViewStateThreeTransfing" = "Approved(being transferred)";
+"TransferTopViewStateThree" = "Approved (successful)";
+"TransferTopViewStateFour" = "Rejected";
+"TransferTopViewStateCancel" = "Transfer Application has been revoked.";
+"TransferTopViewTitle" = "Progress：";
+
+"ApprovalMenber" = "Approval Member";
+"ApprovalMenberAmount" = "";
+"viewLog" = "View Log";
+"TransferCancel" = "Revoke";
+
+"RefuseTransfer" = "Revoke";
+"RefuseTransferInfo" = "This action cannot be undone. Are you sure you want to revoke?";
+"Submit" = "Submit";
+"RefuseApprovalPlacehode" = "Enter the reason for revoking";
+
+"RefuseApproval" = "Rejcted";
+"RefuseApprovalInfo" = "Rejected approval cannot be undone. Be careful!";
+"RefuseApprovalReason" = "Reason";
+
+"tansferCodeVCTitle" = " QR code";
+"tansferCodeVCScanLab" = "My QR code";
+"tansferCodeVCSaveAddressBtnb" = "Copy";
+"tansferCodeVCSaveAddressSucced" = "Copy successful";
+
+"TransferAwaitVCTitle" = "Pending Transfers";
+"TransferAwaitVCAgreeApprovalBtn" = "Approve";
+"TransferAwaitVCRefuseApprovalBtn" = "Reject";
+"PrivatePasswordbackupLab" = "Password";
+"PrivatePasswordComfirm" = "Confirm";
+
+"NoAddressAdded" = "No address added yet";
+"HomeDirectoryVCAddAddress" = "Add";
+"AddDirectoryVCTitle" = "New Address";
+"AddDirectoryVCRightTitle" = "Done";
+"AddDirectoryCurrency" = "Asset";
+"AddDirectoryName" = "Name";
+"AddDirectoryNameInfo" = "Enter payee name or company name";
+"AddDirectoryVCAddress" = "To";
+"AddDirectoryVCAddressInfo" = "Enter payee address";
+"AddDirectoryVCRemark" = "Comment";
+"AddDirectoryVCRemarkInfo" = "Leave your comment";
+"AddDirectoryVCcurrencyInfo" = "Select asset";
+"AddDirectoryVCError" = "Add address failed";
+"EditorDirectoryVCTitle" = "Edit Address";
+"EditorDirectoryVCError" = "Address edit failed";
+"SearchCurrency" = "Search Currency";
+
+"HomeServiceVCApprovalWorkflow" = "Flow";
+"HomeServiceVCAsset" = "Asset";
+"HomeServiceVCOrganization" = "Organization";
+"HomeServiceVCDepartment" = "Department";
+
+"Create" = "Create";
+"ApprovalBusinessApprovaling" = "Being approved";
+"ApprovalBusinessSucceed" = "Approved";
+"ApprovalBusinessFail" = "Failed";
+"ApprovalBusinessAwait" = "Pending";
+"ApprovalBusinessCancel" = "Canceled";
+
+"CreateApprovalFlowVCTitle" = "Create Approval Flow";
+"CreateApprovalFlowVCflowNameLab" = "Name";
+"CreateApprovalFlowVCflowNameInfo" = "Enter the name of approval flow";
+"CreateApprovalFlowVCflowLimitLab" = "Approval Levels";
+"CreateApprovalFlowVCflowLimitInfo" = "Please enter the limit amount";
+"CreateApprovalFlowVCApprovalLevels" = "Levels";
+"CreateApprovalFlowVCAddLevels" = "Add Level";
+"CreateApprovalFlowVCAddLevelsAleart" = "Please add level";
+"CreateApprovalFlowVCBlankAleart" = "Employees in this level cannot be empty";
+"CreateApprovalFlowVCBlankAleartZero" = "Must be at least 1 approval member in this level.";
+"CreateApprovalFlowVCSuccessAleart" = "Create successful";
+"NextStep" = "Next";
+"Add" = "Add";
+"Affirm" = "Confirm";
+"Cancel" = "Cancel";
+
+"AddApprovalMenberVC" = "Add Approval Member";
+"AddApprovalMenberVCSectionOne" = "Level";
+"AddApprovalMenberVCSectionTwo" = "Select";
+"Search" = "Search";
+"SearchMember" = "Search Member";
+"SearchApprovalFlow" = "Search Approval Flow";
+
+"SetApprovalAmountVCTitle" = "Amount";
+"LimitTimes" = "Restoring Time";
+"LimitTimesPlaceholder" = "0～240, please enter 0 to restore your limit immediately";
+"ApplyForCurrency" = "Asset";
+"AccountPasswordHour" = "Hr";
+"LimitCurrencyPlaceholder" = "Enter the asset limit";
+
+"LimitAlertAffirm" = "I see";
+"LimitAlertTitle" = "What is Restoring Time？";
+"LimitAlertContent" = "You can set a transfer limit to a specific currency over a period of time in the approval flow. Transfer limit will be restored as the time is up. E.g., If Transfer limit of Ethereum is set at 10 while restoring time is 24 hours, and it means that you are allowed to transfer up to 10 Ethereum within 24 hours. If the restoring time is set at 0, you can transfer up to 10 Ethereum without limit.";
+"SubmitApproval" = "Submit";
+"LimitAlert" = "Transfer limit restoring time: 0-240";
+"ApplyForLimit" = "Limit";
+"PleaseInput" = "Enter";
+"Limit" = " Limit";
+
+"ApprovalCreate" = "Created Approval Flow";
+"SystemApprovalSucceed" = "Approved";
+"SystemApprovalFail" = "Rejected";
+
+"AssetAmountVCTitle" = "Asset Details";
+"Reason" = "Reason";
+"Detailed" = "Details";
+
+"DepartmentVCTitle" = "Department";
+"DepartmentVCAddDepartment" = "Add Department";
+"DepartmentVCTopTitle" = "Long press and drag. Adjust to show the order.";
+
+"AddDepartmentVCTitle" = "Create Department Name";
+"AddDepartmentVCComplete" = "Finish";
+"AddDepartmentVCPlaceholder" = "Enter department name";
+"AddDepartmentVCAlert" = "The Department name is already in use!";
+
+"DepartmentDetailVCTitle" = "Check";
+"DepartmentDetailVCDepartmentlab" = "Department";
+"DepartmentDetailVCMember" = "Department Members";
+
+"AccountAddress" = "Account Address";
+"CopyAddress" = "Copy Address";
+"PreserveQRCode" = "Save QR Code";
+"CopyAddressSucceed" = "Copy successful";
+"SaveFailure" = "You failed to save";
+"SavePicturesucceed" = "Saved";
+
+"ScanAdressVCTitle" = "Bind Code";
+"ScanAdressVCScanLab" = "Bind QR Code";
+"ScanAdressVCDetailLab" = "Scan the QR code to bind.";
+"ScanAdressVCAuthorizeBtn" = "Local Authority";
+"ScanAdressVCAleartLab" = "Do not disclose your authorization code to avoid financial losses. QR screenshots will be invalid once taken.";
+"ScanAdressVCIknown" = "I See";
+"ScanAdressVCAlertMessage" = "Your employ app won’t be binded if you return.";
+
+"ModifyServerAddressVCTitle" = "Modify the server address";
+"ModifyServerAddressVCAddress" = "Address";
+"ModifyServerAddressVCInfo" = "Enter the server address";
+"ModifyServerAddressVCVerifyBtn" = "Return";
+
+"ModificatePasswordVCoriginalPawd" = "Original";
+"ModificatePasswordVCoriginalPawdInfo" = "Enter the original password";
+"ModificatePasswordVCpawdnew" = "New";
+"ModificatePasswordVCpawdnewInfo" = "Enter your new password";
+"ModificatePasswordVCRenewPawdInfo" = "Confirm your new password";
+"ModificatePasswordVCVerify" = "Save Changes";
+"ModificatePasswordVCAleartSucceed" = "Change successful";
+"ModificatePasswordVCOriginalError" = "The original password is wrong";
+"delete" = "Delete";
+"Other" = "Others";
+"AboutBOX" = "About BOX";
+"CurrentVersion" = "Current Version";
+"SelectDepartmemt" = "Select Department";
+"LoginButton" = "Login";
+"SelectCurrency" = "Select Asset";
+
+"LanguageSwitchTitle" = "Languages";
+"LanguageSwitchConfirm" = "Done";
+"SimplifiedChinese" = "简体中文";
+
+"AccountLockup" = "You have entered the wrong password for 5 times.  Your account is now suspended! Unsuspended time: ";
+"AccountPasswordError" = "The password is wrong! Your account will be suspended if you enter your password wrong consecutively for 5 times.";
+"AccountPasswordTimes" = "times";
+"AccountPasswordAlert" = "You have entered the wrong password";
+
+"SureToDeleteSection" = "Are you sure you want to delete this level?";
+"SureToDelete" = "Are you sure you want to delete?";
+"ModificatePasswordVCInfopawdnew" = "6-12 characters and case-sensitive";
+
+"cancelApproval" = "Cancel";
+"ApprovalCancelAlertTitleOne" = "Cancellation";
+"ApprovalCancelAlertMessageOne" = "Are you sure you want to";
+"ApprovalCancelAlertTitleTwo" = "pending transfers are being processed";
+"ApprovalCancelAlertMessageTwo" = "Approval flow and application will be both revoked. Are you sure you want to revoke?";
+"RefuseTransferPlacehode" = "Please enter the reasons for refusal";
+"InitiateApplication" = "Apply";
+"HaveBeenWithdrawn" = "Revoked";
+
+"UserName" = "User Name";
+"BindCode" = "Bind QR Code";
+"ServerAddress" = "Server Address";
+"Departments" = "Departments";
+"ModifyPassword" = "Change Password";
+"ApprovalBusinessDetailTitle" = "Details";
+"SearchSubordinates" = "Search Subordinates";
+"Replace" = "Replace";
+"ApprovalSucceedBusiness" = "Approved";
+"ApprovalFailBusiness" = "Rejected";
+"AssetAmountfreeze" = "Suspend";
+"Edit" = "Edit";
+"labelTipInfo" = "No Transfer History";
+"CurrencyApplyForLimit" = "The application limit exceeds the limit. Input range: 0~99999999999.99";
+
+"TransferInvalid" = "Revoked";
+"PleaseSelect" = "Please Select";
+"SystemTransferCancel" = "Transfer has been invalidated";
+
+"SubmissionConfirmation" = "Confirmation";
+"SubmissionConfirmationMessage" = "Are you sure you want to submit the approval flow？";
+"SearchCurrencyComplete" = "Done";
+"ModificatePasswordVCConfirm" = "Confirm";
+"RefuseTransferSubmit" = "Revoke";
+
+
+
+
+
+

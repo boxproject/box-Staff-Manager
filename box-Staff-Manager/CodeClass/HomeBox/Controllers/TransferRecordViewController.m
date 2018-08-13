@@ -89,12 +89,12 @@
 
 - (UIView *)viewLayer{
     if(_viewLayer) return _viewLayer;
-    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
+    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 250, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
     _segmentedView = [[UISegmentedControl alloc]initWithItems:@[HomeBoxVCInitiate,HomeBoxVCParticipateIn]];
     [_segmentedView addTarget:self action:@selector(segmentedChangle) forControlEvents:UIControlEventValueChanged];
     [_viewLayer addSubview:self.segmentedView];
-    self.segmentedView.frame = CGRectMake(30, 0, 200 - 60, 30);
+    self.segmentedView.frame = CGRectMake(30, 0, 250 - 60, 30);
     _segmentedView.selectedSegmentIndex = 0;
     return _viewLayer;
 }
@@ -155,6 +155,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh

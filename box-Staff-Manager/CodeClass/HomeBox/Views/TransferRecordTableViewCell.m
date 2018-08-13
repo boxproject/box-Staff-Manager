@@ -47,7 +47,7 @@
         make.top.offset(9);
         make.height.offset(20);
         make.left.equalTo(leftImg.mas_right).offset(9);
-        make.right.offset(-120);
+        //make.right.offset(-120);
     }];
     
     _bottomLeftLab = [[UILabel alloc]init];
@@ -58,7 +58,7 @@
         make.top.equalTo(_topLeftLab.mas_bottom).offset(1);
         make.height.offset(17);
         make.left.equalTo(leftImg.mas_right).offset(9);
-        make.right.offset(-120);
+        //make.right.offset(-120);
     }];
     
     _topRightlab = [[UILabel alloc]init];
@@ -69,7 +69,7 @@
     [_topRightlab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(9);
         make.height.offset(19);
-        make.width.offset(130);
+        //make.width.offset(130);
         make.right.offset(-15);
     }];
     
@@ -81,7 +81,7 @@
     [_bottomRightlab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_topRightlab.mas_bottom).offset(2);
         make.height.offset(17);
-        make.width.offset(150);
+        //make.width.offset(150);
         make.right.offset(-15);
     }];
     
@@ -142,6 +142,11 @@
         case ApprovalCancel:
         {
             _bottomRightlab.text = TransferRecordTableViewCellTransferCancel;
+            break;
+        }
+        case ApprovalTransferCancel:
+        {
+            _bottomRightlab.text = TransferInvalid;
             break;
         }
         default:

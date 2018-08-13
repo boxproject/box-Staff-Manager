@@ -16,7 +16,7 @@
 @interface SetApprovalAmountViewController ()<UITableViewDelegate, UITableViewDataSource,SetApprovalAmountDelegate>
 
 @property (nonatomic,strong) UIView *topView;
-@property (nonatomic,strong) UITextField *limitTimeTf;
+@property (nonatomic,strong) LimitTimeTextField *limitTimeTf;
 @property (nonatomic,strong) UILabel *menberLab;
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
@@ -36,7 +36,6 @@
     _aWrapper = [[DDRSAWrapper alloc] init];
     [self createBarItem];
     [self createView];
-    
 }
 
 -(void)createView
@@ -61,10 +60,10 @@
         make.top.offset(0);
         make.height.offset(60);
         make.left.offset(15);
-        make.width.offset(90);
+        make.width.offset(98);
     }];
     
-    _limitTimeTf = [[UITextField alloc] init];
+    _limitTimeTf = [[LimitTimeTextField alloc] init];
     _limitTimeTf.font = Font(14);
     _limitTimeTf.textAlignment = NSTextAlignmentLeft;
     NSMutableAttributedString *placeholder = [[NSMutableAttributedString alloc] initWithString:LimitTimesPlaceholder];
@@ -76,25 +75,25 @@
                            range:NSMakeRange(0, LimitTimesPlaceholder.length)];
     _limitTimeTf.attributedPlaceholder = placeholder;
     _limitTimeTf.textColor = [UIColor colorWithHexString:@"#333333"];
-    _limitTimeTf.keyboardType = UIKeyboardTypeDecimalPad;
+    _limitTimeTf.keyboardType = UIKeyboardTypeNumberPad;
     [_limitTimeTf addTarget:self action:@selector(textViewEditChanged) forControlEvents:UIControlEventEditingChanged];
     [_topView addSubview:_limitTimeTf];
     [_limitTimeTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(limitTimeLab.mas_right).offset(8);
+        make.left.equalTo(limitTimeLab.mas_right).offset(0);
         make.right.offset(-75);
         make.top .offset(0);
         make.height.offset(60);
     }];
     
     UILabel *timeLab = [[UILabel alloc] init];
-    timeLab.textAlignment = NSTextAlignmentCenter;
+    timeLab.textAlignment = NSTextAlignmentRight;
     timeLab.font = Font(14);
     timeLab.text = AccountPasswordHour;
     timeLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_topView addSubview:timeLab];
     [timeLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.offset(-32);
-        make.width.offset(30);
+        make.width.offset(38);
         make.top.offset(0);
         make.height.offset(60);
     }];
@@ -140,7 +139,7 @@
         make.top.offset(60);
         make.bottom.offset(0);
         make.left.offset(15);
-        make.width.offset(60);
+        //make.width.offset(60);
     }];
     
     UIImageView *rightImg = [[UIImageView alloc] init];
@@ -202,6 +201,7 @@
         make.bottom.offset(-kTabBarHeight + 49);
         make.height.offset(46);
     }];
+    _submitBtn.enabled = NO;
 }
 
 -(void)textViewEditChanged
@@ -227,6 +227,16 @@
 #pragma mark ----- 提交审批 -----
 -(void)submitBtnAction:(UIButton *)btn
 {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:SubmissionConfirmation message:SubmissionConfirmationMessage preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [self submitApprovalFlow];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)submitApprovalFlow
+{
     CGFloat limitFloat = [_limitTimeTf.text floatValue];
     if (limitFloat < 0 || limitFloat > 240) {
         [self showProgressWithMessage:LimitAlert title:nil actionWithTitle:Affirm];
@@ -235,6 +245,9 @@
     for (CurrencyModel *currencyModel in _sourceArray) {
         if (currencyModel.limit == nil) {
             [self showProgressWithMessage:[NSString stringWithFormat:@"%@%@%@", PleaseInput, currencyModel.currency,ApplyForLimit] title:nil actionWithTitle:Affirm];
+            return;
+        }if ([currencyModel.limit floatValue] > 99999999999.99) {
+            [self showProgressWithMessage:[NSString stringWithFormat:@"%@%@", currencyModel.currency,CurrencyApplyForLimit] title:nil actionWithTitle:Affirm];
             return;
         }
     }
@@ -256,12 +269,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/business/flow" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
-            UIViewController *vc = self.presentingViewController;
-            while (vc.presentingViewController) {
-                vc = vc.presentingViewController;
-            }
-            [vc dismissViewControllerAnimated:YES completion:NULL];
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"createApprovalSucceed" object:nil];
+            [self dismissViewController];
             [WSProgressHUD showSuccessWithStatus:responseObject[@"message"]];
             
         }else{
@@ -270,6 +278,16 @@
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
     }];
+}
+
+-(void)dismissViewController
+{
+    UIViewController *vc = self.presentingViewController;
+    while (vc.presentingViewController) {
+        vc = vc.presentingViewController;
+    }
+    [vc dismissViewControllerAnimated:YES completion:NULL];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"createApprovalSucceed" object:nil];
 }
 
 #pragma mark ----- 申请币种 -----
@@ -318,6 +336,7 @@
     return cell;
 }
 
+#pragma mark ----- SetApprovalAmountDelegate -----
 - (void)textViewEdit:(NSString *)text indexPath:(NSIndexPath *)indexPath
 {
     CurrencyModel *model = self.sourceArray[indexPath.row];
@@ -330,8 +349,10 @@
     // 删除模型
     [_sourceArray removeObjectAtIndex:indexPath.row];
     // 刷新
-    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.tableView reloadData];
     [self submitBtnBackgroundColor];
+    
 }
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -340,7 +361,8 @@
         // 删除模型
         [_sourceArray removeObjectAtIndex:indexPath.row];
         // 刷新
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+        [self.tableView reloadData];
+        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         [self submitBtnBackgroundColor];
     }];
     return @[action1];

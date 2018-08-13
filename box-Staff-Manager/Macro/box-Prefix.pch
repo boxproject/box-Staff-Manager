@@ -11,10 +11,13 @@
 
 #ifdef __OBJC__
 
+#define Localized(key)  [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"appLanguage"]] ofType:@"lproj"]] localizedStringForKey:(key) value:nil table:@"Language"]
+
 #import "AppConstant.h"
 #import "ColorHeaders.h"
 #import "SizeHeader.h"
 #import "Localizable.h"
+#import "AppDelegate.h"
 
 #import "AFNetworking.h"
 #import <Masonry/Masonry.h>
@@ -50,13 +53,17 @@
 #import "BMChineseSort.h"
 #import "ValuePickerView.h"
 #import "PickerModel.h"
+#import "NoCopyTextField.h"
+#import "LimitTimeTextField.h"
+#import "LimitAmountTextField.h"
 
 typedef NS_ENUM(NSInteger, ApprovalState) {
     ApprovalAwait,   //待审批
     Approvaling,     //审批中
     ApprovalFail,    //审批被驳回
     ApprovalSucceed, //审批成功
-    ApprovalCancel,  //转账申请已经撤回
+    ApprovalCancel,
+    ApprovalTransferCancel
 };
 
 

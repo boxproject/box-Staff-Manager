@@ -15,7 +15,9 @@
 
 
 @interface ValuePickerView ()<UIPickerViewDataSource, UIPickerViewDelegate>
-
+{
+    NSInteger initIndex;
+}
 @property (nonatomic ,strong) UIView * bottomView;       //底层视图
 @property (nonatomic ,strong) UIPickerView * statePicker;//运营状态轱辘
 @property (nonatomic ,strong) UIView * controllerToolBar;//控制工具栏
@@ -117,15 +119,23 @@
 
 - (void)setDataSource:(NSArray *)dataSource
 {
-    _dataSource = dataSource;
-    
+    NSMutableArray *dataArr = [[NSMutableArray alloc] init];
+    PickerModel *lastModel =  dataSource[dataSource.count -1];
+    for (int i = 0; i < dataSource.count - 1; i ++) {
+        PickerModel *model = dataSource[i];
+        if ([model.title isEqualToString:lastModel.title]) {
+            initIndex = i;
+        }
+        [dataArr addObject:model];
+    }
+    _dataSource = dataArr;
     //设置弹层高度
     if (HEIGHT_PICKER > HEIGHT_OF_POPBOX - 24) {
         self.pickerHeight = HEIGHT_OF_POPBOX - 24;
     } else {
         self.pickerHeight = HEIGHT_PICKER;
     }
-    PickerModel *model = _dataSource[0];
+    PickerModel *model = _dataSource[initIndex];
     //设置返回默认值
     self.stateStr = [NSString stringWithFormat:@"%@/%@",model.title,@(1)];
     _pickerModel = model;
@@ -136,7 +146,7 @@
     
     //刷新轱辘数据
     [self.statePicker reloadAllComponents];
-    [self.statePicker selectRow:(_dataSource.count/2 - 1) inComponent:0 animated:NO];
+    [self.statePicker selectRow:(initIndex) inComponent:0 animated:NO];
 }
 
 - (void)setDefaultStr:(NSString *)defaultStr
@@ -217,10 +227,10 @@
 }
 
 /**点击背景释放界面*/
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [self removeSelfFromSupView];
-}
+//- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+//{
+//    [self removeSelfFromSupView];
+//}
 
 #pragma mark - 显示弹层相关
 /**弹出视图*/

@@ -30,6 +30,29 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+    if ([item.title isEqualToString:@"BOX"]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *pullStr = [defaults valueForKey:@"BOX"];
+        if (pullStr != nil && [pullStr isEqualToString:@"BOX"]) {
+        }else{
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"refleshBox" object:nil];
+             [defaults setObject:@"BOX" forKey: @"BOX"];
+            //设置同步
+            [defaults synchronize];
+        }
+    }else{
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *pullStr = [defaults valueForKey:@"BOX"];
+        if (pullStr != nil && [pullStr isEqualToString:@"BOX"]) {
+            [defaults removeObjectForKey:@"BOX"];
+            [defaults synchronize];
+        }
+    }
+    NSLog(@"item name = %@", item.title);
+}
+
 -(void)createDirectoryInfo
 {
     NSInteger applyer_id = [[BoxDataManager sharedManager].applyer_id integerValue];

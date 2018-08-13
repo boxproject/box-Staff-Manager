@@ -30,7 +30,7 @@ static AFHTTPSessionManager *_manager;
         _manager.requestSerializer.timeoutInterval = 10;
         _manager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         _manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/plain", @"text/javascript", @"text/json", @"text/html", nil];
-        
+        [_manager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"] forHTTPHeaderField:@"content-language"];
         // 1.设置非校验证书模式 支持https（不校验证书，可以抓包查看）
         _manager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
         _manager.securityPolicy.allowInvalidCertificates = YES;

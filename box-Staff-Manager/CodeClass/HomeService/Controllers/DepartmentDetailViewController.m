@@ -15,7 +15,8 @@
 
 @interface DepartmentDetailViewController () <AddDepartmentDelegate, UITableViewDelegate, UITableViewDataSource>
 {
-NSMutableArray<Person *> *dataArray;
+    NSMutableArray<Person *> *dataArray;
+    NSArray *indexList;
 }
 @property (nonatomic,strong) UILabel *departmentDetailLab;
 @property (nonatomic,strong) UIImageView *rightImg;
@@ -38,6 +39,13 @@ NSMutableArray<Person *> *dataArray;
     self.view.backgroundColor = kWhiteColor;
     self.title = DepartmentDetailVCTitle;
     _sourceArray = [[NSMutableArray alloc] init];
+    indexList = [NSMutableArray arrayWithObjects:
+                 @"A", @"B", @"C", @"D", @"E", @"F",
+                 @"G", @"H", @"I", @"J", @"K", @"L",
+                 @"M", @"N", @"O", @"P", @"Q", @"R",
+                 @"S", @"T", @"U", @"V", @"W", @"X",
+                 @"Y", @"Z", @"#", nil
+                 ];
     [self createView];
     [self loadData];
 }
@@ -114,7 +122,7 @@ NSMutableArray<Person *> *dataArray;
     [departmentLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.offset(0);
         make.left.offset(15);
-        make.width.offset(60);
+        //make.width.offset(60);
     }];
     
     _departmentDetailLab = [[UILabel alloc] init];
@@ -207,6 +215,7 @@ NSMutableArray<Person *> *dataArray;
 - (void)editDepartmentWithModel:(DepartmentModel *)model
 {
     _departmentDetailLab.text = model.Name;
+    _model.Name = model.Name;
     _menberLab.text = [NSString stringWithFormat:@"%@（%ld）", DepartmentDetailVCMember, model.Employees];
     [self loadData];
 }
@@ -239,7 +248,7 @@ NSMutableArray<Person *> *dataArray;
 }
 //section右侧index数组
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView{
-    return self.indexArray;
+    return indexList;;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -248,7 +257,14 @@ NSMutableArray<Person *> *dataArray;
 
 //点击右侧索引表项时调用 索引与section的对应关系
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index{
-    return index;
+    NSString *key = [indexList objectAtIndex:index];
+    for (int i = 0; i < self.indexArray.count; i ++) {
+        NSString *keyIndex = [self.indexArray objectAtIndex:i];
+        if ([key isEqualToString:keyIndex]) {
+            return i;
+        }
+    }
+    return NSNotFound;
 }
 //返回cell
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

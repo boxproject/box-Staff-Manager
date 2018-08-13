@@ -25,8 +25,8 @@ typedef NS_ENUM(NSInteger, ApprovalFooterState) {
 @interface ApprovalBusinessFooterView : UIView
 
 -(id)initWithFrame:(CGRect)frame;
-
 -(void)setValueWithStatus:(ApprovalFooterState)Status;
+-(void)setValueWithProgress:(NSInteger)progress type:(ApprovalFooterState)Status;
 
 @property (nonatomic,weak) id <ApprovalBusinessFooterDelegate> delegate;
 

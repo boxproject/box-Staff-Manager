@@ -18,9 +18,10 @@
  
 +(void)showErrorWithStatus:(NSString *)message code:(NSInteger)code;
 {
-   [WSProgressHUD showErrorWithStatus:message];
     if (code == 1020) {
          [[NSNotificationCenter defaultCenter]postNotificationName:@"loginBox" object:nil];
+    }else{
+        [WSProgressHUD showErrorWithStatus:message];
     }
 }
  

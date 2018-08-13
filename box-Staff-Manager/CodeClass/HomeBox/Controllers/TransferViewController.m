@@ -18,6 +18,9 @@
 #import "LoginBoxViewController.h"
 
 @interface TransferViewController ()<UITextFieldDelegate,UIScrollViewDelegate,TransferViewDelegate,CurrencyViewDelegate>
+{
+    NSInteger typeIn;
+}
 @property(nonatomic, strong)DDRSAWrapper *aWrapper;
 @property(nonatomic, strong)UIScrollView *contentView;
 @property (nonatomic,strong) UIView *viewLayer;
@@ -39,6 +42,11 @@
 @property (nonatomic, strong) UILabel *remainingSumLab;
 @property (nonatomic, strong) NSMutableArray *currencyArray;
 @property (nonatomic, strong) NSString *amountStr;
+@property (nonatomic, strong) UIView *contractView;
+@property (nonatomic, strong) UILabel *contractLab;
+@property (nonatomic, strong) UILabel *contractContentLab;
+@property (nonatomic, strong)PickerModel *pickerModel;
+
 @end
 
 @implementation TransferViewController
@@ -53,6 +61,7 @@
     [self createBarItem];
     [self createView];
     _aWrapper = [[DDRSAWrapper alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewEditChanged:) name:UITextFieldTextDidChangeNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,7 +161,11 @@
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    UIViewController *vc = self.presentingViewController;
+    while (vc.presentingViewController) {
+        vc = vc.presentingViewController;
+    }
+    [vc dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(void)showProgressWithMessage:(NSString *)message
@@ -161,12 +174,6 @@
     [alert addAction:[UIAlertAction actionWithTitle:Affirm style:(UIAlertActionStyleCancel) handler:^(UIAlertAction * _Nonnull action) {
     }]];
     [self presentViewController:alert animated:YES completion:nil];
-    
-    /*
-    if ([_currencyTf.text isEqualToString:@"ETH"]) {
-        [self showProgressWithMessage: TransferVCETHAlert];
-    }
-     */
 }
 
 -(void)createView
@@ -184,7 +191,7 @@
     currencyView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [_contentView addSubview:currencyView];
     [currencyView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(15);
+        make.top.offset(5);
         make.left.offset(0);
         make.width.offset(SCREEN_WIDTH);
         make.height.offset(52);
@@ -349,9 +356,10 @@
     _addressTf = [[UITextField alloc] init];
     _addressTf.font = Font(14);
     _addressTf.delegate = self;
+    _addressTf.keyboardType = UIKeyboardTypeASCIICapable;
     _addressTf.placeholder = TransferVCReceiptAddressInfo;
     if ([_fromType isEqualToString:@"scanCode"]) {
-        _addressTf.text = _address;
+        _addressTf.text = [self handleAddress:_address];
     }
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [_addressTf addTarget:self
@@ -415,15 +423,61 @@
         make.height.offset(50);
     }];
     
+    //合约地址
+    _contractView = [[UIView alloc] init];
+    _contractView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
+    [_contentView addSubview:_contractView];
+    [_contractView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.left.offset(0);
+        make.width.offset(SCREEN_WIDTH);
+        make.height.offset(0);
+    }];
+    
+    _contractLab= [[UILabel alloc] init];
+    _contractLab.textAlignment = NSTextAlignmentLeft;
+    _contractLab.font = Font(14);
+    _contractLab.text = ContractAddress;
+    _contractLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [_contractView addSubview:_contractLab];
+    [_contractLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(0);
+        make.bottom.offset(0);
+        make.left.offset(15);
+        make.width.offset(60);
+    }];
+    
+    _contractContentLab = [[UILabel alloc] init];
+    _contractContentLab.font = Font(14);
+    _contractContentLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    _contractContentLab.numberOfLines = 2;
+    [_contractView addSubview:_contractContentLab];
+    [_contractContentLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_contractLab.mas_right).offset(15);
+        make.right.offset(-16);
+        make.top .offset(0);
+        make.bottom.offset(0);
+    }];
+    
+    UIView *contractLine= [[UIView alloc] init];
+    contractLine.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [_contentView addSubview:contractLine];
+    [contractLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_contractView.mas_bottom).offset(-1);
+        make.left.offset(15);
+        make.width.offset(SCREEN_WIDTH - 30);
+        make.height.offset(1);
+    }];
+    
     //金额
     UIView *amountView = [[UIView alloc] init];
     amountView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
     [_contentView addSubview:amountView];
     [amountView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.top.equalTo(contractLine.mas_bottom).offset(0);
         make.left.offset(0);
         make.width.offset(SCREEN_WIDTH);
-        make.height.offset(52);
+        make.height.offset(70);
     }];
     
     UILabel *amountLab = [[UILabel alloc] init];
@@ -433,22 +487,23 @@
     amountLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [amountView addSubview:amountLab];
     [amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(0);
-        make.bottom.offset(0);
+        make.top.offset(15);
+        make.height.offset(20);
         make.left.offset(15);
         make.width.offset(60);
     }];
     
     _remainingSumLab = [[UILabel alloc] init];
-    _remainingSumLab.textAlignment = NSTextAlignmentRight;
+    _remainingSumLab.textAlignment = NSTextAlignmentLeft;
     _remainingSumLab.font = Font(12);
-    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, @"0"];
+    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, @"0.00000000"];
     _remainingSumLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [amountView addSubview:_remainingSumLab];
     [_remainingSumLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.offset(0);
-        make.bottom.offset(0);
+        make.top.equalTo(amountLab.mas_bottom).offset(5);
+        make.height.offset(15);
         make.right.offset(-15);
+        make.left.equalTo(amountLab.mas_right).offset(15);
     }];
     
     _amountTf = [[UITextField alloc] init];
@@ -456,7 +511,7 @@
     _amountTf.tag = 101;
     _amountTf.font = Font(14);
     if (_amount == nil) {
-        _amountTf.text = @"0";
+        //_amountTf.text = @"0";
     }else{
        _amountTf.text = _amount;
     }
@@ -469,9 +524,9 @@
     [amountView addSubview:_amountTf];
     [_amountTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(amountLab.mas_right).offset(15);
-        make.right.equalTo(_remainingSumLab.mas_left).offset(8);
-        make.top .offset(0);
-        make.bottom.offset(0);
+        make.right.offset(-15);
+        make.top.offset(15);
+        make.height.offset(20);
     }];
     
     UIView *lineThree = [[UIView alloc] init];
@@ -641,6 +696,55 @@
     _commitBtn.enabled = NO;
 }
 
+-(void)textViewEditChanged:(NSNotification *)notification{
+    UITextField *textField = (UITextField *)notification.object;
+    if (textField == _addressTf) {
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 60;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }else if (textField == _applyReasonTf){
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 50;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }
+}
+
 #pragma mark ----- textFieldDidChange -----
 - (void)textFieldDidChange:(UITextField *)textField
 {
@@ -652,42 +756,148 @@
         _commitBtn.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
     }
     if (textField.tag == 101) {
-        NSDictionary *dic =  _approvalBusinessModel.flow_limit[0];
-        CGFloat limitFloat = [dic[@"limit"] floatValue];
-        CGFloat limitAmount = limitFloat - [_amountTf.text floatValue];
-        if (limitAmount < 0) {
-            _amountTf.text = _amountStr;
-            _remainingSumLab.font = Font(12);
-            _remainingSumLab.text = [NSString stringWithFormat:@"%@：%f", RemainingSum, limitFloat];
-        }
         [self calculateLimitAmount];
     }
 }
 
+//限制小数位数
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField.tag == 101) {
+        //判断小数点的位数
+        NSRange ran=[textField.text rangeOfString:@"."];
+        NSInteger tt=range.location-ran.location;
+        if (tt <= 8){
+            return YES;
+        }else{
+            return NO;
+        }
+    }
+    return YES;
+}
+
 -(void)calculateLimitAmount
 {
+    NSDictionary *dict =  _approvalBusinessModel.flow_limit[0];
+    NSString *limitDic = dict[@"limit"];
+    if (dict[@"limit"] == nil) {
+        limitDic = @"0";
+    }
+    NSDecimalNumber *aa = [NSDecimalNumber decimalNumberWithString:limitDic];
+    NSString *amountString;
+    if ([_amountTf.text isEqualToString:@""]) {
+        amountString = @"0";
+    }else{
+        amountString = _amountTf.text;
+    }
+    NSDecimalNumber *bb = [NSDecimalNumber decimalNumberWithString:amountString];
+    NSDecimalNumber *subtra = [aa decimalNumberBySubtracting:bb];
+    NSString *string = subtra.stringValue;
+    if ([string hasPrefix:@"-"]) {
+        NSString *str = dict[@"limit"];
+        _amountTf.text = _amountStr;
+        _remainingSumLab.font = Font(12);
+        if ([str rangeOfString:@"."].location == NSNotFound) {
+            str = [NSString stringWithFormat:@"%@%@", str, @"."];
+            for (int i = 0; i < 8; i ++) {
+                str = [NSString stringWithFormat:@"%@%@",str, @"0"];
+            }
+        } else {
+            NSRange range = [str rangeOfString:@"."];
+            NSString *content = [str substringFromIndex:(range.location + range.length)];
+            NSInteger count = 8 - content.length;
+            if (count > 0) {
+                for (int i = 0; i < count; i ++) {
+                    str = [NSString stringWithFormat:@"%@%@",str, @"0"];
+                }
+            }
+        }
+        _remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, str];
+
+    }
     NSDictionary *dic =  _approvalBusinessModel.flow_limit[0];
-    CGFloat limitFloat = [dic[@"limit"] floatValue];
-    CGFloat limitAmount = limitFloat - [_amountTf.text floatValue];
+    NSString *limit = dic[@"limit"];
+    if (dic == nil) {
+        limit = @"0";
+    }
+    NSDecimalNumber *a = [NSDecimalNumber decimalNumberWithString:limit];
+    NSString *amountStr;
+    if ([_amountTf.text isEqualToString:@""]) {
+        amountStr = @"0";
+    }else{
+        amountStr = _amountTf.text;
+    }
+    NSDecimalNumber *b = [NSDecimalNumber decimalNumberWithString:amountStr];
+    NSDecimalNumber *subtract = [a decimalNumberBySubtracting:b];
+    NSString *str = subtract.stringValue;
+     if ([str rangeOfString:@"."].location == NSNotFound) {
+        str = [NSString stringWithFormat:@"%@%@", str, @"."];
+        for (int i = 0; i < 8; i ++) {
+            str = [NSString stringWithFormat:@"%@%@",str, @"0"];
+        }
+    } else {
+        NSRange range = [str rangeOfString:@"."];
+        NSString *content = [str substringFromIndex:(range.location + range.length)];
+        NSInteger count = 8 - content.length;
+        if (count > 0) {
+            for (int i = 0; i < count; i ++) {
+                str = [NSString stringWithFormat:@"%@%@",str, @"0"];
+            }
+        }
+    }
     _remainingSumLab.font = Font(12);
-    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%f", RemainingSum, limitAmount];
+    _remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, str];
     _amountStr = _amountTf.text;
 }
 
 #pragma mark ----- 选择币种 -----
 -(void)selectCurrencyAction:(UIButton *)btn
 {
+    [self.view endEditing:YES];
     [self requestCurrencyList];
 }
 
 -(void)showPickerView
 {
+     if (_currencyArray.count == 0) {
+        return;
+    }
     self.pickerView = [[ValuePickerView alloc]init];
+    if (_pickerModel == nil) {
+        NSInteger countIn = 0;
+        countIn = _currencyArray.count/2;
+        if (_currencyArray.count == 1) {
+            countIn = 1;
+        }
+        PickerModel *model = _currencyArray[countIn - 1];
+        [_currencyArray addObject:model];
+    }else{
+        [_currencyArray addObject:_pickerModel];
+    }
     self.pickerView.dataSource = _currencyArray;
     self.pickerView.pickerTitle = SelectCurrency;
     __weak typeof(self) weakSelf = self;
     self.pickerView.valueDidSelect = ^(PickerModel *pickerModel){
+        weakSelf.pickerModel = pickerModel;
         weakSelf.currencyTf.text = pickerModel.title;
+        weakSelf.approvalProcessTf.text = @"";
+        weakSelf.approvalBusinessModel = nil;
+        weakSelf.amountTf.text = @"";
+        weakSelf.remainingSumLab.text = [NSString stringWithFormat:@"%@：%@", RemainingSum, @"0.00000000"];
+         if ([pickerModel.content hasPrefix:@"0x"] && pickerModel.content.length == 42 && ![pickerModel.title isEqualToString:@"ETH"]) {
+            weakSelf.contractContentLab.text = pickerModel.content;
+            [weakSelf.contractView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.offset(52);
+            }];
+        }else{
+            weakSelf.contractContentLab.text = @"";
+            [weakSelf.contractView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.offset(0);
+            }];
+        }
+        if ([pickerModel.title isEqualToString:@"ETH"]) {
+            [weakSelf showProgressWithMessage: TransferVCETHAlert];
+        }
     };
     [self.pickerView show];
 }
@@ -695,6 +905,10 @@
 #pragma mark  ----- 币种拉取 -----
 -(void)requestCurrencyList
 {
+    if (typeIn == 1) {
+        return;
+    }
+    typeIn = 1;
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
@@ -707,13 +921,16 @@
                  CurrencyModel *model = [[CurrencyModel alloc] initWithDict:dataDic];
                  PickerModel *pickerModel = [[PickerModel alloc] init];
                  pickerModel.title = model.currency;
+                 pickerModel.content = model.tokenAddr;
                  [_currencyArray addObject:pickerModel];
              }
              [self showPickerView];
+             typeIn = 0;
          }else{
              [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
          }
      } fail:^(NSError *error) {
+         typeIn = 0;
          NSLog(@"%@", error.description);
      }];
 }
@@ -721,7 +938,7 @@
 #pragma mark ----- currencyAction -----
 -(void)approvalProcessAction:(UIButton *)btn
 {
-    if ([_currencyTf.text isEqualToString:@""]) {
+     if ([_currencyTf.text isEqualToString:@""]) {
         return;
     }
     SearchApprovalViewController *searchApprovalVc = [[SearchApprovalViewController alloc] init];
@@ -729,6 +946,7 @@
     searchApprovalVc.approvalBlock = ^(ApprovalBusinessModel *model){
         _approvalProcessTf.text = model.flow_name;
         _approvalBusinessModel = model;
+        _amountTf.text = @"";
         [self calculateLimitAmount];
     };
     [self.navigationController pushViewController:searchApprovalVc animated:YES];
@@ -741,13 +959,28 @@
     return YES;
 }
 
+-(NSString *)handleAddress:(NSString *)address
+{
+    /*
+    NSString *str1 = [address substringToIndex:12];
+    NSString *str2 = [address substringFromIndex:address.length - 12];
+    NSString *str3 = [NSString stringWithFormat:@"%@...%@", str1, str2];
+    */
+    return address;
+}
+
 #pragma mark -----  地址簿 -----
 -(void)addressTextAction:(UIButton *)btn
 {
     HomeDirectoryViewController *directoryVC = [[HomeDirectoryViewController alloc] init];
+    if (![_currencyTf.text isEqualToString:@""]) {
+        directoryVC.currency = _currencyTf.text;
+    }else{
+        directoryVC.currency = @"ETH";
+    }
     directoryVC.model = _mode;
     directoryVC.addressBlock = ^(NSString *addressText){
-        _addressTf.text = addressText;
+        _addressTf.text = [self handleAddress:addressText];
     };
     directoryVC.type = @"getAddress";
     [self.navigationController pushViewController:directoryVC animated:YES];
@@ -759,11 +992,11 @@
     ScanCodeViewController *scanCodeVC = [[ScanCodeViewController alloc] init];
     scanCodeVC.fromFunction = fromTransfer;
     scanCodeVC.codeBlock = ^(NSString *codeText){
-        _addressTf.text = codeText;
+        _addressTf.text = [self handleAddress:codeText];
         _amountTf.text = @"";
     };
     scanCodeVC.codeArrBlock = ^(NSArray *codeArr){
-        _addressTf.text = codeArr[0];
+        _addressTf.text = [self handleAddress:codeArr[0]];
         _amountTf.text = codeArr[1];
         [self calculateLimitAmount];
     };
@@ -785,14 +1018,6 @@
         [WSProgressHUD showErrorWithStatus:AddressVerifyETHError];
         return;
     }
-    /*
-    CGFloat amountFloat= [_amountTf.text floatValue];
-    CGFloat flowLimit = [_approvalBusinessModel.single_limit floatValue];
-    if (amountFloat > flowLimit) {
-        [WSProgressHUD showErrorWithStatus:AmountTfAlert];
-        return;
-    }
-     */
     CGFloat minerFloat = [_minersFeeLab.text floatValue];
     if (minerFloat == 0.0) {
         [WSProgressHUD showErrorWithStatus:MinersFeeLabAlert];
@@ -808,7 +1033,7 @@
                                    @"timestamp":timestamp
                                    };
     
-    _transferView = [[TransferView alloc] initWithFrame:[UIScreen mainScreen].bounds dic:applyInfoDic flowName:_approvalBusinessModel.flow_name];
+    _transferView = [[TransferView alloc] initWithFrame:[UIScreen mainScreen].bounds dic:applyInfoDic flowName:_approvalBusinessModel.flow_name contractAddress:_contractContentLab.text];
     _transferView.delegate = self;
     [[UIApplication sharedApplication].keyWindow addSubview:_transferView];
 }
@@ -816,8 +1041,23 @@
 #pragma mark -----  TransferViewDelegate -----
 -(void)transferDidAchieve
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if ([self.delegate respondsToSelector:@selector(backRefleshTransfer)]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        UIViewController *vc = self.presentingViewController;
+        while (vc.presentingViewController) {
+            vc = vc.presentingViewController;
+        }
+        [vc dismissViewControllerAnimated:YES completion:NULL];
+        [self.delegate backRefleshTransfer];
+    }else{
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        UIViewController *vc = self.presentingViewController;
+        while (vc.presentingViewController) {
+            vc = vc.presentingViewController;
+        }
+        [vc dismissViewControllerAnimated:YES completion:NULL];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"refleshBox" object:nil];
+    }
 }
 
 -(void)showProgressHUD
@@ -851,6 +1091,9 @@
             //code == 1018时提示解冻时间戳
             if ([dict[@"code"] integerValue] == 1018) {
                 [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
+                if ([BoxDataManager sharedManager].launchState == LoginState) {
+                    return ;
+                }
                 LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
                 loginVc.fromFunction = FromAppDelegate;
                 [self presentViewController:loginVc animated:YES completion:nil];

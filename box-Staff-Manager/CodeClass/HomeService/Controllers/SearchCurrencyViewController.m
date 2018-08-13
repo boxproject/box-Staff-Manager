@@ -153,7 +153,7 @@
     _searchField.returnKeyType = UIReturnKeySearch;
     [titleSubView addSubview:self.searchField];
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:AddDepartmentVCComplete style:UIBarButtonItemStyleDone target:self action:@selector(completeButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:SearchCurrencyComplete style:UIBarButtonItemStyleDone target:self action:@selector(completeButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(14),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
     
@@ -205,7 +205,7 @@
             if (_page == 1) {
                 [_sourceArray removeAllObjects];
             }
-            NSArray *listArray = dict[@"data"][@"list"];
+            NSArray *listArray = dict[@"data"][@"currency_list"];
             for (NSDictionary *listDic in listArray) {
                 CurrencyModel *model = [[CurrencyModel alloc] initWithDict:listDic];
                 for (CurrencyModel *currencyModel in _currencyArray) {

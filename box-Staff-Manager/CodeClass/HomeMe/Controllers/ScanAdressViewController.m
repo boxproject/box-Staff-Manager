@@ -291,7 +291,7 @@
         make.left.offset(40);
         make.right.offset(-40);
         make.top.equalTo(thiefImg.mas_bottom).offset(30);
-        make.height.offset(42);
+        //make.height.offset(42);
     }];
     
     UIButton *achieveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -305,10 +305,11 @@
     [achieveBtn addTarget:self action:@selector(achieveBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [_aleartView addSubview:achieveBtn];
     [achieveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(aleartLab.mas_bottom).offset(45);
+        //make.top.equalTo(aleartLab.mas_bottom).offset(45);
         make.centerX.equalTo(_aleartView);
         make.height.offset(38);
         make.width.offset(130);
+        make.bottom.offset(-30);
     }];
 }
 

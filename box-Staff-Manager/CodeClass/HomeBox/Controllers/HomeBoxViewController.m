@@ -20,7 +20,7 @@
 #import "CurrencyModel.h"
 #import "LoginBoxViewController.h"
 
-@interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate>
+@interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate,TransferViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
 @property (nonatomic,strong)UIImageView *topView;
@@ -63,11 +63,15 @@
     [self requesttransferAwait];
     [self requestCurrencyData];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginBoxAction:) name:@"loginBox" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refleshBox:) name:@"refleshBox" object:nil];
 }
 
 #pragma mark  ----- token过期重新登录 -----
 -(void)loginBoxAction:(NSNotification *)notification
 {
+    if ([BoxDataManager sharedManager].launchState == LoginState) {
+        return ;
+    }
     UIViewController * VC = [self currentViewController];
     LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
     loginVc.fromFunction = FromHomeBox;
@@ -272,7 +276,7 @@
     [_checkDetailBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_oneView);
         make.right.offset(-16);
-        make.width.offset(75);
+        make.width.offset(80);
         make.height.offset(29);
     }];
     
@@ -347,7 +351,7 @@
     [_systemUpdateBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(twoView);
         make.right.offset(-16);
-        make.width.offset(75);
+        make.width.offset(80);
         make.height.offset(29);
     }];
 }
@@ -365,7 +369,7 @@
     [_transRecordLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(20);
         make.left.offset(15);
-        make.width.offset(90);
+        //make.width.offset(200);
         make.height.offset(26);
     }];
     
@@ -412,6 +416,19 @@
         make.right.offset(-0);
         make.height.offset(150 - 50);
     }];
+}
+
+#pragma mark  ----- TransferViewDelegate -----
+- (void)backRefleshTransfer
+{
+    [_transferRecordView requestData];
+    [self requesttransferAwait];
+}
+
+-(void)refleshBox:(NSNotification *)notification
+{
+    [_transferRecordView requestData];
+    [self requesttransferAwait];
 }
 
 #pragma mark  ----- 刷新数据 -----
@@ -520,8 +537,8 @@
     [_topFollowView addSubview:_scanView];
     [_scanView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.left.offset(45);
-        make.width.offset(55);
+        make.left.offset(0);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *scanTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(scanTapAction:)];
@@ -532,8 +549,8 @@
     [_topFollowView addSubview:_transferView];
     [_transferView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.centerX.equalTo(_topFollowView);
-        make.width.offset(55);
+        make.left.offset((SCREEN_WIDTH) / 3);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *transferTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(transferAction:)];
@@ -544,8 +561,8 @@
     [_topFollowView addSubview:_paymentCodeView];
     [_paymentCodeView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.right.offset(-45);
-        make.width.offset(55);
+        make.left.offset((SCREEN_WIDTH) / 3 * 2);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *paymentCodeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(paymentCodeAction:)];
@@ -647,7 +664,7 @@
     [_transRecordLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.offset(20);
         make.left.offset(15);
-        make.width.offset(90);
+        //make.width.offset(90);
         make.height.offset(26);
     }];
     
@@ -705,6 +722,7 @@
 {
     TransferViewController *transferVC = [[TransferViewController alloc] init];
     transferVC.mode = _currencyModel;
+    transferVC.delegate = self;
     BoxNavigationController *transferNC = [[BoxNavigationController alloc] initWithRootViewController:transferVC];
     [self presentViewController:transferNC animated:YES completion:nil];
 }

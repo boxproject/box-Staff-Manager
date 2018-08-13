@@ -11,7 +11,7 @@
 typedef NS_ENUM (NSInteger, LaunchState){
     PerfectInformation,     //首次进入，完善信息
     EnterHomeBox,           //直接进入主页
-    LoginState,             //token失效或账号锁定进入登录状态
+    LoginState              //token失效或账号锁定进入登录状态
 };
  
 @interface BoxDataManager : NSObject
@@ -57,5 +57,6 @@ typedef NS_ENUM (NSInteger, LaunchState){
 -(void)saveDataWithCoding:(NSString *)coding codeValue:(NSString *)codeValue;
 /** 获取启动状态 */
 -(NSInteger)getLaunchState;
+-(void)removeDataWithCoding:(NSString *)coding;
 
 @end

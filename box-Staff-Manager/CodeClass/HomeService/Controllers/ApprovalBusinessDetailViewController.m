@@ -13,9 +13,9 @@
 #import "ApprovalBusApproversModel.h"
 #import "ApprovalBusinessTopView.h"
 #import "ApprovalBusinessFooterView.h"
-#import "ViewLogViewController.h"
 #import "PrivatePasswordView.h"
 #import "LoginBoxViewController.h"
+#import "ViewApprovalLogViewController.h"
 
 #define CellReuseIdentifier  @"ApprovalBusinessDetail"
 #define headerReusableViewIdentifier  @"ApprovalBusinessDetail"
@@ -23,7 +23,8 @@
 @interface ApprovalBusinessDetailViewController ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,ApprovalBusinessTopDelegate,ApprovalBusinessFooterDelegate,PrivatePasswordViewDelegate>
 {
     NSInteger pendingNum;
-}
+    NSString *language;
+} 
 @property(nonatomic, strong)ApprovalBusinessTopView *approvalBusinessTopView;
 @property(nonatomic, strong)ApprovalBusinessFooterView *approvalBusinessFooterView;
 //布局对象
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) NSMutableArray *approvaledInfoArray;
 @property(nonatomic, strong)UIButton *approvalStateBtn;
 @property(nonatomic, strong)PrivatePasswordView *privatePasswordView;
+@property(nonatomic, strong)DDRSAWrapper *aWrapper;
 
 @end
 
@@ -49,10 +51,12 @@
     [bar setBackgroundImage:bgImage forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = [UIColor colorWithHexString:@"#292e40"];
     [self createBarItem];
+    _aWrapper = [[DDRSAWrapper alloc] init];
     _approvaledInfoArray = [[NSMutableArray alloc] init];
     [self layoutCollectionView];
     [self createCollectionView:0];
     [self requestData];
+    language = [[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"];
 }
 
 
@@ -147,9 +151,8 @@
 #pragma mark ----- ViewLog -----
 - (void)enterViewLog
 {
-    ViewLogViewController *viewLogVC = [[ViewLogViewController alloc] init];
-    viewLogVC.approvalBusinessModel = _model;
-    viewLogVC.type = 1;
+    ViewApprovalLogViewController *viewLogVC = [[ViewApprovalLogViewController alloc] init];
+    viewLogVC.hashString = _model.flow_id;
     UINavigationController *viewLogNC = [[UINavigationController alloc] initWithRootViewController:viewLogVC];
     [self presentViewController:viewLogNC animated:YES completion:nil];
 }
@@ -160,7 +163,12 @@
     if (pendingNum == 0) {
         [self showAlertWith:ApprovalCancelAlertTitleOne message:ApprovalCancelAlertMessageOne];
     }else{
-        [self showAlertWith:ApprovalCancelAlertTitleTwo message:ApprovalCancelAlertMessageTwo];
+        if ([language isEqualToString: @"en"]) {
+            [self showAlertWith:[NSString stringWithFormat:@"%ld Pending Transfers", pendingNum] message:ApprovalCancelAlertMessageTwo];
+        }else{
+            [self showAlertWith:[NSString stringWithFormat:@"该审批流有%ld个正在进行中的转账申请", pendingNum] message:ApprovalCancelAlertMessageTwo];
+        }
+        //[self showAlertWith:ApprovalCancelAlertTitleTwo message:ApprovalCancelAlertMessageTwo];
     }
 }
 
@@ -182,24 +190,31 @@
     [self handleApprovalApplicationCancel:passwordStr];
 }
 
+#pragma mark ----- Cancel Approval Flow -----
 -(void)handleApprovalApplicationCancel:(NSString *)passwordStr
 {
+    NSString *signSHA256 = [_aWrapper PKCSSignBytesSHA256withRSA:_model.flow_name privateStr:[BoxDataManager sharedManager].privateKeyBase64];
     NSString *hmacSHA256 = [UIARSAHandler hmac: passwordStr withKey:[BoxDataManager sharedManager].encryptKey];
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
-    [paramsDic setObject:_model.flow_id forKey:@"order_number"];
+    [paramsDic setObject:_model.flow_id forKey:@"flow_id"];
     [paramsDic setObject:hmacSHA256 forKey:@"password"];
     [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
+    [paramsDic setObject:signSHA256 forKey:@"sign"];
     [ProgressHUD showProgressHUD];
-    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/transfer/application/cancel" params:paramsDic success:^(id responseObject) {
+    [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/business/flow/disuse" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             [self showProgressWithMessage:dict[@"message"]];
             [_privatePasswordView removeFromSuperview];
             [_approvalBusinessTopView setValueWithtateCancel];
+            [_approvalBusinessFooterView setValueWithProgress:ApprovalCancel type:ApprovalFooterFlowCancel];
         }else{
             //code == 1018时提示解冻时间戳
             if ([dict[@"code"] integerValue] == 1018) {
+                if ([BoxDataManager sharedManager].launchState == LoginState) {
+                    return ;
+                }
                 [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
                 LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
                 loginVc.fromFunction = FromAppDelegate;
@@ -261,7 +276,7 @@
             [self headertViewChange:flowLimitArr.count * 30];
             [_approvalBusinessTopView setValueWithData:mutableDic ];
             NSArray *approvaled_infoArr = responseObject[@"data"][@"approval_info"];
-            [self footerViewChange:approvaled_infoArr createdBy:createdBy progress:[responseObject[@"data"][@"progress"] integerValue]];
+            [self footerViewChange:approvaled_infoArr createdBy:createdBy progress:[responseObject[@"data"][@"progress"] integerValue] headFloat:flowLimitArr.count * 30];
             for (NSDictionary *dic in approvaled_infoArr) {
                 ApprovalBusinessDetailModel *model = [[ApprovalBusinessDetailModel alloc] initWithDict:dic];
                 [_approvaledInfoArray addObject:model];
@@ -284,7 +299,7 @@
     _approvalBusinessTopView.frame = CGRectMake(0, -72 - 39  - 10 - headFloat, SCREEN_WIDTH - 22, 72 + 39  + 10 + headFloat);
 }
 
--(void)footerViewChange:(NSArray *)array createdBy:(NSString *)createdBy progress:(NSInteger)progress
+-(void)footerViewChange:(NSArray *)array createdBy:(NSString *)createdBy progress:(NSInteger)progress headFloat:(CGFloat)headFloat
 {
     CGFloat aa = 0.0;
     for (int i = 0; i < array.count; i ++) {
@@ -293,7 +308,7 @@
         NSInteger approversAll = 0;
         NSInteger approversIn = model.approvers.count % 4;
         if (approversIn >= 1) {
-            approversAll = model.approvers.count / 4 + approversIn;
+            approversAll = model.approvers.count / 4 + 1;
         }
         aa = aa + 30 + approversAll * 45 + 10;
     }
@@ -303,7 +318,7 @@
         height = 110;
         type = 1;
     }
-    _collectionView.contentInset = UIEdgeInsetsMake(338, 0, height + 50, 0);
+    _collectionView.contentInset = UIEdgeInsetsMake(72 + 39 + 10 + headFloat, 0, height + 50, 0);
     _approvalBusinessFooterView = [[ApprovalBusinessFooterView alloc] initWithFrame: CGRectMake(0,aa, SCREEN_WIDTH - 22, height)];
     [_approvalBusinessFooterView setValueWithStatus:type];
     _approvalBusinessFooterView.delegate = self;

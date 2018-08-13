@@ -15,16 +15,20 @@
 #import "ModificatePasswordViewController.h"
 #import "ModifyServerAddressViewController.h"
 #import "DepartmentModel.h"
+#import "LanguageSwitchViewController.h"
 
 #define CellReuseIdentifier  @"HomeMe"
 
 @interface HomeMeViewController ()<UITableViewDelegate, UITableViewDataSource>
-
+{
+    NSInteger typeIn;
+}
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *sourceArray;
 @property (nonatomic, strong) ValuePickerView *pickerView;
 @property (nonatomic, strong)NSMutableArray *departmentArray;
 @property(nonatomic, strong)DDRSAWrapper *aWrapper;
+@property (nonatomic, strong)PickerModel *pickerModel;
 
 @end
 
@@ -45,8 +49,9 @@
                                    @{@"titleName":AccountAddress, @"subTitle":@"",@"type":@"currency"},
                                    @{@"titleName":BindCode, @"subTitle":@"",@"type":@"QRCode"},
                                    @{@"titleName":ServerAddress, @"subTitle":@"",@"type":@"server"},
-                                   @{@"titleName":Departments, @"subTitle":@"",@"type":@"department"},
+                                   @{@"titleName":Departments, @"subTitle":PleaseSelect,@"type":@"department"},
                                    @{@"titleName":ModifyPassword, @"subTitle":@"",@"type":@"pwd"},
+                                   @{@"titleName":LanguageSwitchTitle, @"subTitle":@"",@"type":@"language"},
                                    @{@"titleName":AboutBOX, @"subTitle":@"",@"type":@"box"}
                                    ]
                            };
@@ -71,12 +76,19 @@
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
             NSDictionary *departmentDic = dict[@"data"][@"Department"];
+            NSString *Name = departmentDic[@"Name"];
             NSString *ID = [NSString stringWithFormat:@"%ld", [departmentDic[@"ID"] integerValue]];
-            NSDictionary *dic = @{@"titleName":Departments, @"subTitle":departmentDic[@"Name"],@"type":@"department"};
+            if ([ID integerValue] == 1) {
+                Name = Other;
+            }
+            NSDictionary *dic = @{@"titleName":Departments, @"subTitle":Name,@"type":@"department"};
             HomeMeModel *model = [[HomeMeModel alloc] initWithDict:dic];
             [_sourceArray replaceObjectAtIndex:4 withObject:model];
-            [[BoxDataManager sharedManager] saveDataWithCoding:@"departMemtName" codeValue:departmentDic[@"Name"]];
+            [[BoxDataManager sharedManager] saveDataWithCoding:@"departMemtName" codeValue:Name];
             [[BoxDataManager sharedManager] saveDataWithCoding:@"ID" codeValue:ID];
+            _pickerModel = [[PickerModel alloc] init];
+            _pickerModel.title = Name;
+            _pickerModel.ID = [ID integerValue];
         }else{
             [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
@@ -176,12 +188,20 @@
         AboutBoxViewController *aboutBoxVc = [[AboutBoxViewController alloc] init];
         aboutBoxVc.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:aboutBoxVc animated:YES];
+    }else if([model.type isEqualToString:@"language"]){
+        LanguageSwitchViewController *languageSwitchVc = [[LanguageSwitchViewController alloc] init];
+        languageSwitchVc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:languageSwitchVc animated:YES];
     }
 }
 
 #pragma mark ----- 获取部门列表 -----
 -(void)getDepartmentList
 {
+    if (typeIn == 1) {
+        return;
+    }
+    typeIn = 1;
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"appid"];
     [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
@@ -192,16 +212,21 @@
             [_departmentArray removeAllObjects];
             for (NSDictionary *listDic in listArray) {
                 DepartmentModel *model = [[DepartmentModel alloc] initWithDict:listDic];
+                if ([model.Name isEqualToString:@"其他"]) {
+                    model.Name = Other;
+                }
                 PickerModel *pickerModel = [[PickerModel alloc] init];
                 pickerModel.title = model.Name;
                 pickerModel.ID = model.ID;
                 [_departmentArray addObject:pickerModel];
             }
+            typeIn = 0;
             [self showPickerView];
         }else{
             [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
     } fail:^(NSError *error) {
+        typeIn = 0;
         NSLog(@"%@", error.description);
     }];
 }
@@ -209,11 +234,23 @@
 -(void)showPickerView
 {
     self.pickerView = [[ValuePickerView alloc]init];
+    if (_pickerModel == nil) {
+        NSInteger countIn = 0;
+        countIn = _departmentArray.count/2;
+        if (_departmentArray.count == 1) {
+            countIn = 1;
+        }
+        PickerModel *model = _departmentArray[countIn - 1];
+        [_departmentArray addObject:model];
+    }else{
+        [_departmentArray addObject:_pickerModel];
+    }
     self.pickerView.dataSource = _departmentArray;
     self.pickerView.pickerTitle = SelectDepartmemt;
     __weak typeof(self) weakSelf = self;
     self.pickerView.valueDidSelect = ^(PickerModel *pickerModel){
         [weakSelf finishSelectDepartment:pickerModel];
+        weakSelf.pickerModel = pickerModel;
     };
     [self.pickerView show];
 }

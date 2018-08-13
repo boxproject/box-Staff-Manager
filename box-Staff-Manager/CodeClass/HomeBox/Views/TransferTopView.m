@@ -20,6 +20,8 @@
 @property (nonatomic,strong)UILabel *applyReasonInfoLab;
 @property (nonatomic,strong)UILabel *minersFeeInfoLab;
 @property (nonatomic,strong)UILabel *bottomTitle;
+@property (nonatomic,strong)UILabel *applyForTimeInfoLab;
+
 
 @end
 
@@ -85,84 +87,7 @@
         make.right.offset(0);
         make.height.offset(20);
     }];
-    
-    //币种
-    UILabel *currencyLab = [[UILabel alloc] init];
-    currencyLab.textAlignment = NSTextAlignmentLeft;
-    currencyLab.font = Font(14);
-    currencyLab.text = TransferTopViewCurrency;
-    currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [mainView addSubview:currencyLab];
-    [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_stateLab.mas_bottom).offset(13);
-        make.left.offset(14);
-        make.height.offset(20);
-    }];
-    
-    _currencyInfoLab = [[UILabel alloc] init];
-    _currencyInfoLab.textAlignment = NSTextAlignmentRight;
-    _currencyInfoLab.font = Font(14);
-    _currencyInfoLab.text = @"";
-    _currencyInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
-    [mainView addSubview:_currencyInfoLab];
-    [_currencyInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_stateLab.mas_bottom).offset(13);
-        make.right.offset(-15);
-        make.height.offset(20);
-    }];
-    
-    //收款地址
-    UILabel *addressLab = [[UILabel alloc] init];
-    addressLab.textAlignment = NSTextAlignmentLeft;
-    addressLab.font = Font(14);
-    addressLab.text = TransferTopViewReceiptAddress;
-    addressLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [mainView addSubview:addressLab];
-    [addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(currencyLab.mas_bottom).offset(10);
-        make.left.offset(14);
-        make.height.offset(20);
-    }];
-    
-    _adressInfoLab = [[UILabel alloc] init];
-    _adressInfoLab.textAlignment = NSTextAlignmentRight;
-    _adressInfoLab.font = Font(12);
-    _adressInfoLab.text = @"";
-    _adressInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
-    [mainView addSubview:_adressInfoLab];
-    [_adressInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(currencyLab.mas_bottom).offset(10);
-        make.right.offset(-14);
-        make.height.offset(20);
-        make.left.offset(75);
-    }];
-    
-   
-    //金额
-    UILabel *amountLab = [[UILabel alloc] init];
-    amountLab.textAlignment = NSTextAlignmentLeft;
-    amountLab.font = Font(14);
-    amountLab.text = TransferTopViewAmount;
-    amountLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [mainView addSubview:amountLab];
-    [amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(addressLab.mas_bottom).offset(10);
-        make.left.offset(14);
-        make.height.offset(20);
-    }];
-    
-    _amountInfoLab = [[UILabel alloc] init];
-    _amountInfoLab.textAlignment = NSTextAlignmentRight;
-    _amountInfoLab.font = Font(14);
-    _amountInfoLab.text = @"";
-    _amountInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
-    [mainView addSubview:_amountInfoLab];
-    [_amountInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(addressLab.mas_bottom).offset(10);
-        make.right.offset(-14);
-        make.height.offset(20);
-    }];
-    
+
     //申请人
     UILabel *applyMenberLab = [[UILabel alloc] init];
     applyMenberLab.textAlignment = NSTextAlignmentLeft;
@@ -171,7 +96,7 @@
     applyMenberLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [mainView addSubview:applyMenberLab];
     [applyMenberLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(amountLab.mas_bottom).offset(10);
+        make.top.equalTo(_stateLab.mas_bottom).offset(13);
         make.left.offset(14);
         make.height.offset(20);
     }];
@@ -183,7 +108,7 @@
     _applyMenber.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_applyMenber];
     [_applyMenber mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(amountLab.mas_bottom).offset(10);
+        make.top.equalTo(_stateLab.mas_bottom).offset(13);
         make.right.offset(-14);
         make.height.offset(20);
     }];
@@ -213,6 +138,33 @@
         make.height.offset(20);
     }];
     
+    //收款地址
+    UILabel *addressLab = [[UILabel alloc] init];
+    addressLab.textAlignment = NSTextAlignmentLeft;
+    addressLab.font = Font(14);
+    addressLab.text = TransferTopViewReceiptAddress;
+    addressLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [mainView addSubview:addressLab];
+    [addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(applyReasonLab.mas_bottom).offset(10);
+        make.left.offset(14);
+        make.height.offset(20);
+    }];
+    
+    _adressInfoLab = [[UILabel alloc] init];
+    _adressInfoLab.textAlignment = NSTextAlignmentRight;
+    _adressInfoLab.numberOfLines = 2;
+    _adressInfoLab.font = Font(11);
+    _adressInfoLab.text = @"";
+    _adressInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [mainView addSubview:_adressInfoLab];
+    [_adressInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(applyReasonLab.mas_bottom).offset(10);
+        make.right.offset(-14);
+        make.height.offset(20);
+        //make.left.equalTo(addressLab.mas_right).offset(0);
+    }];
+    
     //矿工费
     UILabel *minersFeeLab = [[UILabel alloc] init];
     minersFeeLab.textAlignment = NSTextAlignmentLeft;
@@ -221,7 +173,7 @@
     minersFeeLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [mainView addSubview:minersFeeLab];
     [minersFeeLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(applyReasonLab.mas_bottom).offset(10);
+        make.top.equalTo(addressLab.mas_bottom).offset(10);
         make.left.offset(14);
         make.height.offset(20);
     }];
@@ -233,18 +185,42 @@
     _minersFeeInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [mainView addSubview:_minersFeeInfoLab];
     [_minersFeeInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(applyReasonLab.mas_bottom).offset(10);
+        make.top.equalTo(addressLab.mas_bottom).offset(10);
         make.right.offset(-14);
         make.height.offset(20);
     }];
     
-
+    //申请时间
+    UILabel *applyForTimeLab = [[UILabel alloc] init];
+    applyForTimeLab.textAlignment = NSTextAlignmentLeft;
+    applyForTimeLab.font = Font(14);
+    applyForTimeLab.text = ApplyForTime;
+    applyForTimeLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [mainView addSubview:applyForTimeLab];
+    [applyForTimeLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(minersFeeLab.mas_bottom).offset(10);
+        make.left.offset(14);
+        make.height.offset(20);
+    }];
+    
+    _applyForTimeInfoLab = [[UILabel alloc] init];
+    _applyForTimeInfoLab.textAlignment = NSTextAlignmentRight;
+    _applyForTimeInfoLab.font = Font(14);
+    _applyForTimeInfoLab.text = @"";
+    _applyForTimeInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [mainView addSubview:_applyForTimeInfoLab];
+    [_applyForTimeInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(minersFeeLab.mas_bottom).offset(10);
+        make.right.offset(-14);
+        make.height.offset(20);
+    }];
+    
     UIImageView *lineImg = [[UIImageView alloc] init];
     //lineImg.backgroundColor = kRedColor;
     lineImg.image = [UIImage imageNamed:@"lineImgIcon"];
     [mainView addSubview:lineImg];
     [lineImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(minersFeeLab.mas_bottom).offset(25);
+        make.top.equalTo(applyForTimeLab.mas_bottom).offset(25);
         make.left.offset(16);
         make.right.offset(-15);
         make.height.offset(1.5);
@@ -276,7 +252,7 @@
     
     UIImageView *leftTitleImg = [[UIImageView alloc] init];
     //leftTitleImg.backgroundColor = kRedColor;
-    leftTitleImg.image = [UIImage imageNamed:@"leftTitleImg"];
+    leftTitleImg.image = [UIImage imageNamed:@"icon_service_shenpi"];
     [mainView addSubview:leftTitleImg];
     [leftTitleImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(lineImg.mas_bottom).offset(15);
@@ -303,6 +279,7 @@
 -(void)setValueWithData:(NSDictionary *)dic
 {
     NSString *currency = dic[@"currency"];
+    NSInteger apply_at = [dic[@"apply_at"] integerValue];
     NSString *amount = dic[@"amount"];
     NSString *tx_info = dic[@"tx_info"];
     NSString *miner = dic[@"miner"];
@@ -310,50 +287,65 @@
     NSInteger progress = [dic[@"progress"] integerValue];
     NSInteger arrived = [dic[@"arrived"] integerValue];
     NSString *accont = dic[@"account"];
+    NSString *flow_name = dic[@"flow_name"];
     _amountLab.text = [NSString stringWithFormat:@"-%@%@", amount, currency];
-    _currencyInfoLab.text = currency;
     _adressInfoLab.text = to_address;
-    _amountInfoLab.text = [NSString stringWithFormat:@"-%@%@", amount, currency];
     _applyMenber.text = accont;
     _applyReasonInfoLab.text = tx_info;
     _minersFeeInfoLab.text = miner;
-    
+    _applyForTimeInfoLab.text = [self getElapseTimeToString:apply_at];
+    _bottomTitle.text = flow_name;
     switch (progress) {
         case 0:
             _stateLab.text = TransferTopViewStateOne;
-            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateOne];
+            //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateOne];
             break;
         case 1:
             _stateLab.text = TransferTopViewStateTwo;
-            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateTwo];
+            //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateTwo];
             break;
         case 2:
             _stateLab.text = TransferTopViewStateFour;
-            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateFour];
+            //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateFour];
             break;
         case 3:
             if (arrived == 1) {
                 _stateLab.text = TransferTopViewStateThreeTransfing;
-                _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThreeTransfing];
+                //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThreeTransfing];
             }else if(arrived == 2){
                 _stateLab.text = TransferTopViewStateThree;
-                _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThree];
+                //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateThree];
             }
             break;
         case 4:
             _stateLab.text = TransferTopViewStateCancel;
-            _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
+            //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
             break;
+        case 5:
+        {
+            _stateLab.text = TransferInvalid;
+            //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferInvalid];
+            break;
+        }
             
         default:
             break;
     }
 }
 
+- (NSString *)getElapseTimeToString:(NSInteger)second{
+    NSDateFormatter  *dateformatter1 = [[NSDateFormatter alloc] init];
+    [dateformatter1 setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSTimeInterval timeInterval1 = second;
+    NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
+    NSString *dateStr1=[dateformatter1 stringFromDate:date1];
+    return dateStr1;
+}
+
 -(void)setValueWithtateCancel
 {
     _stateLab.text = TransferTopViewStateCancel;
-    _bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
+    //_bottomTitle.text = [NSString stringWithFormat:@"%@%@", TransferTopViewTitle,TransferTopViewStateCancel];
 }
 
 

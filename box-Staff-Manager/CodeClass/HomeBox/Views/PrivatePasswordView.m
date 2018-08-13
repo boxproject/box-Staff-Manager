@@ -9,6 +9,9 @@
 #import "PrivatePasswordView.h"
 
 @interface PrivatePasswordView ()<UITextFieldDelegate>
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
 /** 取消 */
@@ -30,12 +33,15 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self createView];
-        
+        returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] init];
+        [returnKeyHandler addResponderFromView:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
 }
+
+
 
 -(void)createView
 {
@@ -123,9 +129,9 @@
     [_footView addSubview:_showPwdBtn];
     [_showPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_passwordTf);
-        make.width.offset(36);
+        make.width.offset(23);
         make.right.offset(-16);
-        make.height.offset(27);
+        make.height.offset(15);
     }];
     
     UIView *line = [[UIView alloc] init];
@@ -224,7 +230,9 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    returnKeyHandler = nil;
 }
+ 
 
 /*
 // Only override drawRect: if you perform custom drawing.

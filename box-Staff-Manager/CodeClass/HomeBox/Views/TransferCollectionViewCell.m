@@ -55,9 +55,12 @@
     if (model.progress == ApprovalFail) {
         _view.backgroundColor = [UIColor colorWithHexString:@"#fcefed"];
         _nameLab.textColor = [UIColor colorWithHexString:@"#f74a48"];
-    }else{
+    }else if (model.progress == ApprovalSucceed){
         _view.backgroundColor = [UIColor colorWithHexString:@"#e3ecff"];
         _nameLab.textColor = [UIColor colorWithHexString:@"#4380fa"];
+    }else{
+        _view.backgroundColor = [UIColor colorWithHexString:@"#efefef"];
+        _nameLab.textColor = [UIColor colorWithHexString:@"#999999"];
     }
 }
 

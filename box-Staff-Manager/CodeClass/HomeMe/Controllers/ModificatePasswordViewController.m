@@ -10,7 +10,12 @@
 #import "LoginBoxViewController.h"
 
 @interface ModificatePasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
-
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+    NSString *oldpwdSHA256;
+    NSString *newpwdSHA256;
+    NSString *encryptKey;
+}
 @property(nonatomic, strong)UIScrollView *contentView;
 @property (nonatomic,strong)UITextField *originalPawdTf;
 @property (nonatomic,strong)UITextField *pawdnewTf;
@@ -28,7 +33,7 @@
     self.title = ModifyPassword;
     [self createView];
     [self createBarItem];
-    
+    returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] initWithViewController:self];
 }
 
 -(void)createView
@@ -62,7 +67,7 @@
         make.top.offset(0);
         make.bottom.offset(0);
         make.left.offset(16);
-        make.width.offset(50);
+        make.width.offset(70);
     }];
     
     _originalPawdTf = [[UITextField alloc] init];
@@ -75,7 +80,7 @@
     _originalPawdTf.secureTextEntry = YES;
     [originalView addSubview:_originalPawdTf];
     [_originalPawdTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(originalLab.mas_right).offset(35);
+        make.left.equalTo(originalLab.mas_right).offset(15);
         make.right.offset(-16);
         make.top .offset(0);
         make.bottom.offset(0);
@@ -112,12 +117,23 @@
         make.top.offset(0);
         make.bottom.offset(0);
         make.left.offset(16);
-        make.width.offset(50);
+        make.width.offset(70);
     }];
     
     _pawdnewTf = [[UITextField alloc] init];
     _pawdnewTf.font = Font(14);
-    _pawdnewTf.placeholder = ModificatePasswordVCpawdnewInfo;
+    NSString *passwordText = ModificatePasswordVCInfopawdnew;
+    NSMutableAttributedString *passwordholder = [[NSMutableAttributedString alloc] initWithString:passwordText];
+    [passwordholder addAttribute:NSForegroundColorAttributeName
+                           value:[UIColor colorWithHexString:@"#cccccc"]
+                           range:NSMakeRange(0, passwordText.length)];
+    [passwordholder addAttribute:NSFontAttributeName
+                           value:Font(14)
+                           range:NSMakeRange(0, 5)];
+    [passwordholder addAttribute:NSFontAttributeName
+                           value:Font(14)
+                           range:NSMakeRange(5, passwordText.length - 5)];
+    _pawdnewTf.attributedPlaceholder = passwordholder;
     _pawdnewTf.delegate = self;
     _pawdnewTf.clearButtonMode=UITextFieldViewModeWhileEditing;
     _pawdnewTf.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -125,7 +141,7 @@
     _pawdnewTf.secureTextEntry = YES;
     [pawdnewView addSubview:_pawdnewTf];
     [_pawdnewTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(pawdnewLab.mas_right).offset(35);
+        make.left.equalTo(pawdnewLab.mas_right).offset(15);
         make.right.offset(-16);
         make.top .offset(0);
         make.bottom.offset(0);
@@ -155,14 +171,14 @@
     UILabel *renewPawdLab = [[UILabel alloc] init];
     renewPawdLab.textAlignment = NSTextAlignmentLeft;
     renewPawdLab.font = Font(14);
-    renewPawdLab.text = ModificatePasswordVCpawdnew;
+    renewPawdLab.text = ModificatePasswordVCConfirm;
     renewPawdLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [renewPawdView addSubview:renewPawdLab];
     [renewPawdLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(0);
         make.bottom.offset(0);
         make.left.offset(16);
-        make.width.offset(50);
+        make.width.offset(70);
     }];
     
     _renewPawdTf = [[UITextField alloc] init];
@@ -175,7 +191,7 @@
     _renewPawdTf.secureTextEntry = YES;
     [renewPawdView addSubview:_renewPawdTf];
     [_renewPawdTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(renewPawdLab.mas_right).offset(35);
+        make.left.equalTo(renewPawdLab.mas_right).offset(15);
         make.right.offset(-16);
         make.top .offset(0);
         make.bottom.offset(0);
@@ -228,8 +244,15 @@
         [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertThree];
         return;
     }
-    NSString *oldpwdSHA256 = [UIARSAHandler hmac: _originalPawdTf.text withKey:[BoxDataManager sharedManager].encryptKey];
-    NSString *newpwdSHA256 = [UIARSAHandler hmac: _pawdnewTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+    
+    if ([[BoxDataManager sharedManager].encryptKey isEqualToString:@"AAAA1111"]) {
+        encryptKey = [JsonObject getRandomStringWithNum:8];
+        oldpwdSHA256 = [UIARSAHandler hmac: _originalPawdTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+        newpwdSHA256 = [UIARSAHandler hmac: _pawdnewTf.text withKey:encryptKey];
+    }else{
+        oldpwdSHA256 = [UIARSAHandler hmac: _originalPawdTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+        newpwdSHA256 = [UIARSAHandler hmac: _pawdnewTf.text withKey:[BoxDataManager sharedManager].encryptKey];
+    }
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:oldpwdSHA256 forKey:@"oldpwd"];
     [paramsDic setObject:newpwdSHA256 forKey:@"newpwd"];
@@ -242,9 +265,15 @@
             [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
             [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:_pawdnewTf.text];
             [self.navigationController popViewControllerAnimated:YES];
+            if ([[BoxDataManager sharedManager].encryptKey isEqualToString:@"AAAA1111"]) {
+                [[BoxDataManager sharedManager] saveDataWithCoding:@"encryptKey" codeValue:encryptKey];
+            }
         }else{
             //code == 1018时提示解冻时间戳
             if ([dict[@"code"] integerValue] == 1018) {
+                if ([BoxDataManager sharedManager].launchState == LoginState) {
+                    return ;
+                }
                 [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
                 LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
                 loginVc.fromFunction = FromAppDelegate;
@@ -290,9 +319,13 @@
     return YES;
 }
 
+-(void)dealloc
+{
+    returnKeyHandler = nil;
+}
+
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    //[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

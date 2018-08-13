@@ -16,6 +16,7 @@
     if (self)
     {
         [self createView];
+        language = [[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"];
     }
     return self;
 }
@@ -65,7 +66,12 @@
     }else{
         _img.image = [UIImage imageNamed:@"icon_wait2"];
     }
-    _leftLable.text = [NSString stringWithFormat:@"第%ld步%@(%ld)", index + 1, ApprovalMenber, model.total];
+    if ([language isEqualToString: @"en"]) {
+        _leftLable.text = [NSString stringWithFormat:@"Step %ld Members(%ld)", index + 1, model.total];
+    }else{
+        _leftLable.text = [NSString stringWithFormat:@"第%ld步%@(%ld)", index + 1, ApprovalMenber, model.total];
+    }
+    
     _rightLable.text = [NSString stringWithFormat:@"%@%ld/%ld", ApprovalMenberAmount, model.require, model.total];
 }
 

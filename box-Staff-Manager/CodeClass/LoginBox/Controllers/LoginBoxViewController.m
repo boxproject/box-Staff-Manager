@@ -10,6 +10,9 @@
 #import "HomePageViewController.h"
 
 @interface LoginBoxViewController ()<UITextFieldDelegate>
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
 /** 确认 */
@@ -28,6 +31,7 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
     [self createView];
+    returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] initWithViewController:self];
 }
 
 -(void)createView
@@ -44,6 +48,18 @@
         make.centerX.equalTo(self.view);
         make.width.height.offset(62);
         make.top.offset(115);
+    }];
+    
+    UILabel *accountLab = [[UILabel alloc] init];
+    accountLab.textAlignment = NSTextAlignmentCenter;
+    accountLab.font = Font(14);
+    accountLab.text = [BoxDataManager sharedManager].applyer_account;
+    accountLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [backGroundImg addSubview:accountLab];
+    [accountLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_loginImg.mas_bottom).offset(5);
+        make.centerX.equalTo(_loginImg);
+        make.height.offset(30);
     }];
     
     _passwordTf = [[UITextField alloc] init];
@@ -77,9 +93,9 @@
     [backGroundImg addSubview:_showPwdBtn];
     [_showPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_passwordTf);
-        make.width.offset(22);
+        make.width.offset(23);
         make.right.offset(-18);
-        make.height.offset(13);
+        make.height.offset(15);
     }];
     
     UIView *line = [[UIView alloc] init];
@@ -120,9 +136,20 @@
 
 -(void)confirmAction:(UIButton *)btn
 {
-    if ( [_passwordTf.text isEqualToString:@""]) {
+     if ( [_passwordTf.text isEqualToString:@""]) {
         [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertTwo];
         return;
+    }
+    if ([BoxDataManager sharedManager].encryptKey == nil) {
+        NSString *encryptKey = @"AAAA1111";
+        [[BoxDataManager sharedManager] saveDataWithCoding:@"encryptKey" codeValue:encryptKey];
+        [[BoxDataManager sharedManager] saveDataWithCoding:@"passWord" codeValue:@"box123"];
+        if (![_passwordTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
+            [WSProgressHUD showErrorWithStatus:InitializePasswordError];
+            [[BoxDataManager sharedManager] removeDataWithCoding:@"encryptKey"];
+            [[BoxDataManager sharedManager] removeDataWithCoding:@"passWord"];
+            return;
+        }
     }
     NSString *hmacSHA256 = [UIARSAHandler hmac: _passwordTf.text withKey:[BoxDataManager sharedManager].encryptKey];
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
@@ -132,23 +159,26 @@
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/accounts/login" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
         NSDictionary *dict = responseObject;
-        NSString *token = dict[@"data"][@"token"];
         if ([dict[@"code"] integerValue] == 0) {
+            NSString *token = dict[@"data"][@"token"];
+            if([dict[@"data"][@"token"] isKindOfClass:[NSNull class]]){
+                token = @"";
+            }
             [WSProgressHUD showSuccessWithStatus:dict[@"message"]];
             [[BoxDataManager sharedManager] saveDataWithCoding:@"token" codeValue:token];
-            [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
+             [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"1"];
             if (_fromFunction == FromHomeBox) {
                 [self dismissViewControllerAnimated:YES completion:nil];
             }else {
-                HomePageViewController *homePageVC = [[HomePageViewController alloc] init];
-                [self presentViewController:homePageVC animated:YES completion:nil];
+                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                [delegate launchJumpVC];
             }
         }else{
-            //code == 1018时提示解冻时间戳
+            //账号被冻结
             if ([dict[@"code"] integerValue] == 1018) {
                [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%@", AccountLockup, [self getElapseTimeToString:[dict[@"data"][@"frozenTo"] integerValue]]] code:[dict[@"code"] integerValue]];
             }
-            //输入密码错误且未被冻结
+            //密码输入错误但未被冻结
             else if ([dict[@"code"] integerValue] == 1016) {
                 [ProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@%ld%@%@%ld%@", AccountPasswordError,[dict[@"data"][@"frozenFor"] integerValue], AccountPasswordHour, AccountPasswordAlert,[dict[@"data"][@"attempts"] integerValue], AccountPasswordTimes] code:[dict[@"code"] integerValue]];
             }else{
@@ -168,6 +198,11 @@
     NSDate *date1 = [NSDate dateWithTimeIntervalSince1970:timeInterval1];
     NSString *dateStr1=[dateformatter1 stringFromDate:date1];
     return dateStr1;
+}
+
+-(void)dealloc
+{
+    returnKeyHandler = nil;
 }
 
 

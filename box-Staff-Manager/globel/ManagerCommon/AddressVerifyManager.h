@@ -13,5 +13,6 @@
 @interface AddressVerifyManager : NSObject
 
 +(BOOL)checkAddressVerify:(NSString *)address type:(NSString *)type;
++(NSString *)handleAddress:(NSString *)address;
 
 @end

@@ -68,14 +68,33 @@
         _leftLab.text = [NSString stringWithFormat:@"%@%@", model.Operator, InitiateApplication];
         _rightLab.text = [self getElapseTimeToString:model.OpTime];
     }else if (model.FinalProgress == ApprovalFail){
-        _leftLab.text = SystemApprovalFail;
-        _rightLab.text = [self getElapseTimeToString:model.OpTime];
+        if ([model.Operator isEqualToString:@""]) {
+            _leftLab.text = SystemApprovalFail;
+            _rightLab.text = [self getElapseTimeToString:model.OpTime];
+        }else{
+            [self handleProgress:model];
+        }
+        
     }else if (model.FinalProgress == ApprovalSucceed){
-        _leftLab.text = SystemApprovalSucceed;
-        _rightLab.text = [self getElapseTimeToString:model.OpTime];
-    }else if (model.FinalProgress == ApprovalAwait || model.FinalProgress == ApprovalCancel){
+        if ([model.Operator isEqualToString:@""]) {
+            _leftLab.text = SystemApprovalSucceed;
+            _rightLab.text = [self getElapseTimeToString:model.OpTime];
+        }else{
+            [self handleProgress:model];
+        }
+    }else if (model.FinalProgress == ApprovalTransferCancel){
+        if ([model.Operator isEqualToString:@""]) {
+            _leftLab.text = SystemTransferCancel;
+            _rightLab.text = [self getElapseTimeToString:model.OpTime];
+        }
+    }else if (model.FinalProgress == ApprovalCancel){
+        if (![model.Operator isEqualToString:@""]) {
+            [self handleProgress:model];
+        }
+    }
+    else if (model.FinalProgress == Approvaling){
         [self handleProgress:model];
-    } 
+    }
 }
 
 -(void)handleProgress:(ViewLogModel *)model
@@ -101,17 +120,18 @@
         }
         case ApprovalCancel:
         {
-            NSString *str = [NSString stringWithFormat:@"%@%@", model.Operator, TransferCancel];
-            NSMutableAttributedString *strHolder = [[NSMutableAttributedString alloc] initWithString:str];
-            [strHolder addAttribute:NSForegroundColorAttributeName
-                              value:[UIColor redColor]
-                              range:NSMakeRange(model.Operator.length, str.length - model.Operator.length)];
-            _leftLab.attributedText = strHolder;
-            _bottomLab.text = [NSString stringWithFormat:@"%@：%@", Reason, model.ReasonStr];
-            _rightLab.text = [self getElapseTimeToString:model.OpTime];
+            if (![model.Operator isEqualToString:@""]) {
+                NSString *str = [NSString stringWithFormat:@"%@%@", model.Operator, TransferCancel];
+                NSMutableAttributedString *strHolder = [[NSMutableAttributedString alloc] initWithString:str];
+                [strHolder addAttribute:NSForegroundColorAttributeName
+                                  value:[UIColor redColor]
+                                  range:NSMakeRange(model.Operator.length, str.length - model.Operator.length)];
+                _leftLab.attributedText = strHolder;
+                _bottomLab.text = [NSString stringWithFormat:@"%@：%@", Reason, model.ReasonStr];
+                _rightLab.text = [self getElapseTimeToString:model.OpTime];
+            }
             break;
         }
-            
         default:
             break;
     }

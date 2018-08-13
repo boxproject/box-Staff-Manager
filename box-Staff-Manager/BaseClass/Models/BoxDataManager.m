@@ -50,6 +50,9 @@
     self.ID = [defaults valueForKey:@"ID"];
     self.encryptKey = [defaults valueForKey:@"encryptKey"];
     self.token = [defaults valueForKey:@"token"];
+    if (self.token == nil) {
+        self.token = @"";
+    }
 }
 
 -(void)saveDataWithCoding:(NSString *)coding codeValue:(NSString *)codeValue
@@ -91,6 +94,18 @@
     }
     [defaults setObject:codeValue forKey: coding];
     [defaults synchronize];
+}
+
+-(void)removeDataWithCoding:(NSString *)coding
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:coding];
+    [defaults synchronize];
+    if ([coding isEqualToString:@"encryptKey"]){
+        self.encryptKey = nil;
+    }else if([coding isEqualToString:@"passWord"]){
+        self.passWord = nil;
+    }
 }
 
 -(NSInteger)getLaunchState;

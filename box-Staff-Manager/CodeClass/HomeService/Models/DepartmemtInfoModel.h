@@ -15,6 +15,8 @@
 @property (assign , nonatomic) NSInteger Depth;
 @property (assign , nonatomic) NSInteger number;
 @property (assign , nonatomic) NSInteger BranchID;
+@property (nonatomic,assign) BOOL select;
+@property (nonatomic,assign) NSInteger state;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

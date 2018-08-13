@@ -15,6 +15,7 @@
 @property (nonatomic,strong) UILabel *nameTitleLab;
 @property (nonatomic,strong) UILabel *addressLab;
 @property (nonatomic,strong) UILabel *remarkLab;
+@property (nonatomic,strong) UIView *lineView;
 
 @end
  
@@ -65,10 +66,10 @@
 
     }];
     
-    UIView *lineView = [[UIView alloc] init];
-    lineView.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
-    [_backgdView addSubview:lineView];
-    [lineView mas_makeConstraints:^(MASConstraintMaker *make) {
+    _lineView = [[UIView alloc] init];
+    _lineView.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
+    [_backgdView addSubview:_lineView];
+    [_lineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_nameTitleLab);
         make.left.equalTo(_nameTitleLab.mas_right).offset(8);
         make.height.offset(12);
@@ -81,8 +82,8 @@
     _remarkLab.textColor = [UIColor colorWithHexString:@"#ffffff"];
     [_backgdView addSubview:_remarkLab];
     [_remarkLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(lineView);
-        make.left.equalTo(lineView.mas_right).offset(7);
+        make.centerY.equalTo(_lineView);
+        make.left.equalTo(_lineView.mas_right).offset(7);
         make.height.offset(17);
     }];
     
@@ -123,6 +124,11 @@
         }
         default:
             break;
+    }
+    if ([model.remark isEqualToString:@""]) {
+        _lineView.hidden = YES;
+    }else{
+        _lineView.hidden = NO;
     }
 }
 

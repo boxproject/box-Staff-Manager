@@ -108,6 +108,19 @@
     }
 }
 
+-(void)setValueWithProgress:(NSInteger)progress type:(ApprovalFooterState)Status
+{
+    if (progress == ApprovalCancel && Status == ApprovalFooterFlowCancel) {
+        [_button setTitle:ApprovalBusinessCancel forState:(UIControlState)UIControlStateNormal];
+        _button.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+        _button.enabled = NO;
+    }else if (progress == ApprovalCancel && Status == ApprovalFooterTransferCancel) {
+        [_button setTitle:HaveBeenWithdrawn forState:(UIControlState)UIControlStateNormal];
+        _button.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
+        _button.enabled = NO;
+    }
+}
+
 -(void)viewLogBtnAction:(UIButton *)btn
 {
     if ([self.delegate respondsToSelector:@selector(enterViewLog)]) {

@@ -56,6 +56,10 @@
                 [_sourceArray removeAllObjects];
             }
             NSArray *listArray = dict[@"data"][@"list"];
+            if([listArray isKindOfClass:[NSNull class]]){
+                 [self reloadAction];
+                return ;
+            }
             for (NSDictionary *listDic in listArray) {
                 ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
                 [_sourceArray addObject:model];
@@ -116,6 +120,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh
@@ -160,7 +165,7 @@
     titleBgView.backgroundColor = [UIColor clearColor];
     self.navigationItem.titleView = titleBgView;
     
-    UIView *titleSubView = [[UIView alloc] initWithFrame:CGRectMake(titleBgView.frame.origin.x + 15, 0, SCREEN_WIDTH - 20 - 65, 30)];
+    UIView *titleSubView = [[UIView alloc] initWithFrame:CGRectMake(titleBgView.frame.origin.x + 15, 0, SCREEN_WIDTH - 20 - 65 - 15, 30)];
     titleSubView.backgroundColor = [UIColor colorWithHexString:@"#eeeeef"];
     titleSubView.layer.masksToBounds = YES;
     titleSubView.layer.cornerRadius = 15.0;
@@ -171,7 +176,7 @@
     searchImagePic.contentMode = UIViewContentModeScaleAspectFit;
     [titleSubView addSubview:searchImagePic];
     
-    _searchField = [[UITextField alloc] initWithFrame:CGRectMake(searchImagePic.frame.origin.x + 14 + 5, 0, SCREEN_WIDTH - 20 - 65 - 10- 14 -5, 30)];
+    _searchField = [[UITextField alloc] initWithFrame:CGRectMake(searchImagePic.frame.origin.x + 14 + 5, 0, SCREEN_WIDTH - 20 - 65 - 10- 14 -5 - 15, 30)];
     _searchField.placeholder = SearchApprovalFlow;
     _searchField.font = [UIFont systemFontOfSize:14];
     _searchField.delegate = self;
@@ -214,6 +219,10 @@
                 [_sourceArray removeAllObjects];
             }
             NSArray *listArray = dict[@"data"][@"list"];
+            if([listArray isKindOfClass:[NSNull class]]){
+                [self reloadAction];
+                return ;
+            }
             for (NSDictionary *listDic in listArray) {
                 ApprovalBusinessModel *model = [[ApprovalBusinessModel alloc] initWithDict:listDic];
                 [_sourceArray addObject:model];

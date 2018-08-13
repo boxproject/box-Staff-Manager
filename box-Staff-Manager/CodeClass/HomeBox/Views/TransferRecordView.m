@@ -45,20 +45,20 @@
     [self createSegmentedView];
     [self createTableView];
     //0作为发起者
-    _type = 1;
+    _type = 0;
     _page = 1;
     [self requestData];
 }
 
 
 -(void)createSegmentedView{
-    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake((SCREEN_WIDTH - 200)/2, 10, 200, 30)];
+    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake((SCREEN_WIDTH - 250)/2, 10, 250, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
     [self addSubview:_viewLayer];
-    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[HomeBoxVCParticipateIn,HomeBoxVCInitiate]];
+    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[HomeBoxVCInitiate,HomeBoxVCParticipateIn]];
     [_segmentedView addTarget:self action:@selector(segmentedChangle) forControlEvents:UIControlEventValueChanged];
     [_viewLayer addSubview:self.segmentedView];
-    self.segmentedView.frame = CGRectMake(30, 0, 200 - 60, 30);
+    self.segmentedView.frame = CGRectMake(30, 0, 250 - 60, 30);
     _segmentedView.selectedSegmentIndex = 0;
 }
 
@@ -115,11 +115,11 @@
 {
     if (_segmentedView.selectedSegmentIndex == 0) {
         _page = 1;
-        _type = 1;
+        _type = 0;
         [self requestData];
     }else{
         _page = 1;
-        _type = 0;
+        _type = 1;
         [self requestData];
     }
 }

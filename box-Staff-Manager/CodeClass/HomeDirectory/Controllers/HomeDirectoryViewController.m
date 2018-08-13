@@ -16,7 +16,9 @@
 #define CellReuseIdentifier  @"HomeDirectory"
 
 @interface HomeDirectoryViewController ()<UITableViewDelegate, UITableViewDataSource,CurrencyViewDelegate>
-
+{
+    NSString *currentCurrency;
+}
 @property (nonatomic,strong) UIView *viewLayer;
 @property (nonatomic,strong)UILabel *topTitleLab;
 @property (nonatomic,strong) UITableView *tableView;
@@ -39,7 +41,7 @@
     [self createBarItem];
     [self createView];
     if ([_type isEqualToString:@"getAddress"]) {
-        _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:_model.currency];
+        _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:_currency];
     } 
     [self.tableView reloadData];
     if (_sourceArray.count == 0) {
@@ -62,6 +64,7 @@
     }
     _model = model;
     _topTitleLab.attributedText = [self attributedStringWithImage:model.currency];
+    currentCurrency = model.currency;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -130,6 +133,7 @@
         EditorDirectoryViewController *editorDirectoryVC = [[EditorDirectoryViewController alloc] init];
         editorDirectoryVC.currencyBlock = ^(NSString *currency){
             _topTitleLab.attributedText = [self attributedStringWithImage:currency];
+            currentCurrency = currency;
             [_sourceArray removeAllObjects];
             _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:currency];
             [self.tableView reloadData];
@@ -190,6 +194,7 @@
     AddDirectoryViewController *addDirectoryVC = [[AddDirectoryViewController alloc] init];
     addDirectoryVC.currencyBlock = ^(NSString *currency){
         _topTitleLab.attributedText = [self attributedStringWithImage:currency];
+        currentCurrency = currency;
         [_sourceArray removeAllObjects];
         _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:currency];
         [self.tableView reloadData];
@@ -199,7 +204,7 @@
             _labelTip.hidden = YES;
         }
     };
-    addDirectoryVC.currency = _model.currency;
+    addDirectoryVC.currency = currentCurrency;
     addDirectoryVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:addDirectoryVC animated:YES];
 }
@@ -240,9 +245,11 @@
     _topTitleLab.textAlignment = NSTextAlignmentCenter;
     _topTitleLab.font = Font(16);
     if ([_type isEqualToString:@"getAddress"]) {
-        _topTitleLab.attributedText = [self attributedStringWithImage:_model.currency];
+        _topTitleLab.attributedText = [self attributedStringWithImage:_currency];
+        currentCurrency = _currency;
     }else{
         _topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
+        currentCurrency = @"ETH";
     }
     //_topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
     _topTitleLab.textColor = [UIColor colorWithHexString:@"#666666"];
@@ -268,6 +275,7 @@
 {
     _model = model;
     _topTitleLab.attributedText = [self attributedStringWithImage:model.currency];
+    currentCurrency = model.currency;
     [_sourceArray removeAllObjects];
     _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:model.currency];
     [self.tableView reloadData];
