@@ -14,8 +14,6 @@
 
 #define PageSize  12
 #define CellReuseIdentifier  @"SearchApprovalMenber"
-#define SearchApprovalMenberVCSectionOne  @"层级"
-#define SearchApprovalMenberVCSectionTwo  @"人员选择"
 
 @interface SearchApprovalMenberViewController ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
@@ -59,7 +57,7 @@
     [titleSubView addSubview:searchImagePic];
     
     _searchField = [[UITextField alloc] initWithFrame:CGRectMake(searchImagePic.frame.origin.x + 14 + 5, 0, SCREEN_WIDTH - 20 - 65 - 10- 14 -5, 30)];
-    _searchField.placeholder = @"搜索人员";
+    _searchField.placeholder = SearchMember;
     _searchField.font = [UIFont systemFontOfSize:14];
     _searchField.delegate = self;
     _searchField.rightViewMode = UITextFieldViewModeWhileEditing;
@@ -68,7 +66,7 @@
     [titleSubView addSubview:self.searchField];
     
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:Cancel style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
@@ -84,6 +82,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject:_searchField.text forKey:@"key_words"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -96,7 +95,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -114,6 +113,7 @@
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
     [paramsDic setObject:textField.text forKey:@"key_words"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -126,7 +126,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -166,6 +166,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh
@@ -203,9 +204,9 @@
     lb.textColor = [UIColor colorWithHexString:@"#4380fa"];
     [headerView addSubview:lb];
     if (section == 0) {
-        lb.text = SearchApprovalMenberVCSectionOne;
+        lb.text = AddApprovalMenberVCSectionOne;
     }else if(section == 1){
-        lb.text = SearchApprovalMenberVCSectionTwo;
+        lb.text = AddApprovalMenberVCSectionTwo;
     }
     return headerView;
 }
@@ -285,6 +286,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:model.app_account_id forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     //[ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/employee/info" params:paramsDic success:^(id responseObject) {
         //[WSProgressHUD dismiss];
@@ -327,7 +329,7 @@
                 }
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         
     } fail:^(NSError *error) {

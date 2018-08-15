@@ -30,7 +30,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
-    self.title = [NSString stringWithFormat:@"%@明细",_currency];
+    self.title = [NSString stringWithFormat:@"%@%@",_currency,Detailed];
     _sourceArray = [[NSMutableArray alloc] init];
     [self createView];
     _page = 1;
@@ -75,6 +75,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh
@@ -93,6 +94,7 @@
     [paramsDic setObject:_currency forKey:@"currency"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/trade/history/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -100,12 +102,16 @@
                 [_sourceArray removeAllObjects];
             }
             NSArray *listArray = dict[@"data"][@"list"];
+            if([listArray isKindOfClass:[NSNull class]]){
+                [self reloadAction];
+                return;
+            }
             for (NSDictionary *listDic in listArray) {
                 TransferAwaitModel *model = [[TransferAwaitModel alloc] initWithDict:listDic];
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {

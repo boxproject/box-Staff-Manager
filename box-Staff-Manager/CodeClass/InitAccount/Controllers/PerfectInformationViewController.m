@@ -8,20 +8,12 @@
 
 #import "PerfectInformationViewController.h"
 #import "InitAccountViewController.h"
-
-#define PerfectInformationVCTitle  @"完善信息"
-#define PerfectInformationVCNameText  @"请输入姓名"
-#define PerfectInformationVCPasswordText  @"请输入密码 (6-12位数字和字母组成)"
-#define PerfectInformationVCVerifiyText  @"请再次输入密码"
-#define PerfectInformationVCAleartLab  @"此密码不可找回，请您牢记"
-#define PerfectInformationVCCormfirmBtn  @"确认提交"
-#define PerfectInformationVCAleartOne  @"请完善信息"
-#define PerfectInformationVCAleartTwo  @"请输入密码"
-#define PerfectInformationVCAleartThree  @"密码不一致"
-#define PerfectInformationVCCheckPwd  @"密码必须为6-12位数字和字母组成"
+#import "LoginBoxViewController.h"
 
 @interface PerfectInformationViewController ()<UIScrollViewDelegate, UITextFieldDelegate>
-
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 @property(nonatomic, strong)UIScrollView *contentView;
 /** 姓名 */
 @property (nonatomic,strong)UITextField *nameTf;
@@ -44,6 +36,7 @@
     self.title = PerfectInformationVCTitle;
     self.view.backgroundColor = [UIColor whiteColor];
     [self createView];
+    returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] initWithViewController:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -55,7 +48,6 @@
     self.navigationController.navigationBar.barTintColor = nil;
     self.navigationController.navigationBar.alpha = 1.0;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:kBlackColor}];
-    
 }
 
 -(void)createView
@@ -71,8 +63,10 @@
     
     _nameTf = [[UITextField alloc] init];
     _nameTf.backgroundColor = [UIColor whiteColor];
+    _nameTf.tag = 100;
     _nameTf.delegate = self;
     _nameTf.clearButtonMode=UITextFieldViewModeWhileEditing;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewEditChanged:) name:UITextFieldTextDidChangeNotification object:nil];
     NSString *nameText = PerfectInformationVCNameText;
     NSMutableAttributedString *nameholder = [[NSMutableAttributedString alloc] initWithString:nameText];
     [nameholder addAttribute:NSForegroundColorAttributeName
@@ -89,7 +83,6 @@
         make.width.offset(SCREEN_WIDTH - 32);
         make.height.offset(55);
     }];
-    
     
     UIView *lineOne = [[UIView alloc] init];
     lineOne.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
@@ -112,7 +105,10 @@
                         range:NSMakeRange(0, passwordText.length)];
     [passwordholder addAttribute:NSFontAttributeName
                         value:Font(14)
-                        range:NSMakeRange(0, passwordText.length)];
+                        range:NSMakeRange(0, 5)];
+    [passwordholder addAttribute:NSFontAttributeName
+                           value:Font(13)
+                           range:NSMakeRange(5, passwordText.length - 5)];
     _passwordTf.attributedPlaceholder = passwordholder;
     _passwordTf.keyboardType = UIKeyboardTypeAlphabet;
     _passwordTf.secureTextEntry = YES;
@@ -120,7 +116,7 @@
     [_passwordTf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(16);
         make.top.equalTo(lineOne.mas_bottom).offset(0);
-        make.width.offset(SCREEN_WIDTH - 32 - 38);
+        make.width.offset(SCREEN_WIDTH - 32 - 36);
         make.height.offset(55);
     }];
     
@@ -132,9 +128,9 @@
     [_contentView addSubview:_showPwdBtn];
     [_showPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_passwordTf);
-        make.width.offset(36);
-        make.right.equalTo(lineOne.mas_right).offset(0);
-        make.height.offset(27);
+        make.width.offset(23);
+        make.right.equalTo(lineOne.mas_right).offset(-5);
+        make.height.offset(15);
     }];
     
     UIView *lineTwo = [[UIView alloc] init];
@@ -151,7 +147,7 @@
     _verifyPwFf.backgroundColor = [UIColor whiteColor];
     _verifyPwFf.delegate = self;
     _verifyPwFf.clearButtonMode=UITextFieldViewModeWhileEditing;
-    NSString *verifiyText = PerfectInformationVCVerifiyText;
+    NSString *verifiyText = PerfectInformationVCVerifyText;
     NSMutableAttributedString *verifiyHolder = [[NSMutableAttributedString alloc] initWithString:verifiyText];
     [verifiyHolder addAttribute:NSForegroundColorAttributeName
                        value:[UIColor colorWithHexString:@"#cccccc"]
@@ -166,7 +162,7 @@
     [_verifyPwFf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(16);
         make.top.equalTo(lineTwo.mas_bottom).offset(0);
-        make.width.offset(SCREEN_WIDTH - 32 - 38);
+        make.width.offset(SCREEN_WIDTH - 32 - 36);
         make.height.offset(55);
     }];
     
@@ -182,7 +178,6 @@
     
     UIImageView *imgAlert = [[UIImageView alloc] init];
     imgAlert.image = [UIImage imageNamed: @"imgAlertRed_icon"];
-    //imgAlert.backgroundColor = kRedColor;
     [_contentView addSubview:imgAlert];
     [imgAlert mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(lineThree.mas_bottom).offset(17);
@@ -192,7 +187,7 @@
     }];
     
     UILabel *aleartLab = [[UILabel alloc]init];
-    aleartLab.text = PerfectInformationVCAleartLab;
+    aleartLab.text = PerfectInformationVCAlertLab;
     aleartLab.textAlignment = NSTextAlignmentLeft;
     aleartLab.font = Font(11);
     aleartLab.textColor = [UIColor colorWithHexString:@"#666666"];
@@ -206,7 +201,7 @@
     }];
     
     _cormfirmButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_cormfirmButton setTitle:PerfectInformationVCCormfirmBtn forState:UIControlStateNormal];
+    [_cormfirmButton setTitle:PerfectInformationVCConfirmBtn forState:UIControlStateNormal];
     [_cormfirmButton setTitleColor:kWhiteColor forState:UIControlStateNormal];
     _cormfirmButton.backgroundColor = [UIColor colorWithHexString:@"#4c7afd"];
     _cormfirmButton.titleLabel.font = Font(16);
@@ -225,11 +220,11 @@
 -(void)cormfirmAction:(UIButton *)btn
 {
     if ( [_nameTf.text isEqualToString:@""]) {
-        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartOne];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertOne];
         return;
     }
     if ([_passwordTf.text isEqualToString:@""]) {
-        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartTwo];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertTwo];
         return;
     }
     BOOL checkBool = [PassWordManager checkPassWord:_passwordTf.text];
@@ -239,7 +234,7 @@
     }
 
     if (![_passwordTf.text isEqualToString:_verifyPwFf.text]) {
-        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAleartThree];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertThree];
         return;
     }
     InitAccountViewController *initAccountVC = [[InitAccountViewController alloc] init];
@@ -249,6 +244,33 @@
     initAccountVC.passwordStr = _passwordTf.text;
     initAccountVC.applyer_id = applyer_id;
     [self.navigationController pushViewController:initAccountVC animated:YES];
+}
+
+-(void)textViewEditChanged:(NSNotification *)notification{
+    UITextField *textField = (UITextField *)notification.object;
+    if (textField.tag == 100) {
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 12;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }
 }
 
 #pragma mark ----- 隐藏或者显示密码 -----
@@ -268,6 +290,11 @@
         return NO;
     }
     return YES;
+}
+
+-(void)dealloc
+{
+    returnKeyHandler = nil;
 }
 
 - (void)didReceiveMemoryWarning {

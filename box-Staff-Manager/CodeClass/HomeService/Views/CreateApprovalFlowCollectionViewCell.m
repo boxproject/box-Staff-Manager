@@ -8,8 +8,6 @@
 
 #import "CreateApprovalFlowCollectionViewCell.h"
 
-#define CreateApprovalFlowCollectionViewCellAdd  @"添加"
-
 @interface CreateApprovalFlowCollectionViewCell()
 {
     NSIndexPath *addIndexPath;
@@ -111,7 +109,7 @@
 
 -(NSMutableAttributedString *)attributedStringWithImage
 {
-    NSString *str = [NSString stringWithFormat:@"%@", CreateApprovalFlowCollectionViewCellAdd];
+    NSString *str = [NSString stringWithFormat:@"%@", Add];
     //创建富文本
     NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@" %@", str]];
     [attri addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#4380fa"] range:NSMakeRange(0, str.length + 1)];

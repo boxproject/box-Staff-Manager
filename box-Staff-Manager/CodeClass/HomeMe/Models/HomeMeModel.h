@@ -14,6 +14,8 @@
 
 @property (nonatomic,strong) NSString *subTitle;
 
+@property (nonatomic,strong) NSString *type;
+
 - (instancetype)initWithDict:(NSDictionary *)dict;
 
 @end

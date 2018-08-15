@@ -46,6 +46,13 @@
     self.passWord = [defaults valueForKey:@"passWord"];
     self.app_account_random = [defaults valueForKey:@"app_account_random"];
     self.box_IpPort = [defaults valueForKey:@"box_IpPort"];
+    self.departMemtName = [defaults valueForKey:@"departMemtName"];
+    self.ID = [defaults valueForKey:@"ID"];
+    self.encryptKey = [defaults valueForKey:@"encryptKey"];
+    self.token = [defaults valueForKey:@"token"];
+    if (self.token == nil) {
+        self.token = @"";
+    }
 }
 
 -(void)saveDataWithCoding:(NSString *)coding codeValue:(NSString *)codeValue
@@ -76,9 +83,29 @@
         self.app_account_random = codeValue;
     }else if ([coding isEqualToString:@"box_IpPort"]){
         self.box_IpPort = codeValue;
+    }else if ([coding isEqualToString:@"departMemtName"]){
+        self.departMemtName = codeValue;
+    }else if ([coding isEqualToString:@"ID"]){
+        self.ID = codeValue;
+    }else if ([coding isEqualToString:@"encryptKey"]){
+        self.encryptKey = codeValue;
+    }else if ([coding isEqualToString:@"token"]){
+        self.token = codeValue;
     }
     [defaults setObject:codeValue forKey: coding];
     [defaults synchronize];
+}
+
+-(void)removeDataWithCoding:(NSString *)coding
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:coding];
+    [defaults synchronize];
+    if ([coding isEqualToString:@"encryptKey"]){
+        self.encryptKey = nil;
+    }else if([coding isEqualToString:@"passWord"]){
+        self.passWord = nil;
+    }
 }
 
 -(NSInteger)getLaunchState;

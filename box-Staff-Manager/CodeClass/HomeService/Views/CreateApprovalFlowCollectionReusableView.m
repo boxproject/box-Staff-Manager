@@ -7,13 +7,11 @@
 //
 
 #import "CreateApprovalFlowCollectionReusableView.h"
-
-
-#define ApprovalMenber  @"审批人员"
-#define ApprovalMenberAmount  @"需审批人数"
-
+ 
 @interface CreateApprovalFlowCollectionReusableView()
-
+{
+    NSString *language;
+}
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic,assign) NSInteger menberIndex;
 
@@ -27,6 +25,7 @@
     if (self)
     {
         [self createView];
+        language = [[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"];
     }
     return self;
 }
@@ -41,8 +40,18 @@
     [_img mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.offset(15);
         make.centerY.equalTo(self);
-        make.height.offset(12);
-        make.width.offset(12);
+        make.height.offset(14);
+        make.width.offset(14);
+    }];
+    
+    UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [deleteBtn addTarget:self action:@selector(deleteBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:deleteBtn];
+    [deleteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(10);
+        make.top.offset(0);
+        make.bottom.offset(0);
+        make.width.offset(24);
     }];
     
     _leftLable = [[UILabel alloc]init];
@@ -103,6 +112,12 @@
     
 }
 
+-(void)deleteBtnAction:(UIButton *)btn
+{
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"deleteSection" object:@(_index)];
+}
+
+
 -(void)menberChangeAction:(UIButton *)btn
 {
     if (btn.tag == 100) {
@@ -126,8 +141,12 @@
 {
     _menberIndex = model.require;
     _index = index;
-    _img.image = [UIImage imageNamed:@"icon_pass"];
-    _leftLable.text = [NSString stringWithFormat:@"第%ld层%@(%ld)", index + 1, ApprovalMenber, model.total];
+    _img.image = [UIImage imageNamed:@"icon_delete layer"];
+    if ([language isEqualToString: @"en"]) {
+        _leftLable.text = [NSString stringWithFormat:@"Level %ld Members(%ld)", index + 1, model.total];
+    }else{
+        _leftLable.text = [NSString stringWithFormat:@"第%ld层%@(%ld)", index + 1, ApprovalMenber, model.total];
+    }
     _rightLable.text = [NSString stringWithFormat:@"%ld/%ld",model.require, model.total];
 }
 

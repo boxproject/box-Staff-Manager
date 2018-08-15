@@ -14,6 +14,10 @@
 @property (nonatomic,strong) NSString *currency;
 /** 币种地址 */
 @property (nonatomic,strong) NSString *address;
+@property (nonatomic,assign) BOOL select;
+@property (nonatomic,assign) NSInteger state;
+@property (nonatomic,strong) NSString *limit;
+@property (nonatomic,strong) NSString *tokenAddr;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

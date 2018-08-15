@@ -9,13 +9,10 @@
 #import "InitAccountViewController.h"
 #import "ScanCodeViewController.h"
 
-#define InitAccountVCTitle  @"扫一扫"
-#define PerfectInformationVCLaber  @"扫一扫完成授权"
-#define PerfectInformationVCSubLaber  @"扫一扫私钥App完成账号授权"
- 
-
-
 @interface InitAccountViewController ()
+{
+    NSString *language;
+}
 /** 开始扫描 */
 @property(nonatomic, strong)UIButton *scanButton;
 
@@ -28,6 +25,7 @@
     // Do any additional setup after loading the view.
     self.title = InitAccountVCTitle;
     self.view.backgroundColor = kWhiteColor;
+    language = [[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"];
     [self createView];
     // 删除导航栏左侧按钮
     UIBarButtonItem *barBtn = [[UIBarButtonItem alloc]init];
@@ -51,6 +49,9 @@
 {
     UIImageView *imgView = [[UIImageView alloc] init];
     imgView.image = [UIImage imageNamed: @"scanBoxIcon"];
+    if ([language isEqualToString: @"en"]) {
+        imgView.image = [UIImage imageNamed: @"image_shouquan_En"];
+    }
     [self.view addSubview:imgView];
     [imgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(55 + kTopHeight);
@@ -86,8 +87,11 @@
     }];
     
     _scanButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //[_scanButton setTitle:@"开始扫描" forState:UIControlStateNormal];
+    language = [[NSUserDefaults standardUserDefaults]objectForKey:@"appLanguage"];
     [_scanButton setImage:[UIImage imageNamed:@"startScanImg"] forState:UIControlStateNormal];
+    if ([language isEqualToString: @"en"]) {
+        [_scanButton setImage:[UIImage imageNamed:@"button_start scan"] forState:UIControlStateNormal];
+    }
     _scanButton.titleLabel.font = Font(17);
     [_scanButton setTitleColor:kBlueColor forState:UIControlStateNormal];
     [_scanButton addTarget:self action:@selector(scanAction) forControlEvents:UIControlEventTouchUpInside];

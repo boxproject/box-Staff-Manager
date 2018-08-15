@@ -18,6 +18,8 @@
 @property (nonatomic,strong) NSString *flow_name;
 /** 金额上限 */
 @property (nonatomic,strong) NSString *single_limit;
+/** 币种额度 */
+@property (nonatomic,strong) NSArray *flow_limit;
 
 - (instancetype)initWithDict:(NSDictionary *)dict;
 

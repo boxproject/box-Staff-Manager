@@ -12,7 +12,6 @@
 #import "AccountAdressDetailViewController.h"
 
 #define CellReuseIdentifier  @"AccountAdress"
-#define AccountAdressViewTitle  @"账户地址"
 #define PageSize  12
 
 @interface AccountAdressViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -30,7 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = kWhiteColor;
-    self.title = AccountAdressViewTitle;
+    self.title = AccountAddress;
     self.navigationController.navigationBar.hidden = NO;
     _sourceArray = [[NSMutableArray alloc] init];
     _page = 1;
@@ -92,6 +91,7 @@
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -105,7 +105,7 @@
             [self.tableView reloadData];
             
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -149,7 +149,6 @@
         [self presentViewController:accountAdressDetailNC animated:NO completion:nil];
     });
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -51,6 +51,7 @@
     [paramsDic setObject:@(-1) forKey:@"progress"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -63,7 +64,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -88,12 +89,12 @@
 
 - (UIView *)viewLayer{
     if(_viewLayer) return _viewLayer;
-    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
+    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 250, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
-    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[@"我发起的",@"我参与的"]];
+    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[HomeBoxVCInitiate,HomeBoxVCParticipateIn]];
     [_segmentedView addTarget:self action:@selector(segmentedChangle) forControlEvents:UIControlEventValueChanged];
     [_viewLayer addSubview:self.segmentedView];
-    self.segmentedView.frame = CGRectMake(30, 0, 200 - 60, 30);
+    self.segmentedView.frame = CGRectMake(30, 0, 250 - 60, 30);
     _segmentedView.selectedSegmentIndex = 0;
     return _viewLayer;
 }
@@ -154,6 +155,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh

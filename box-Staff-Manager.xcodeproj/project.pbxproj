@@ -55,8 +55,29 @@
 		1707DB27206E363400AE81BE /* SearchApprovalTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB26206E363400AE81BE /* SearchApprovalTableViewCell.m */; };
 		1707DB2A206F256800AE81BE /* BoxDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1707DB29206F256800AE81BE /* BoxDataManager.m */; };
 		170F392720B7E23300B98E93 /* UIButton+touch.m in Sources */ = {isa = PBXBuildFile; fileRef = 170F392520B7E23200B98E93 /* UIButton+touch.m */; };
+		1718EC7E2105AEF7005BDC24 /* AddApprovalMemberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC7D2105AEF7005BDC24 /* AddApprovalMemberViewController.m */; };
+		1718EC812105B82A005BDC24 /* AddApprovalMemberTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC802105B82A005BDC24 /* AddApprovalMemberTableViewCell.m */; };
+		1718EC842105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC832105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.m */; };
+		1718EC912106E5C3005BDC24 /* LanguageSwitchModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC902106E5C3005BDC24 /* LanguageSwitchModel.m */; };
+		1718EC942106E5E5005BDC24 /* LanguageSwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC932106E5E4005BDC24 /* LanguageSwitchViewController.m */; };
+		1718EC972106E5FA005BDC24 /* languageSwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718EC962106E5FA005BDC24 /* languageSwitchTableViewCell.m */; };
+		1718EC9D21081B69005BDC24 /* Language.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1718EC9F21081B69005BDC24 /* Language.strings */; };
+		1718ECA321099FD2005BDC24 /* ViewApprovalLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718ECA221099FD2005BDC24 /* ViewApprovalLogViewController.m */; };
+		1718ECA621099FF8005BDC24 /* ViewApprovalLogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718ECA521099FF8005BDC24 /* ViewApprovalLogModel.m */; };
+		1718ECA92109A025005BDC24 /* ViewApprovalLogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1718ECA82109A025005BDC24 /* ViewApprovalLogTableViewCell.m */; };
+		1719D41521173AE600ED0917 /* LimitTimeTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1719D41421173AE600ED0917 /* LimitTimeTextField.m */; };
+		1719D4182117429900ED0917 /* LimitAmountTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1719D4172117429900ED0917 /* LimitAmountTextField.m */; };
 		171EA98B20B27219006F53F1 /* AddressVerifyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 171EA98A20B27219006F53F1 /* AddressVerifyManager.m */; };
 		171EC0E420A2B0FA00CA7F20 /* PassWordManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 171EC0E220A2B0F900CA7F20 /* PassWordManager.m */; };
+		1723B9AD20E9C61E00685284 /* ValuePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1723B9AC20E9C61E00685284 /* ValuePickerView.m */; };
+		1723B9B020EA3A5400685284 /* DepartmemtInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1723B9AF20EA3A5400685284 /* DepartmemtInfoModel.m */; };
+		1723BA4420EB0BF700685284 /* LoginBoxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1723BA4320EB0BF700685284 /* LoginBoxViewController.m */; };
+		1723BA4720EB266600685284 /* PickerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1723BA4620EB266600685284 /* PickerModel.m */; };
+		1753113F20E32C5200094244 /* AddDepartmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1753113E20E32C5200094244 /* AddDepartmentViewController.m */; };
+		1753114320E3A37C00094244 /* JXMovableCellTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1753114220E3A37C00094244 /* JXMovableCellTableView.m */; };
+		1753114620E48EE500094244 /* DepartmentDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1753114520E48EE500094244 /* DepartmentDetailViewController.m */; };
+		1753114920E4BCAF00094244 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 1753114820E4BCAF00094244 /* Person.m */; };
+		1753114D20E4BD2900094244 /* BMChineseSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1753114C20E4BD2900094244 /* BMChineseSort.m */; };
 		1764028120790C9F00E125B2 /* MenberInfoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1764028020790C9F00E125B2 /* MenberInfoManager.m */; };
 		1764028420790E0D00E125B2 /* MenberInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1764028320790E0D00E125B2 /* MenberInfoModel.m */; };
 		176402872079C89500E125B2 /* AddApprovalMenberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402862079C89500E125B2 /* AddApprovalMenberViewController.m */; };
@@ -68,6 +89,7 @@
 		176402E4208486A600E125B2 /* PrivatePasswordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402E2208486A500E125B2 /* PrivatePasswordView.m */; };
 		176402E72084CBBC00E125B2 /* ModifyServerAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 176402E62084CBBC00E125B2 /* ModifyServerAddressViewController.m */; };
 		1769BA6A20C7FCE0008C431A /* IcapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1769BA6920C7FCE0008C431A /* IcapManager.m */; };
+		1769BA6D20C92CF8008C431A /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 1769BA6B20C92CF7008C431A /* keccak.c */; };
 		1771419720712A770092FD11 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1771419620712A770092FD11 /* ProgressHUD.m */; };
 		1771419A207134F20092FD11 /* DBHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 17714199207134F20092FD11 /* DBHelp.m */; };
 		1771419D207136CA0092FD11 /* DirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1771419C207136CA0092FD11 /* DirectoryManager.m */; };
@@ -88,6 +110,18 @@
 		177141CA20747EA60092FD11 /* CreateApprovalFlowCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 177141C920747EA60092FD11 /* CreateApprovalFlowCollectionViewCell.m */; };
 		177141CD20747EE20092FD11 /* CreateApprovalFlowCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177141CC20747EE20092FD11 /* CreateApprovalFlowCollectionReusableView.m */; };
 		17843DA420A91F09005BB271 /* AssetAmountListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17843DA320A91F09005BB271 /* AssetAmountListViewController.m */; };
+		1795300B20E0EC4100BCFF88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1795300D20E0EC4100BCFF88 /* InfoPlist.strings */; };
+		1795301720E1EB1500BCFF88 /* DepartmentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1795301620E1EB1500BCFF88 /* DepartmentViewController.m */; };
+		1795301A20E218EF00BCFF88 /* DepartmentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1795301920E218EF00BCFF88 /* DepartmentTableViewCell.m */; };
+		1795301D20E21EEB00BCFF88 /* DepartmentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1795301C20E21EEB00BCFF88 /* DepartmentModel.m */; };
+		17A7963C211453FA0039DD42 /* NoCopyTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A7963B211453FA0039DD42 /* NoCopyTextField.m */; };
+		17A8129B20FB6679007A791A /* SearchCurrencyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A8129A20FB6679007A791A /* SearchCurrencyTableViewCell.m */; };
+		17A8129E20FB6A55007A791A /* SearchCurrencyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A8129D20FB6A55007A791A /* SearchCurrencyViewController.m */; };
+		17A812A220FC605F007A791A /* CurrencyDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A812A120FC605F007A791A /* CurrencyDetailTableViewCell.m */; };
+		17A812A520FC6BD4007A791A /* ApprovalBusinessFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A812A420FC6BD4007A791A /* ApprovalBusinessFooterView.m */; };
+		17A812A820FC96E9007A791A /* ViewLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A812A720FC96E9007A791A /* ViewLogViewController.m */; };
+		17A812AB20FC9922007A791A /* ViewLogModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A812AA20FC9922007A791A /* ViewLogModel.m */; };
+		17A812AE20FC995C007A791A /* ViewLogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17A812AD20FC995C007A791A /* ViewLogTableViewCell.m */; };
 		17AD19502063514B000052B5 /* PerfectInformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD194E2063514B000052B5 /* PerfectInformationViewController.m */; };
 		17AD195820635233000052B5 /* LYButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD195320635233000052B5 /* LYButton.m */; };
 		17AD195920635233000052B5 /* TBButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD195520635233000052B5 /* TBButton.m */; };
@@ -109,6 +143,8 @@
 		17AD19F92064D2D8000052B5 /* TBView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD19F82064D2D8000052B5 /* TBView.m */; };
 		17AD19FC20650E8A000052B5 /* TransferViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD19FB20650E8A000052B5 /* TransferViewController.m */; };
 		17AD19FF20650F6B000052B5 /* tansferCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17AD19FE20650F6B000052B5 /* tansferCodeViewController.m */; };
+		17B4FFD320F713B70040ED73 /* SetApprovalAmountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B4FFD220F713B70040ED73 /* SetApprovalAmountViewController.m */; };
+		17B4FFD920F71BEC0040ED73 /* SetApprovalAmountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B4FFD820F71BEC0040ED73 /* SetApprovalAmountTableViewCell.m */; };
 		568445642043AFF2004891D8 /* box_Staff_ManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 568445632043AFF2004891D8 /* box_Staff_ManagerTests.m */; };
 		5684456F2043AFF2004891D8 /* box_Staff_ManagerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5684456E2043AFF2004891D8 /* box_Staff_ManagerUITests.m */; };
 		568445AD2043B3D7004891D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5684459D2043B3D6004891D8 /* Assets.xcassets */; };
@@ -238,10 +274,53 @@
 		1707DB29206F256800AE81BE /* BoxDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoxDataManager.m; sourceTree = "<group>"; };
 		170F392520B7E23200B98E93 /* UIButton+touch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+touch.m"; sourceTree = "<group>"; };
 		170F392620B7E23200B98E93 /* UIButton+touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+touch.h"; sourceTree = "<group>"; };
+		1718EC7C2105AEF7005BDC24 /* AddApprovalMemberViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddApprovalMemberViewController.h; sourceTree = "<group>"; };
+		1718EC7D2105AEF7005BDC24 /* AddApprovalMemberViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddApprovalMemberViewController.m; sourceTree = "<group>"; };
+		1718EC7F2105B82A005BDC24 /* AddApprovalMemberTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddApprovalMemberTableViewCell.h; sourceTree = "<group>"; };
+		1718EC802105B82A005BDC24 /* AddApprovalMemberTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddApprovalMemberTableViewCell.m; sourceTree = "<group>"; };
+		1718EC822105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddApprovalMemberCollectionViewCell.h; sourceTree = "<group>"; };
+		1718EC832105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddApprovalMemberCollectionViewCell.m; sourceTree = "<group>"; };
+		1718EC8F2106E5C3005BDC24 /* LanguageSwitchModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LanguageSwitchModel.h; sourceTree = "<group>"; };
+		1718EC902106E5C3005BDC24 /* LanguageSwitchModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguageSwitchModel.m; sourceTree = "<group>"; };
+		1718EC922106E5E4005BDC24 /* LanguageSwitchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LanguageSwitchViewController.h; sourceTree = "<group>"; };
+		1718EC932106E5E4005BDC24 /* LanguageSwitchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LanguageSwitchViewController.m; sourceTree = "<group>"; };
+		1718EC952106E5FA005BDC24 /* languageSwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = languageSwitchTableViewCell.h; sourceTree = "<group>"; };
+		1718EC962106E5FA005BDC24 /* languageSwitchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = languageSwitchTableViewCell.m; sourceTree = "<group>"; };
+		1718EC9E21081B69005BDC24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Language.strings"; sourceTree = "<group>"; };
+		1718ECA021081B76005BDC24 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Language.strings; sourceTree = "<group>"; };
+		1718ECA121099FD2005BDC24 /* ViewApprovalLogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewApprovalLogViewController.h; sourceTree = "<group>"; };
+		1718ECA221099FD2005BDC24 /* ViewApprovalLogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewApprovalLogViewController.m; sourceTree = "<group>"; };
+		1718ECA421099FF8005BDC24 /* ViewApprovalLogModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewApprovalLogModel.h; sourceTree = "<group>"; };
+		1718ECA521099FF8005BDC24 /* ViewApprovalLogModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewApprovalLogModel.m; sourceTree = "<group>"; };
+		1718ECA72109A025005BDC24 /* ViewApprovalLogTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewApprovalLogTableViewCell.h; sourceTree = "<group>"; };
+		1718ECA82109A025005BDC24 /* ViewApprovalLogTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewApprovalLogTableViewCell.m; sourceTree = "<group>"; };
+		1719D41321173AE600ED0917 /* LimitTimeTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LimitTimeTextField.h; sourceTree = "<group>"; };
+		1719D41421173AE600ED0917 /* LimitTimeTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LimitTimeTextField.m; sourceTree = "<group>"; };
+		1719D4162117429900ED0917 /* LimitAmountTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LimitAmountTextField.h; sourceTree = "<group>"; };
+		1719D4172117429900ED0917 /* LimitAmountTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LimitAmountTextField.m; sourceTree = "<group>"; };
 		171EA98920B27218006F53F1 /* AddressVerifyManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddressVerifyManager.h; sourceTree = "<group>"; };
 		171EA98A20B27219006F53F1 /* AddressVerifyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddressVerifyManager.m; sourceTree = "<group>"; };
 		171EC0E220A2B0F900CA7F20 /* PassWordManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PassWordManager.m; sourceTree = "<group>"; };
 		171EC0E320A2B0F900CA7F20 /* PassWordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PassWordManager.h; sourceTree = "<group>"; };
+		1723B9AB20E9C61E00685284 /* ValuePickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ValuePickerView.h; sourceTree = "<group>"; };
+		1723B9AC20E9C61E00685284 /* ValuePickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ValuePickerView.m; sourceTree = "<group>"; };
+		1723B9AE20EA3A5400685284 /* DepartmemtInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DepartmemtInfoModel.h; sourceTree = "<group>"; };
+		1723B9AF20EA3A5400685284 /* DepartmemtInfoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DepartmemtInfoModel.m; sourceTree = "<group>"; };
+		1723BA4220EB0BF700685284 /* LoginBoxViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginBoxViewController.h; sourceTree = "<group>"; };
+		1723BA4320EB0BF700685284 /* LoginBoxViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginBoxViewController.m; sourceTree = "<group>"; };
+		1723BA4520EB266600685284 /* PickerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PickerModel.h; sourceTree = "<group>"; };
+		1723BA4620EB266600685284 /* PickerModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PickerModel.m; sourceTree = "<group>"; };
+		1753113D20E32C5200094244 /* AddDepartmentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDepartmentViewController.h; sourceTree = "<group>"; };
+		1753113E20E32C5200094244 /* AddDepartmentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDepartmentViewController.m; sourceTree = "<group>"; };
+		1753114020E3881800094244 /* Localizable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Localizable.h; sourceTree = "<group>"; };
+		1753114120E3A37B00094244 /* JXMovableCellTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JXMovableCellTableView.h; sourceTree = "<group>"; };
+		1753114220E3A37C00094244 /* JXMovableCellTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JXMovableCellTableView.m; sourceTree = "<group>"; };
+		1753114420E48EE500094244 /* DepartmentDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DepartmentDetailViewController.h; sourceTree = "<group>"; };
+		1753114520E48EE500094244 /* DepartmentDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DepartmentDetailViewController.m; sourceTree = "<group>"; };
+		1753114720E4BCAF00094244 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		1753114820E4BCAF00094244 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		1753114B20E4BD2900094244 /* BMChineseSort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BMChineseSort.h; sourceTree = "<group>"; };
+		1753114C20E4BD2900094244 /* BMChineseSort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BMChineseSort.m; sourceTree = "<group>"; };
 		1764027F20790C9F00E125B2 /* MenberInfoManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenberInfoManager.h; sourceTree = "<group>"; };
 		1764028020790C9F00E125B2 /* MenberInfoManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenberInfoManager.m; sourceTree = "<group>"; };
 		1764028220790E0D00E125B2 /* MenberInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenberInfoModel.h; sourceTree = "<group>"; };
@@ -264,6 +343,8 @@
 		176402E62084CBBC00E125B2 /* ModifyServerAddressViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModifyServerAddressViewController.m; sourceTree = "<group>"; };
 		1769BA6820C7FCE0008C431A /* IcapManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IcapManager.h; sourceTree = "<group>"; };
 		1769BA6920C7FCE0008C431A /* IcapManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IcapManager.m; sourceTree = "<group>"; };
+		1769BA6B20C92CF7008C431A /* keccak.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = keccak.c; sourceTree = "<group>"; };
+		1769BA6C20C92CF7008C431A /* keccak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keccak.h; sourceTree = "<group>"; };
 		1771419520712A770092FD11 /* ProgressHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		1771419620712A770092FD11 /* ProgressHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		17714198207134F20092FD11 /* DBHelp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBHelp.h; sourceTree = "<group>"; };
@@ -304,6 +385,31 @@
 		177141CC20747EE20092FD11 /* CreateApprovalFlowCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateApprovalFlowCollectionReusableView.m; sourceTree = "<group>"; };
 		17843DA220A91F08005BB271 /* AssetAmountListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetAmountListViewController.h; sourceTree = "<group>"; };
 		17843DA320A91F09005BB271 /* AssetAmountListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetAmountListViewController.m; sourceTree = "<group>"; };
+		1795300820E0EBFA00BCFF88 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		1795300C20E0EC4100BCFF88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1795300E20E0EC4900BCFF88 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		1795301520E1EB1500BCFF88 /* DepartmentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DepartmentViewController.h; sourceTree = "<group>"; };
+		1795301620E1EB1500BCFF88 /* DepartmentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DepartmentViewController.m; sourceTree = "<group>"; };
+		1795301820E218EF00BCFF88 /* DepartmentTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DepartmentTableViewCell.h; sourceTree = "<group>"; };
+		1795301920E218EF00BCFF88 /* DepartmentTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DepartmentTableViewCell.m; sourceTree = "<group>"; };
+		1795301B20E21EEB00BCFF88 /* DepartmentModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DepartmentModel.h; sourceTree = "<group>"; };
+		1795301C20E21EEB00BCFF88 /* DepartmentModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DepartmentModel.m; sourceTree = "<group>"; };
+		17A7963A211453FA0039DD42 /* NoCopyTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoCopyTextField.h; sourceTree = "<group>"; };
+		17A7963B211453FA0039DD42 /* NoCopyTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoCopyTextField.m; sourceTree = "<group>"; };
+		17A8129920FB6679007A791A /* SearchCurrencyTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchCurrencyTableViewCell.h; sourceTree = "<group>"; };
+		17A8129A20FB6679007A791A /* SearchCurrencyTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchCurrencyTableViewCell.m; sourceTree = "<group>"; };
+		17A8129C20FB6A55007A791A /* SearchCurrencyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchCurrencyViewController.h; sourceTree = "<group>"; };
+		17A8129D20FB6A55007A791A /* SearchCurrencyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchCurrencyViewController.m; sourceTree = "<group>"; };
+		17A812A020FC605F007A791A /* CurrencyDetailTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CurrencyDetailTableViewCell.h; sourceTree = "<group>"; };
+		17A812A120FC605F007A791A /* CurrencyDetailTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CurrencyDetailTableViewCell.m; sourceTree = "<group>"; };
+		17A812A320FC6BD4007A791A /* ApprovalBusinessFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApprovalBusinessFooterView.h; sourceTree = "<group>"; };
+		17A812A420FC6BD4007A791A /* ApprovalBusinessFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApprovalBusinessFooterView.m; sourceTree = "<group>"; };
+		17A812A620FC96E9007A791A /* ViewLogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLogViewController.h; sourceTree = "<group>"; };
+		17A812A720FC96E9007A791A /* ViewLogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLogViewController.m; sourceTree = "<group>"; };
+		17A812A920FC9922007A791A /* ViewLogModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLogModel.h; sourceTree = "<group>"; };
+		17A812AA20FC9922007A791A /* ViewLogModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLogModel.m; sourceTree = "<group>"; };
+		17A812AC20FC995C007A791A /* ViewLogTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLogTableViewCell.h; sourceTree = "<group>"; };
+		17A812AD20FC995C007A791A /* ViewLogTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLogTableViewCell.m; sourceTree = "<group>"; };
 		17AD194E2063514B000052B5 /* PerfectInformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PerfectInformationViewController.m; sourceTree = "<group>"; };
 		17AD194F2063514B000052B5 /* PerfectInformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerfectInformationViewController.h; sourceTree = "<group>"; };
 		17AD195220635233000052B5 /* LYButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LYButton.h; sourceTree = "<group>"; };
@@ -418,6 +524,10 @@
 		17AD19FB20650E8A000052B5 /* TransferViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TransferViewController.m; sourceTree = "<group>"; };
 		17AD19FD20650F6B000052B5 /* tansferCodeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tansferCodeViewController.h; sourceTree = "<group>"; };
 		17AD19FE20650F6B000052B5 /* tansferCodeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tansferCodeViewController.m; sourceTree = "<group>"; };
+		17B4FFD120F713B70040ED73 /* SetApprovalAmountViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetApprovalAmountViewController.h; sourceTree = "<group>"; };
+		17B4FFD220F713B70040ED73 /* SetApprovalAmountViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetApprovalAmountViewController.m; sourceTree = "<group>"; };
+		17B4FFD720F71BEC0040ED73 /* SetApprovalAmountTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetApprovalAmountTableViewCell.h; sourceTree = "<group>"; };
+		17B4FFD820F71BEC0040ED73 /* SetApprovalAmountTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetApprovalAmountTableViewCell.m; sourceTree = "<group>"; };
 		2AB531C2E7E4D4AC4DD53904 /* libPods-box-Staff-Manager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-box-Staff-Manager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		39B5B9D72DEC936FBA1608F1 /* Pods-box-Staff-Manager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-box-Staff-Manager.release.xcconfig"; path = "Pods/Target Support Files/Pods-box-Staff-Manager/Pods-box-Staff-Manager.release.xcconfig"; sourceTree = "<group>"; };
 		568445472043AFF2004891D8 /* box-Staff-Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "box-Staff-Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -493,9 +603,64 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		1723B9AA20E9C60E00685284 /* PickerView */ = {
+			isa = PBXGroup;
+			children = (
+				1723B9AB20E9C61E00685284 /* ValuePickerView.h */,
+				1723B9AC20E9C61E00685284 /* ValuePickerView.m */,
+				1723BA4520EB266600685284 /* PickerModel.h */,
+				1723BA4620EB266600685284 /* PickerModel.m */,
+			);
+			path = PickerView;
+			sourceTree = "<group>";
+		};
+		1723BA3E20EB0A6500685284 /* LoginBox */ = {
+			isa = PBXGroup;
+			children = (
+				1723BA3F20EB0BC300685284 /* Controllers */,
+				1723BA4020EB0BC300685284 /* Models */,
+				1723BA4120EB0BC300685284 /* Views */,
+			);
+			path = LoginBox;
+			sourceTree = "<group>";
+		};
+		1723BA3F20EB0BC300685284 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1723BA4220EB0BF700685284 /* LoginBoxViewController.h */,
+				1723BA4320EB0BF700685284 /* LoginBoxViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		1723BA4020EB0BC300685284 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1723BA4120EB0BC300685284 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1753114A20E4BCFD00094244 /* BMChineseSort */ = {
+			isa = PBXGroup;
+			children = (
+				1753114B20E4BD2900094244 /* BMChineseSort.h */,
+				1753114C20E4BD2900094244 /* BMChineseSort.m */,
+			);
+			path = BMChineseSort;
+			sourceTree = "<group>";
+		};
 		1769BA6420C7FC6D008C431A /* ICAP */ = {
 			isa = PBXGroup;
 			children = (
+				1769BA6B20C92CF7008C431A /* keccak.c */,
+				1769BA6C20C92CF7008C431A /* keccak.h */,
 				1769BA6820C7FCE0008C431A /* IcapManager.h */,
 				1769BA6920C7FCE0008C431A /* IcapManager.m */,
 			);
@@ -531,6 +696,12 @@
 				171EA98A20B27219006F53F1 /* AddressVerifyManager.m */,
 				170F392620B7E23200B98E93 /* UIButton+touch.h */,
 				170F392520B7E23200B98E93 /* UIButton+touch.m */,
+				17A7963A211453FA0039DD42 /* NoCopyTextField.h */,
+				17A7963B211453FA0039DD42 /* NoCopyTextField.m */,
+				1719D41321173AE600ED0917 /* LimitTimeTextField.h */,
+				1719D41421173AE600ED0917 /* LimitTimeTextField.m */,
+				1719D4162117429900ED0917 /* LimitAmountTextField.h */,
+				1719D4172117429900ED0917 /* LimitAmountTextField.m */,
 			);
 			path = ManagerCommon;
 			sourceTree = "<group>";
@@ -886,6 +1057,24 @@
 				176402862079C89500E125B2 /* AddApprovalMenberViewController.m */,
 				176402882079C95500E125B2 /* SearchApprovalMenberViewController.h */,
 				176402892079C95500E125B2 /* SearchApprovalMenberViewController.m */,
+				1718EC7C2105AEF7005BDC24 /* AddApprovalMemberViewController.h */,
+				1718EC7D2105AEF7005BDC24 /* AddApprovalMemberViewController.m */,
+				1795301520E1EB1500BCFF88 /* DepartmentViewController.h */,
+				1795301620E1EB1500BCFF88 /* DepartmentViewController.m */,
+				1753113D20E32C5200094244 /* AddDepartmentViewController.h */,
+				1753113E20E32C5200094244 /* AddDepartmentViewController.m */,
+				1753114120E3A37B00094244 /* JXMovableCellTableView.h */,
+				1753114220E3A37C00094244 /* JXMovableCellTableView.m */,
+				1753114420E48EE500094244 /* DepartmentDetailViewController.h */,
+				1753114520E48EE500094244 /* DepartmentDetailViewController.m */,
+				17B4FFD120F713B70040ED73 /* SetApprovalAmountViewController.h */,
+				17B4FFD220F713B70040ED73 /* SetApprovalAmountViewController.m */,
+				17A8129C20FB6A55007A791A /* SearchCurrencyViewController.h */,
+				17A8129D20FB6A55007A791A /* SearchCurrencyViewController.m */,
+				17A812A620FC96E9007A791A /* ViewLogViewController.h */,
+				17A812A720FC96E9007A791A /* ViewLogViewController.m */,
+				1718ECA121099FD2005BDC24 /* ViewApprovalLogViewController.h */,
+				1718ECA221099FD2005BDC24 /* ViewApprovalLogViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -909,6 +1098,16 @@
 				177141BD2073729C0092FD11 /* ApprovalBusinessDetailModel.m */,
 				177141BF2073734E0092FD11 /* ApprovalBusApproversModel.h */,
 				177141C02073734E0092FD11 /* ApprovalBusApproversModel.m */,
+				1795301B20E21EEB00BCFF88 /* DepartmentModel.h */,
+				1795301C20E21EEB00BCFF88 /* DepartmentModel.m */,
+				1753114720E4BCAF00094244 /* Person.h */,
+				1753114820E4BCAF00094244 /* Person.m */,
+				1723B9AE20EA3A5400685284 /* DepartmemtInfoModel.h */,
+				1723B9AF20EA3A5400685284 /* DepartmemtInfoModel.m */,
+				17A812A920FC9922007A791A /* ViewLogModel.h */,
+				17A812AA20FC9922007A791A /* ViewLogModel.m */,
+				1718ECA421099FF8005BDC24 /* ViewApprovalLogModel.h */,
+				1718ECA521099FF8005BDC24 /* ViewApprovalLogModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -930,6 +1129,8 @@
 				1707DAF9206CB77800AE81BE /* AssetAmountTableViewCell.m */,
 				177141B620736C7C0092FD11 /* ApprovalBusinessTopView.h */,
 				177141B720736C7C0092FD11 /* ApprovalBusinessTopView.m */,
+				17A812A320FC6BD4007A791A /* ApprovalBusinessFooterView.h */,
+				17A812A420FC6BD4007A791A /* ApprovalBusinessFooterView.m */,
 				177141B9207371E10092FD11 /* ApprovalBusinessCollectionViewCell.h */,
 				177141BA207371E10092FD11 /* ApprovalBusinessCollectionViewCell.m */,
 				177141C22073756C0092FD11 /* ApprovalBusinessCollectionReusableView.h */,
@@ -938,6 +1139,22 @@
 				177141C920747EA60092FD11 /* CreateApprovalFlowCollectionViewCell.m */,
 				177141CB20747EE20092FD11 /* CreateApprovalFlowCollectionReusableView.h */,
 				177141CC20747EE20092FD11 /* CreateApprovalFlowCollectionReusableView.m */,
+				1795301820E218EF00BCFF88 /* DepartmentTableViewCell.h */,
+				1795301920E218EF00BCFF88 /* DepartmentTableViewCell.m */,
+				17B4FFD720F71BEC0040ED73 /* SetApprovalAmountTableViewCell.h */,
+				17B4FFD820F71BEC0040ED73 /* SetApprovalAmountTableViewCell.m */,
+				17A8129920FB6679007A791A /* SearchCurrencyTableViewCell.h */,
+				17A8129A20FB6679007A791A /* SearchCurrencyTableViewCell.m */,
+				17A812A020FC605F007A791A /* CurrencyDetailTableViewCell.h */,
+				17A812A120FC605F007A791A /* CurrencyDetailTableViewCell.m */,
+				17A812AC20FC995C007A791A /* ViewLogTableViewCell.h */,
+				17A812AD20FC995C007A791A /* ViewLogTableViewCell.m */,
+				1718ECA72109A025005BDC24 /* ViewApprovalLogTableViewCell.h */,
+				1718ECA82109A025005BDC24 /* ViewApprovalLogTableViewCell.m */,
+				1718EC7F2105B82A005BDC24 /* AddApprovalMemberTableViewCell.h */,
+				1718EC802105B82A005BDC24 /* AddApprovalMemberTableViewCell.m */,
+				1718EC822105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.h */,
+				1718EC832105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -969,6 +1186,8 @@
 				1707DB14206CF89D00AE81BE /* ModificatePasswordViewController.m */,
 				176402E52084CBBC00E125B2 /* ModifyServerAddressViewController.h */,
 				176402E62084CBBC00E125B2 /* ModifyServerAddressViewController.m */,
+				1718EC922106E5E4005BDC24 /* LanguageSwitchViewController.h */,
+				1718EC932106E5E4005BDC24 /* LanguageSwitchViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -976,6 +1195,8 @@
 		17AD19E320649817000052B5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1718EC8F2106E5C3005BDC24 /* LanguageSwitchModel.h */,
+				1718EC902106E5C3005BDC24 /* LanguageSwitchModel.m */,
 				1707DAFB206CC96200AE81BE /* HomeMeModel.h */,
 				1707DAFC206CC96200AE81BE /* HomeMeModel.m */,
 				1707DB0B206CE52300AE81BE /* AccountAdressModel.h */,
@@ -991,6 +1212,8 @@
 				1707DAFF206CC97900AE81BE /* HomeMeTableViewCell.m */,
 				1707DB0E206CE53900AE81BE /* AccountAdressTableViewCell.h */,
 				1707DB0D206CE53900AE81BE /* AccountAdressTableViewCell.m */,
+				1718EC952106E5FA005BDC24 /* languageSwitchTableViewCell.h */,
+				1718EC962106E5FA005BDC24 /* languageSwitchTableViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1078,6 +1301,7 @@
 		568445982043B3D6004891D8 /* CodeClass */ = {
 			isa = PBXGroup;
 			children = (
+				1723BA3E20EB0A6500685284 /* LoginBox */,
 				17AD19E120649817000052B5 /* HomeMe */,
 				17AD19DD20649798000052B5 /* HomeService */,
 				17AD19D92064978E000052B5 /* HomeDirectory */,
@@ -1119,6 +1343,8 @@
 				568445A02043B3D6004891D8 /* Main.storyboard */,
 				568445A22043B3D6004891D8 /* main.m */,
 				568445A32043B3D6004891D8 /* Info.plist */,
+				1718EC9F21081B69005BDC24 /* Language.strings */,
+				1795300D20E0EC4100BCFF88 /* InfoPlist.strings */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1130,6 +1356,7 @@
 				568445B82043F41F004891D8 /* AppConstant.h */,
 				568445B9204404FB004891D8 /* ColorHeaders.h */,
 				568445BA20450EE5004891D8 /* SizeHeader.h */,
+				1753114020E3881800094244 /* Localizable.h */,
 			);
 			path = Macro;
 			sourceTree = "<group>";
@@ -1165,6 +1392,8 @@
 		568445AC2043B3D7004891D8 /* globel */ = {
 			isa = PBXGroup;
 			children = (
+				1723B9AA20E9C60E00685284 /* PickerView */,
+				1753114A20E4BCFD00094244 /* BMChineseSort */,
 				1769BA6420C7FC6D008C431A /* ICAP */,
 				17AD19CD206389F3000052B5 /* RSA */,
 				17AD19C62063879B000052B5 /* OpenSSLManager */,
@@ -1307,6 +1536,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 5684453E2043AFF2004891D8;
 			productRefGroup = 568445482043AFF2004891D8 /* Products */;
@@ -1326,10 +1556,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				568445AD2043B3D7004891D8 /* Assets.xcassets in Resources */,
+				1795300B20E0EC4100BCFF88 /* InfoPlist.strings in Resources */,
 				568445AF2043B3D7004891D8 /* Main.storyboard in Resources */,
 				568445AE2043B3D7004891D8 /* LaunchScreen.storyboard in Resources */,
 				568445B12043B3D7004891D8 /* Info.plist in Resources */,
 				17AD19C520638794000052B5 /* LICENSE in Resources */,
+				1718EC9D21081B69005BDC24 /* Language.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1417,11 +1649,14 @@
 				176402E72084CBBC00E125B2 /* ModifyServerAddressViewController.m in Sources */,
 				1764028120790C9F00E125B2 /* MenberInfoManager.m in Sources */,
 				1707DAB8206B867800AE81BE /* ApprovalBusinessModel.m in Sources */,
+				17A812AB20FC9922007A791A /* ViewLogModel.m in Sources */,
 				171EC0E420A2B0FA00CA7F20 /* PassWordManager.m in Sources */,
 				1707DAD9206B8FB900AE81BE /* OrganizationViewController.m in Sources */,
 				17AD196720635889000052B5 /* InitAccountViewController.m in Sources */,
 				1707DADF206B8FDC00AE81BE /* OrganizationModel.m in Sources */,
 				1707DAFA206CB77800AE81BE /* AssetAmountTableViewCell.m in Sources */,
+				1753113F20E32C5200094244 /* AddDepartmentViewController.m in Sources */,
+				1723BA4720EB266600685284 /* PickerModel.m in Sources */,
 				17AD196420635408000052B5 /* BaseViewController.m in Sources */,
 				17AD196A206380D1000052B5 /* ScanCodeViewController.m in Sources */,
 				176402E4208486A600E125B2 /* PrivatePasswordView.m in Sources */,
@@ -1437,24 +1672,31 @@
 				1707DB1E206DE3BD00AE81BE /* TransferTopView.m in Sources */,
 				177141AF20731C5F0092FD11 /* TransferModel.m in Sources */,
 				1707DB00206CC97900AE81BE /* HomeMeTableViewCell.m in Sources */,
+				1769BA6D20C92CF8008C431A /* keccak.c in Sources */,
 				56D8EE93204CEF0800CC2049 /* FSAES128.m in Sources */,
+				17B4FFD920F71BEC0040ED73 /* SetApprovalAmountTableViewCell.m in Sources */,
 				176402E120843A2D00E125B2 /* CurrentcyListCollectionViewCell.m in Sources */,
 				17AD19F0206498F5000052B5 /* HomeBoxViewController.m in Sources */,
 				1707DA8B2069E8AC00AE81BE /* TransferAwaitViewController.m in Sources */,
 				177141BB207371E10092FD11 /* ApprovalBusinessCollectionViewCell.m in Sources */,
+				17A812A820FC96E9007A791A /* ViewLogViewController.m in Sources */,
+				17A8129E20FB6A55007A791A /* SearchCurrencyViewController.m in Sources */,
 				177141B820736C7C0092FD11 /* ApprovalBusinessTopView.m in Sources */,
 				17AD19EA206498BB000052B5 /* HomeServiceViewController.m in Sources */,
 				1707DB24206E361900AE81BE /* SearchApprovalModel.m in Sources */,
 				1707DB1B206DE30300AE81BE /* TransferAwaitDetailViewController.m in Sources */,
+				1753114620E48EE500094244 /* DepartmentDetailViewController.m in Sources */,
 				1707DA972069F08700AE81BE /* TransferRecordModel.m in Sources */,
 				1707DAEE206B9E3E00AE81BE /* SearchMenberModel.m in Sources */,
 				177141A3207166B40092FD11 /* EditorDirectoryViewController.m in Sources */,
 				170F392720B7E23300B98E93 /* UIButton+touch.m in Sources */,
+				1718ECA621099FF8005BDC24 /* ViewApprovalLogModel.m in Sources */,
 				1707DB12206CF62100AE81BE /* ScanAdressViewController.m in Sources */,
 				177141B2207323930092FD11 /* TransferApproversModel.m in Sources */,
 				1707DAE2206B8FF000AE81BE /* OrganizationListModel.m in Sources */,
 				1707DA9A2069F0A800AE81BE /* TransferRecordTableViewCell.m in Sources */,
 				1707DB03206CDDF200AE81BE /* AboutBoxViewController.m in Sources */,
+				1718ECA321099FD2005BDC24 /* ViewApprovalLogViewController.m in Sources */,
 				1707DAAC206B6F4F00AE81BE /* SearchAddressTableViewCell.m in Sources */,
 				17AD19E72064989C000052B5 /* HomeMeViewController.m in Sources */,
 				1707DB0C206CE52300AE81BE /* AccountAdressModel.m in Sources */,
@@ -1462,28 +1704,37 @@
 				17AD195920635233000052B5 /* TBButton.m in Sources */,
 				177141A920730C460092FD11 /* TransferCollectionViewCell.m in Sources */,
 				177141C12073734E0092FD11 /* ApprovalBusApproversModel.m in Sources */,
+				1718EC812105B82A005BDC24 /* AddApprovalMemberTableViewCell.m in Sources */,
 				1707DB08206CE15B00AE81BE /* AccountAdressDetailViewController.m in Sources */,
 				17AD19CC2063879C000052B5 /* UIARSAHandler.m in Sources */,
 				177141A020714B040092FD11 /* DeviceManager.m in Sources */,
 				177141C42073756C0092FD11 /* ApprovalBusinessCollectionReusableView.m in Sources */,
 				1707DAA6206B5CCD00AE81BE /* SearchAddressViewController.m in Sources */,
 				1771419D207136CA0092FD11 /* DirectoryManager.m in Sources */,
+				1795301A20E218EF00BCFF88 /* DepartmentTableViewCell.m in Sources */,
 				1707DB21206E35FB00AE81BE /* SearchApprovalViewController.m in Sources */,
+				1795301D20E21EEB00BCFF88 /* DepartmentModel.m in Sources */,
 				56D8EE94204CEF0800CC2049 /* NSData+AES128.m in Sources */,
 				17AD195A20635233000052B5 /* TimeManeger.m in Sources */,
+				1718ECA92109A025005BDC24 /* ViewApprovalLogTableViewCell.m in Sources */,
 				1707DAE8206B908D00AE81BE /* organizationListTableViewCell.m in Sources */,
 				177141A6207204D80092FD11 /* TransferRecordView.m in Sources */,
 				17AD197120638663000052B5 /* HomePageViewController.m in Sources */,
+				17A812AE20FC995C007A791A /* ViewLogTableViewCell.m in Sources */,
 				17AD195820635233000052B5 /* LYButton.m in Sources */,
 				1707DAA9206B6EB400AE81BE /* SearchAddressModel.m in Sources */,
 				1707DAF1206B9E7D00AE81BE /* SearchMenberTableViewCell.m in Sources */,
+				1753114D20E4BD2900094244 /* BMChineseSort.m in Sources */,
+				17B4FFD320F713B70040ED73 /* SetApprovalAmountViewController.m in Sources */,
 				1707DA912069E8F800AE81BE /* TransferAwaitTableViewCell.m in Sources */,
 				17843DA420A91F09005BB271 /* AssetAmountListViewController.m in Sources */,
 				176402DE2084379900E125B2 /* CurrencyModel.m in Sources */,
 				17AD19FF20650F6B000052B5 /* tansferCodeViewController.m in Sources */,
 				176402DB2084370300E125B2 /* CurrencyView.m in Sources */,
+				1753114920E4BCAF00094244 /* Person.m in Sources */,
 				1707DAA3206B257100AE81BE /* AddDirectoryViewController.m in Sources */,
 				176402872079C89500E125B2 /* AddApprovalMenberViewController.m in Sources */,
+				17A812A220FC605F007A791A /* CurrencyDetailTableViewCell.m in Sources */,
 				1707DB0F206CE53900AE81BE /* AccountAdressTableViewCell.m in Sources */,
 				177141BE2073729C0092FD11 /* ApprovalBusinessDetailModel.m in Sources */,
 				177141B520736C280092FD11 /* ApprovalBusinessDetailViewController.m in Sources */,
@@ -1493,30 +1744,45 @@
 				17AD19502063514B000052B5 /* PerfectInformationViewController.m in Sources */,
 				1707DABB206B869600AE81BE /* ApprovalBusinessViewController.m in Sources */,
 				1707DA9D206A444E00AE81BE /* HomeDirectoryModel.m in Sources */,
+				1718EC842105BFE6005BDC24 /* AddApprovalMemberCollectionViewCell.m in Sources */,
 				1771419A207134F20092FD11 /* DBHelp.m in Sources */,
 				568445B32043B3D7004891D8 /* AppDelegate.m in Sources */,
 				1707DAB2206B7CF200AE81BE /* HomeSeviceTableViewCell.m in Sources */,
 				568445B02043B3D7004891D8 /* main.m in Sources */,
 				1707DA822068083A00AE81BE /* TransferView.m in Sources */,
+				1718EC7E2105AEF7005BDC24 /* AddApprovalMemberViewController.m in Sources */,
 				1707DA7F20678DD100AE81BE /* BoxNavigationController.m in Sources */,
 				1707DAE5206B903E00AE81BE /* OrganizationTableViewCell.m in Sources */,
 				1707DAF4206CB60D00AE81BE /* AssetAmountViewController.m in Sources */,
 				1707DAAF206B7CD200AE81BE /* HomeServiceModel.m in Sources */,
+				17A7963C211453FA0039DD42 /* NoCopyTextField.m in Sources */,
+				17A8129B20FB6679007A791A /* SearchCurrencyTableViewCell.m in Sources */,
+				1723BA4420EB0BF700685284 /* LoginBoxViewController.m in Sources */,
 				1764028A2079C95500E125B2 /* SearchApprovalMenberViewController.m in Sources */,
+				1723B9B020EA3A5400685284 /* DepartmemtInfoModel.m in Sources */,
 				1707DAFD206CC96200AE81BE /* HomeMeModel.m in Sources */,
 				1707DB15206CF89D00AE81BE /* ModificatePasswordViewController.m in Sources */,
+				17A812A520FC6BD4007A791A /* ApprovalBusinessFooterView.m in Sources */,
 				177141AC207314090092FD11 /* TransferCollectionReusableView.m in Sources */,
 				568445B22043B3D7004891D8 /* ViewController.m in Sources */,
+				1753114320E3A37C00094244 /* JXMovableCellTableView.m in Sources */,
 				1707DAF7206CB75B00AE81BE /* AssetAmountModel.m in Sources */,
 				1764028420790E0D00E125B2 /* MenberInfoModel.m in Sources */,
+				1718EC972106E5FA005BDC24 /* languageSwitchTableViewCell.m in Sources */,
+				1718EC942106E5E5005BDC24 /* LanguageSwitchViewController.m in Sources */,
+				1719D41521173AE600ED0917 /* LimitTimeTextField.m in Sources */,
 				176402D82081E1F300E125B2 /* DDRSAWrapper.m in Sources */,
 				1707DA942069EF6C00AE81BE /* TransferRecordViewController.m in Sources */,
+				1719D4182117429900ED0917 /* LimitAmountTextField.m in Sources */,
 				1707DAA0206A458700AE81BE /* HomeDirectoryTableViewCell.m in Sources */,
 				1707DA882068CFB700AE81BE /* JsonObject.m in Sources */,
+				1795301720E1EB1500BCFF88 /* DepartmentViewController.m in Sources */,
+				1723B9AD20E9C61E00685284 /* ValuePickerView.m in Sources */,
 				171EA98B20B27219006F53F1 /* AddressVerifyManager.m in Sources */,
 				1769BA6A20C7FCE0008C431A /* IcapManager.m in Sources */,
 				17AD19ED206498D9000052B5 /* HomeDirectoryViewController.m in Sources */,
 				1707DB2A206F256800AE81BE /* BoxDataManager.m in Sources */,
+				1718EC912106E5C3005BDC24 /* LanguageSwitchModel.m in Sources */,
 				1707DB27206E363400AE81BE /* SearchApprovalTableViewCell.m in Sources */,
 				17AD19F92064D2D8000052B5 /* TBView.m in Sources */,
 			);
@@ -1554,10 +1820,29 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		1718EC9F21081B69005BDC24 /* Language.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1718EC9E21081B69005BDC24 /* zh-Hans */,
+				1718ECA021081B76005BDC24 /* en */,
+			);
+			name = Language.strings;
+			sourceTree = "<group>";
+		};
+		1795300D20E0EC4100BCFF88 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1795300C20E0EC4100BCFF88 /* en */,
+				1795300E20E0EC4900BCFF88 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		5684459E2043B3D6004891D8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				5684459F2043B3D6004891D8 /* Base */,
+				1795300820E0EBFA00BCFF88 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -1577,6 +1862,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1632,6 +1918,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

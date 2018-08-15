@@ -16,6 +16,8 @@
 
 @property (nonatomic,strong) UILabel *subTitleLab;
 
+@property (nonatomic,strong) UILabel *subRightLab;
+
 @property (nonatomic,strong) UIImageView *rightIcon;
 
 @end
@@ -53,6 +55,17 @@
     }];
     _subTitleLab.hidden = YES;
     
+    _subRightLab = [[UILabel alloc]init];
+    _subRightLab.font = Font(14);
+    _subRightLab.textColor = [UIColor colorWithHexString:@"#999999"];
+    [self.contentView addSubview:_subRightLab];
+    [_subRightLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.offset(0);
+        make.bottom.offset(0);
+        make.right.offset(-16 - 25);
+    }];
+    _subRightLab.hidden = YES;
+    
     _rightIcon = [[UIImageView alloc] init];
     _rightIcon.image = [UIImage imageNamed:@"right_icon"];
     [self.contentView addSubview:_rightIcon];
@@ -75,19 +88,25 @@
     }];
 }
 
-
-
 - (void)setDataWithModel:(HomeMeModel *)model row:(NSInteger)row
 {
-    if (row == 0) {
+    if ([model.type isEqualToString:@"account"]) {
         _titleLab.text = model.titleName;
         _subTitleLab.text = model.subTitle;
         _subTitleLab.hidden = NO;
         _rightIcon.hidden = YES;
+        _subRightLab.hidden = YES;
+    }else if ([model.type isEqualToString:@"department"]) {
+        _titleLab.text = model.titleName;
+        _subRightLab.text = model.subTitle;
+        _subTitleLab.hidden = YES;
+        _rightIcon.hidden = NO;
+        _subRightLab.hidden = NO;
     }else{
         _titleLab.text = model.titleName;
         _subTitleLab.hidden = YES;
         _rightIcon.hidden = NO;
+        _subRightLab.hidden = YES;
     }
 }
 

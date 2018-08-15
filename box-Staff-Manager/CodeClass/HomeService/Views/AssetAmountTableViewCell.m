@@ -8,8 +8,6 @@
 
 #import "AssetAmountTableViewCell.h"
 
-#define AssetAmountfreeze  @"冻结"
-
 @interface AssetAmountTableViewCell()
 
 @property (nonatomic,strong) UILabel *titleLab;

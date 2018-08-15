@@ -18,23 +18,9 @@
 #import "TransferRecordDetailViewController.h"
 #import "CurrencyView.h"
 #import "CurrencyModel.h"
+#import "LoginBoxViewController.h"
 
-#define HomeBoxVCScanTitle  @"扫一扫"
-#define HomeBoxVCTransferTitle  @"转账"
-#define HomeBoxVCPaymentCodeTitle  @"付款码"
-#define HomeBoxVCPaymentCodeTitle  @"付款码"
-#define HomeBoxVCTaskTitle  @"代办任务"
-#define HomeBoxVCTransferAwait  @"待审批转账"
-#define HomeBoxVCcheckDetailBtn  @"查看详情"
-#define HomeBoxVCsystemInfo  @"系统通知"
-#define HomeBoxVCsystemUpdate  @"立即升级"
-#define HomeBoxVCTransferRecord  @"转账记录"
-#define HomeBoxVCTransferExamine @"查看全部"
-#define HomeBoxVCInitiate  @"我发起的"
-#define HomeBoxVCParticipateIn  @"我参与的"
-#define HomeBoxVCTransferSubLab  @"暂无待审批转账"
-
-@interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate>
+@interface HomeBoxViewController ()<UIScrollViewDelegate,TransferRecordViewDelegate,CurrencyViewDelegate,TransferAwaitDelegate,TransferViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
 @property (nonatomic,strong)UIImageView *topView;
@@ -76,6 +62,43 @@
     [self createView];
     [self requesttransferAwait];
     [self requestCurrencyData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginBoxAction:) name:@"loginBox" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refleshBox:) name:@"refleshBox" object:nil];
+}
+
+#pragma mark  ----- token过期重新登录 -----
+-(void)loginBoxAction:(NSNotification *)notification
+{
+    if ([BoxDataManager sharedManager].launchState == LoginState) {
+        return ;
+    }
+    UIViewController * VC = [self currentViewController];
+    LoginBoxViewController *loginVc = [[LoginBoxViewController alloc] init];
+    loginVc.fromFunction = FromHomeBox;
+    [VC presentViewController:loginVc animated:YES completion:nil];
+    [[BoxDataManager sharedManager] saveDataWithCoding:@"launchState" codeValue:@"2"];
+}
+
+//获取Window当前显示的ViewController
+- (UIViewController*)currentViewController{
+    //获得当前活动窗口的根视图
+    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (1)
+    {
+        //根据不同的页面切换方式，逐步取得最上层的viewController
+        if ([vc isKindOfClass:[UITabBarController class]]) {
+            vc = ((UITabBarController*)vc).selectedViewController;
+        }
+        if ([vc isKindOfClass:[UINavigationController class]]) {
+            vc = ((UINavigationController*)vc).visibleViewController;
+        }
+        if (vc.presentedViewController) {
+            vc = vc.presentedViewController;
+        }else{
+            break;
+        }
+    }
+    return vc;
 }
 
 #pragma mark  ----- 币种拉取 -----
@@ -83,6 +106,7 @@
 {
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject)
      {
          NSDictionary *dict = responseObject;
@@ -252,7 +276,7 @@
     [_checkDetailBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_oneView);
         make.right.offset(-16);
-        make.width.offset(75);
+        make.width.offset(80);
         make.height.offset(29);
     }];
     
@@ -312,7 +336,7 @@
         make.right.offset(-95);
         make.height.offset(18);
     }];
-    _systemInfoSubLab.text = @"暂无系统通知";
+    _systemInfoSubLab.text = SystemInfo;
     
     _systemUpdateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_systemUpdateBtn setTitle:HomeBoxVCsystemUpdate forState:UIControlStateNormal];
@@ -327,7 +351,7 @@
     [_systemUpdateBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(twoView);
         make.right.offset(-16);
-        make.width.offset(75);
+        make.width.offset(80);
         make.height.offset(29);
     }];
 }
@@ -345,7 +369,7 @@
     [_transRecordLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(20);
         make.left.offset(15);
-        make.width.offset(90);
+        //make.width.offset(200);
         make.height.offset(26);
     }];
     
@@ -394,6 +418,19 @@
     }];
 }
 
+#pragma mark  ----- TransferViewDelegate -----
+- (void)backRefleshTransfer
+{
+    [_transferRecordView requestData];
+    [self requesttransferAwait];
+}
+
+-(void)refleshBox:(NSNotification *)notification
+{
+    [_transferRecordView requestData];
+    [self requesttransferAwait];
+}
+
 #pragma mark  ----- 刷新数据 -----
 -(void)headRefresh
 {   [_transferRecordView requestData];
@@ -414,6 +451,7 @@
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject:@(1) forKey:@"type"];
     [paramsDic setObject:@(0) forKey:@"progress"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -430,7 +468,7 @@
                 [_amountLab removeFromSuperview];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [_contentView.mj_header endRefreshing];
@@ -484,7 +522,6 @@
 #pragma mark ----- 立即更新 -----
 -(void)systemUpdateAction:(UIButton *)btn
 {
-    
 }
 
 #pragma mark ----- scrollview取消弹簧效果 -----
@@ -500,8 +537,8 @@
     [_topFollowView addSubview:_scanView];
     [_scanView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.left.offset(45);
-        make.width.offset(55);
+        make.left.offset(0);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *scanTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(scanTapAction:)];
@@ -512,8 +549,8 @@
     [_topFollowView addSubview:_transferView];
     [_transferView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.centerX.equalTo(_topFollowView);
-        make.width.offset(55);
+        make.left.offset((SCREEN_WIDTH) / 3);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *transferTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(transferAction:)];
@@ -524,8 +561,8 @@
     [_topFollowView addSubview:_paymentCodeView];
     [_paymentCodeView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(15);
-        make.right.offset(-45);
-        make.width.offset(55);
+        make.left.offset((SCREEN_WIDTH) / 3 * 2);
+        make.width.offset((SCREEN_WIDTH) / 3);
         make.height.offset(59);
     }];
     UITapGestureRecognizer *paymentCodeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(paymentCodeAction:)];
@@ -535,6 +572,7 @@
 
 -(NSMutableAttributedString *)addAttributedText:(NSString *)text
 {
+    /*
     NSString *btcStr = text;
     //创建富文本
     NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", btcStr]];
@@ -550,6 +588,11 @@
     //[attri appendAttributedString:string];
     //将图片放在第一位
     [attri insertAttributedString:string atIndex:btcStr.length];
+     */
+    NSString *btcStr = @"BOX";
+    //创建富文本
+    NSMutableAttributedString *attri = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ ", btcStr]];
+    [attri addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#ffffff"] range:NSMakeRange(0, btcStr.length + 1)];
     return attri;
 }
 
@@ -573,10 +616,12 @@
         make.width.offset(200);
     }];
     
+    /*
     UITapGestureRecognizer *topTitleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(topTitleTapAction:)];
     _topTitleLab.userInteractionEnabled = YES;
     _topView.userInteractionEnabled = YES;
     [_topTitleLab addGestureRecognizer:topTitleTap];
+     */
 }
 
 #pragma mark ----- 查看全部 -----
@@ -619,7 +664,7 @@
     [_transRecordLab mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.offset(20);
         make.left.offset(15);
-        make.width.offset(90);
+        //make.width.offset(90);
         make.height.offset(26);
     }];
     
@@ -677,6 +722,7 @@
 {
     TransferViewController *transferVC = [[TransferViewController alloc] init];
     transferVC.mode = _currencyModel;
+    transferVC.delegate = self;
     BoxNavigationController *transferNC = [[BoxNavigationController alloc] initWithRootViewController:transferVC];
     [self presentViewController:transferNC animated:YES completion:nil];
 }

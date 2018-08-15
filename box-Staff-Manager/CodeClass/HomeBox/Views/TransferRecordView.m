@@ -45,20 +45,20 @@
     [self createSegmentedView];
     [self createTableView];
     //0作为发起者
-    _type = 1;
+    _type = 0;
     _page = 1;
     [self requestData];
 }
 
 
 -(void)createSegmentedView{
-    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake((SCREEN_WIDTH - 200)/2, 10, 200, 30)];
+    _viewLayer = [[UIView alloc]initWithFrame:CGRectMake((SCREEN_WIDTH - 250)/2, 10, 250, 30)];
     _viewLayer.backgroundColor = [UIColor clearColor];
     [self addSubview:_viewLayer];
-    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[@"我参与的",@"我发起的"]];
+    _segmentedView = [[UISegmentedControl alloc]initWithItems:@[HomeBoxVCInitiate,HomeBoxVCParticipateIn]];
     [_segmentedView addTarget:self action:@selector(segmentedChangle) forControlEvents:UIControlEventValueChanged];
     [_viewLayer addSubview:self.segmentedView];
-    self.segmentedView.frame = CGRectMake(30, 0, 200 - 60, 30);
+    self.segmentedView.frame = CGRectMake(30, 0, 250 - 60, 30);
     _segmentedView.selectedSegmentIndex = 0;
 }
 
@@ -71,6 +71,7 @@
     [paramsDic setObject:@(-1) forKey:@"progress"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -83,7 +84,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         if (_sourceArray.count == 0) {
             _labelTip.hidden = NO;
@@ -114,11 +115,11 @@
 {
     if (_segmentedView.selectedSegmentIndex == 0) {
         _page = 1;
-        _type = 1;
+        _type = 0;
         [self requestData];
     }else{
         _page = 1;
-        _type = 0;
+        _type = 1;
         [self requestData];
     }
 }
@@ -143,7 +144,7 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     _labelTip = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, SCREEN_WIDTH, 30)];
-    _labelTip.text = @"暂无转账记录";
+    _labelTip.text = labelTipInfo;
     _labelTip.textAlignment = NSTextAlignmentCenter;
     _labelTip.textColor = [UIColor colorWithHue:0.00 saturation:0.00 brightness:0.66 alpha:1.00];
     _labelTip.font = [UIFont systemFontOfSize:17];

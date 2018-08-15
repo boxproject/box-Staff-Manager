@@ -21,9 +21,11 @@
         if(![dict[@"titleName"] isKindOfClass:[NSNull class]]){
             self.titleName = [dict objectForKey:@"titleName"];
         }
-        
         if(![dict[@"subTitle"] isKindOfClass:[NSNull class]]){
             self.subTitle = [dict objectForKey:@"subTitle"];
+        }
+        if(![dict[@"type"] isKindOfClass:[NSNull class]]){
+            self.type = [dict objectForKey:@"type"];
         }
     }
     return self;

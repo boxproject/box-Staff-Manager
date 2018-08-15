@@ -34,7 +34,9 @@
     if (_app_account_id == nil) {
         self.title = [BoxDataManager sharedManager].applyer_account;
         _aWrapper = [[DDRSAWrapper alloc] init];
-        [self getEmployeeInfo];
+        if ([[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
+            [self getEmployeeInfo];
+        }
     }else{
         self.title = _searchMenberModel.account;;
     }
@@ -49,6 +51,7 @@
 -(void)getEmployeeInfo{
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/employee/pubkeys/list" params:paramsDic success:^(id responseObject) {
         if ([responseObject[@"code"] integerValue] == 0) {
             NSArray *dataArray = responseObject[@"data"];
@@ -166,6 +169,7 @@
         self.page += 1;
         [self requestData];
     }];
+    _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh
@@ -189,6 +193,7 @@
     [paramsDic setObject:account_id forKey:@"app_account_id"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -201,7 +206,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -263,13 +268,13 @@
     
     UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             //获取该下属账号详情
             [self gainAccountsInfo:model];
         }];
         [alert addAction:actionOk];
         
-        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:actionCancel];
         [self presentViewController:alert animated:YES completion:nil];
     }];
@@ -302,6 +307,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:model.app_account_id forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/info" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -350,7 +356,7 @@
             //删除员工账号
             [self deleteEmployeeAccount:model array:employeeInfoArr];
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
     } fail:^(NSError *error) {
         NSLog(@"%@", error.description);
@@ -368,6 +374,7 @@
     [paramsDic setObject:model.app_account_id forKey:@"employee_account_id"];
     [paramsDic setObject:cipher_texts forKey:@"cipher_texts"];
     [paramsDic setObject:signSHA256 forKey:@"sign"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [ProgressHUD showProgressHUD];
     [[NetworkManager shareInstance] requestWithMethod:POST withUrl:@"/api/v1/employee/account/change" params:paramsDic success:^(id responseObject) {
         [WSProgressHUD dismiss];
@@ -378,7 +385,7 @@
             self.page = 1;
             [self requestData];
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
     } fail:^(NSError *error) {
         [WSProgressHUD dismiss];
@@ -391,6 +398,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"manager_account_id"];
     [paramsDic setObject:appAccountId forKey:@"employee_account_id"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/accounts/employee/info" params:paramsDic success:^(id responseObject) {
         //[WSProgressHUD dismiss];
         if ([responseObject[@"code"] integerValue] == 0) {
@@ -427,7 +435,7 @@
                 complete(nil);
             }
         }else{
-            [ProgressHUD showErrorWithStatus:responseObject[@"message"]];
+            [ProgressHUD showErrorWithStatus:responseObject[@"message"] code:[responseObject[@"code"] integerValue]];
         }
         
     } fail:^(NSError *error) {

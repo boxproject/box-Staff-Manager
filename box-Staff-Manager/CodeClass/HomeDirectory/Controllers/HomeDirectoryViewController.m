@@ -13,12 +13,12 @@
 #import "EditorDirectoryViewController.h"
 #import "CurrencyView.h"
 
-#define HomeDirectoryVCTitle  @"地址簿"
-#define HomeDirectoryVCAddAddress  @"新增地址"
 #define CellReuseIdentifier  @"HomeDirectory"
 
 @interface HomeDirectoryViewController ()<UITableViewDelegate, UITableViewDataSource,CurrencyViewDelegate>
-
+{
+    NSString *currentCurrency;
+}
 @property (nonatomic,strong) UIView *viewLayer;
 @property (nonatomic,strong)UILabel *topTitleLab;
 @property (nonatomic,strong) UITableView *tableView;
@@ -41,7 +41,7 @@
     [self createBarItem];
     [self createView];
     if ([_type isEqualToString:@"getAddress"]) {
-        _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:_model.currency];
+        _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:_currency];
     } 
     [self.tableView reloadData];
     if (_sourceArray.count == 0) {
@@ -64,6 +64,7 @@
     }
     _model = model;
     _topTitleLab.attributedText = [self attributedStringWithImage:model.currency];
+    currentCurrency = model.currency;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -90,7 +91,7 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     _labelTip = [[UILabel alloc]initWithFrame:CGRectMake(0, 30, SCREEN_WIDTH, 30)];
-    _labelTip.text = @"还未新增地址";
+    _labelTip.text = NoAddressAdded;
     _labelTip.textAlignment = NSTextAlignmentCenter;
     _labelTip.textColor = [UIColor colorWithHue:0.00 saturation:0.00 brightness:0.66 alpha:1.00];
     _labelTip.font = [UIFont systemFontOfSize:17];
@@ -106,7 +107,6 @@
     return 110;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     HomeDirectoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifier forIndexPath:indexPath];
@@ -114,7 +114,6 @@
     cell.model = model;
     [cell setDataWithModel:model integer:indexPath.row];
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -129,11 +128,12 @@
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewRowAction *action0 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"编辑" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *action0 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:Edit handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         HomeDirectoryModel *model =_sourceArray[indexPath.row];
         EditorDirectoryViewController *editorDirectoryVC = [[EditorDirectoryViewController alloc] init];
         editorDirectoryVC.currencyBlock = ^(NSString *currency){
             _topTitleLab.attributedText = [self attributedStringWithImage:currency];
+            currentCurrency = currency;
             [_sourceArray removeAllObjects];
             _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:currency];
             [self.tableView reloadData];
@@ -149,9 +149,9 @@
         
     }];
     
-    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+    UITableViewRowAction *action1 = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:delete handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:delete style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             HomeDirectoryModel *model =_sourceArray[indexPath.row];
             BOOL isOK = [[DirectoryManager sharedManager] deleteDirectoryModel:model];
             if (isOK) {
@@ -167,8 +167,7 @@
             }
         }];
         [alert addAction:actionOk];
-        
-        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:actionCancel];
         [self presentViewController:alert animated:YES completion:nil];
     }];
@@ -195,6 +194,7 @@
     AddDirectoryViewController *addDirectoryVC = [[AddDirectoryViewController alloc] init];
     addDirectoryVC.currencyBlock = ^(NSString *currency){
         _topTitleLab.attributedText = [self attributedStringWithImage:currency];
+        currentCurrency = currency;
         [_sourceArray removeAllObjects];
         _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:currency];
         [self.tableView reloadData];
@@ -204,7 +204,7 @@
             _labelTip.hidden = YES;
         }
     };
-    addDirectoryVC.currency = _model.currency;
+    addDirectoryVC.currency = currentCurrency;
     addDirectoryVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:addDirectoryVC animated:YES];
 }
@@ -245,9 +245,11 @@
     _topTitleLab.textAlignment = NSTextAlignmentCenter;
     _topTitleLab.font = Font(16);
     if ([_type isEqualToString:@"getAddress"]) {
-        _topTitleLab.attributedText = [self attributedStringWithImage:_model.currency];
+        _topTitleLab.attributedText = [self attributedStringWithImage:_currency];
+        currentCurrency = _currency;
     }else{
         _topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
+        currentCurrency = @"ETH";
     }
     //_topTitleLab.attributedText = [self attributedStringWithImage:@"ETH"];
     _topTitleLab.textColor = [UIColor colorWithHexString:@"#666666"];
@@ -273,6 +275,7 @@
 {
     _model = model;
     _topTitleLab.attributedText = [self attributedStringWithImage:model.currency];
+    currentCurrency = model.currency;
     [_sourceArray removeAllObjects];
     _sourceArray = [[DirectoryManager sharedManager] loadDBDirectoryData:model.currency];
     [self.tableView reloadData];

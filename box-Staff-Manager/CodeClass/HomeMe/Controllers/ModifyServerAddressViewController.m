@@ -7,12 +7,7 @@
 //
 
 #import "ModifyServerAddressViewController.h"
-#define ModifyServerAddressVCTitle  @"修改服务器地址"
-#define ModifyServerAddressVCAddress  @"地址"
-#define ModifyServerAddressVCInfo  @"请输入服务器地址"
-#define ModifyServerAddressVCAleartSucceed  @"修改成功"
-#define ModifyServerAddressVCVerifyBtn  @"确认修改"
-
+ 
 @interface ModifyServerAddressViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
@@ -63,7 +58,7 @@
         make.top.offset(0);
         make.bottom.offset(0);
         make.left.offset(16);
-        make.width.offset(50);
+        make.width.offset(70);
     }];
     
     _addressTf = [[UITextField alloc] init];
@@ -75,7 +70,7 @@
     _addressTf.keyboardType = UIKeyboardTypeAlphabet;
     [addressView addSubview:_addressTf];
     [_addressTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(addressLab.mas_right).offset(35);
+        make.left.equalTo(addressLab.mas_right).offset(20);
         make.right.offset(-16);
         make.top .offset(0);
         make.bottom.offset(0);

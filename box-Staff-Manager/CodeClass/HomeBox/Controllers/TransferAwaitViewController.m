@@ -13,7 +13,6 @@
 
 #define PageSize  12
 #define CellReuseIdentifier  @"TransferAwait"
-#define TransferAwaitVCTitle  @"待审批转账"
 
 @interface TransferAwaitViewController ()<UITableViewDelegate, UITableViewDataSource,TransferAwaitDetailDelegate>
 
@@ -47,6 +46,7 @@
     [paramsDic setObject:@(0) forKey:@"progress"];
     [paramsDic setObject: @(_page) forKey:@"page"];
     [paramsDic setObject:@(PageSize) forKey:@"limit"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/transfer/records/list" params:paramsDic success:^(id responseObject) {
         NSDictionary *dict = responseObject;
         if ([dict[@"code"] integerValue] == 0) {
@@ -60,7 +60,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self reloadAction];
     } fail:^(NSError *error) {
@@ -128,6 +128,7 @@
         self.page += 1;
         [self requestData];
     }];
+   _tableView.mj_footer.ignoredScrollViewContentInsetBottom = kTabBarHeight > 49 ? 34 : 0;
 }
 
 -(void)headerReflesh

@@ -9,11 +9,6 @@
 #import "tansferCodeViewController.h"
 #import "CurrencyView.h"
 
-#define tansferCodeVCTitle  @"收款码"
-#define tansferCodeVCScanLab  @"收款二维码"
-#define tansferCodeVCSaveAddressBtnb  @"复制收款地址"
-#define tansferCodeVCSaveAddressSucced  @"复制成功"
-
 @interface tansferCodeViewController ()<UIScrollViewDelegate, MBProgressHUDDelegate,CurrencyViewDelegate>
 
 @property (nonatomic,strong) UIView *viewLayer;

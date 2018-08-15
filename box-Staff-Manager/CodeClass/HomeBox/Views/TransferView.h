@@ -16,7 +16,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
 @protocol TransferViewDelegate <NSObject>
 
 @optional
-- (void)transferViewDelegate:(NSDictionary *)dic;
+- (void)transferViewDelegate:(NSDictionary *)dic password:(NSString *)password;
 - (void)transferDidAchieve;
 @end
 
@@ -24,7 +24,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
 
 @property (nonatomic,weak) id <TransferViewDelegate> delegate;
 
--(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName;
+-(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName contractAddress:(NSString *)contractAddress;
 -(void)createAchieveView;
 
 @end

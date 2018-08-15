@@ -8,10 +8,10 @@
 
 #import "PrivatePasswordView.h"
 
-#define PrivatePasswordbackupLab @"密码"
-#define PrivatePasswordComfirm @"确认"
-
 @interface PrivatePasswordView ()<UITextFieldDelegate>
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
 /** 取消 */
@@ -33,12 +33,15 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self createView];
-        
+        returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] init];
+        [returnKeyHandler addResponderFromView:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
 }
+
+
 
 -(void)createView
 {
@@ -99,7 +102,7 @@
     _passwordTf.backgroundColor = [UIColor colorWithHexString:@"#f7f8f9"];
     _passwordTf.delegate = self;
     _passwordTf.clearButtonMode=UITextFieldViewModeWhileEditing;
-    NSString *backupText = @"请输入密码";
+    NSString *backupText = PerfectInformationVCAlertTwo;
     NSMutableAttributedString *backupHolder = [[NSMutableAttributedString alloc] initWithString:backupText];
     [backupHolder addAttribute:NSForegroundColorAttributeName
                          value:[UIColor colorWithHexString:@"#cccccc"]
@@ -126,9 +129,9 @@
     [_footView addSubview:_showPwdBtn];
     [_showPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(_passwordTf);
-        make.width.offset(36);
+        make.width.offset(23);
         make.right.offset(-16);
-        make.height.offset(27);
+        make.height.offset(15);
     }];
     
     UIView *line = [[UIView alloc] init];
@@ -187,7 +190,7 @@
 -(void)confirmAction:(UIButton *)btn
 {
     if ([_passwordTf.text isEqualToString:@""]) {
-        [WSProgressHUD showErrorWithStatus:@"请输入密码"];
+        [WSProgressHUD showErrorWithStatus:PerfectInformationVCAlertTwo];
         return;
     }
     if ([self.delegate respondsToSelector:@selector(PrivatePasswordViewDelegate:)]) {
@@ -227,7 +230,9 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    returnKeyHandler = nil;
 }
+ 
 
 /*
 // Only override drawRect: if you perform custom drawing.

@@ -13,5 +13,6 @@
 @interface IcapManager : NSObject
 
 + (NSArray *)ConvertICAPToAddress:(NSString *)iban;
++ (NSString *)matchString:(NSString *)string toRegexString:(NSString *)regexStr;
 
 @end

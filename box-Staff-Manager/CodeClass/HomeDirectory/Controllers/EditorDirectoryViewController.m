@@ -11,18 +11,6 @@
 #import "SearchAddressViewController.h"
 #import "HomeDirectoryModel.h"
 
-#define EditorDirectoryVCTitle  @"编辑地址"
-#define EditorDirectoryVCRightTitle  @"完成"
-#define EditorDirectoryCurrency  @"币种"
-#define EditorDirectoryName  @"名称"
-#define EditorDirectoryNameInfo  @"请输入姓名或者公司名称"
-#define EditorDirectoryVCAddress  @"收款地址"
-#define EditorDirectoryVCAddressInfo  @"请输入收款地址"
-#define EditorDirectoryVCRemark  @"备注"
-#define EditorDirectoryVCRemarkInfo  @"请输入备注"
-#define EditorDirectoryVCcurrencyInfo  @"请选择币种"
-#define EditorDirectoryVCError  @"编辑地址失败"
-
 @interface EditorDirectoryViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, strong)UIScrollView *contentView;
@@ -44,6 +32,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithHexString:@"#666666"]}];
     [self createBarItem];
     [self createView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewEditChanged:) name:UITextFieldTextDidChangeNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -81,7 +70,7 @@
     UILabel *currencyLab = [[UILabel alloc] init];
     currencyLab.textAlignment = NSTextAlignmentLeft;
     currencyLab.font = Font(14);
-    currencyLab.text = EditorDirectoryCurrency;
+    currencyLab.text = AddDirectoryCurrency;
     currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [currencyView addSubview:currencyLab];
     [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -150,7 +139,7 @@
     UILabel *nameLab = [[UILabel alloc] init];
     nameLab.textAlignment = NSTextAlignmentLeft;
     nameLab.font = Font(14);
-    nameLab.text = EditorDirectoryName;
+    nameLab.text = AddDirectoryName;
     nameLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [nameView addSubview:nameLab];
     [nameLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -161,7 +150,7 @@
     }];
     
     _nameTf = [[UITextField alloc] init];
-    _nameTf.placeholder = EditorDirectoryNameInfo;
+    _nameTf.placeholder = AddDirectoryNameInfo;
     _nameTf.font = Font(14);
     _nameTf.delegate = self;
     _nameTf.keyboardType = UIKeyboardTypeDefault;
@@ -199,7 +188,7 @@
     UILabel *addressLab = [[UILabel alloc] init];
     addressLab.textAlignment = NSTextAlignmentLeft;
     addressLab.font = Font(14);
-    addressLab.text = EditorDirectoryVCAddress;
+    addressLab.text = AddDirectoryVCAddress;
     addressLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [addressView addSubview:addressLab];
     [addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -212,7 +201,8 @@
     _addressTf = [[UITextField alloc] init];
     _addressTf.font = Font(14);
     _addressTf.delegate = self;
-    _addressTf.placeholder = EditorDirectoryVCAddressInfo;
+    _addressTf.keyboardType = UIKeyboardTypeASCIICapable;
+    _addressTf.placeholder = AddDirectoryVCAddressInfo;
     _addressTf.text = _model.address;
     _addressTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [addressView addSubview:_addressTf];
@@ -267,18 +257,18 @@
     UILabel *remarkLab = [[UILabel alloc] init];
     remarkLab.textAlignment = NSTextAlignmentLeft;
     remarkLab.font = Font(14);
-    remarkLab.text = EditorDirectoryVCRemark;
+    remarkLab.text = AddDirectoryVCRemark;
     remarkLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [remarkView addSubview:remarkLab];
     [remarkLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.offset(0);
         make.bottom.offset(0);
         make.left.offset(15);
-        make.width.offset(60);
+        make.width.offset(70);
     }];
     
     _remarkTf = [[UITextField alloc] init];
-    _remarkTf.placeholder = EditorDirectoryVCRemarkInfo;
+    _remarkTf.placeholder = AddDirectoryVCRemarkInfo;
     _remarkTf.font = Font(14);
     _remarkTf.delegate = self;
     _remarkTf.text = _model.remark;
@@ -286,7 +276,7 @@
     _remarkTf.textColor = [UIColor colorWithHexString:@"#333333"];
     [remarkView addSubview:_remarkTf];
     [_remarkTf mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(remarkLab.mas_right).offset(15);
+        make.left.equalTo(remarkLab.mas_right).offset(5);
         make.right.offset(-16);
         make.top .offset(0);
         make.bottom.offset(0);
@@ -334,24 +324,95 @@
     UIBarButtonItem *buttonLeft = [[UIBarButtonItem alloc]initWithImage:leftImage style:UIBarButtonItemStylePlain target:self action:@selector(backAction:)];
     self.navigationItem.leftBarButtonItem = buttonLeft;
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:EditorDirectoryVCRightTitle style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:AddDirectoryVCRightTitle style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
 }
 
+-(void)textViewEditChanged:(NSNotification *)notification{
+    UITextField *textField = (UITextField *)notification.object;
+    if (textField == _addressTf) {
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 60;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }else if (textField == _nameTf){
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 30;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }else if (textField == _remarkTf){
+        // 需要限制的长度
+        NSUInteger maxLength = 0;
+        maxLength = 100;
+        if (maxLength == 0) return;
+        // text field 的内容
+        NSString *contentText = textField.text;
+        // 获取高亮内容的范围
+        UITextRange *selectedRange = [textField markedTextRange];
+        // 这行代码 可以认为是 获取高亮内容的长度
+        NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+        // 没有高亮内容时,对已输入的文字进行操作
+        if (markedTextLength == 0) {
+            // 如果 text field 的内容长度大于我们限制的内容长度
+            if (contentText.length > maxLength) {
+                // 截取从前面开始maxLength长度的字符串
+                // textField.text = [contentText substringToIndex:maxLength];
+                // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+                NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+                textField.text = [contentText substringWithRange:rangeRange];
+            }
+        }
+    }
+}
+
 #pragma mark ----- rightBarButtonItemAction -----
 - (void)rightButtonAction:(UIBarButtonItem *)buttonItem{
     if (_currencyTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCcurrencyInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCRemarkInfo];
         return;
     }
     if (_nameTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryNameInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryNameInfo];
         return;
     }
     if (_addressTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCAddressInfo];
+        [WSProgressHUD showErrorWithStatus:AddDirectoryVCAddressInfo];
         return;
     }
     BOOL checkBool = [AddressVerifyManager checkAddressVerify:_addressTf.text type:_currencyTf.text];
@@ -359,11 +420,6 @@
         [WSProgressHUD showErrorWithStatus:AddressVerifyETHError];
         return;
     }
-    if (_remarkTf.text.length == 0) {
-        [WSProgressHUD showErrorWithStatus:EditorDirectoryVCRemarkInfo];
-        return;
-    }
-    
     NSDictionary *dic = @{@"currency":_currencyTf.text,
                           @"nameTitle": _nameTf.text,
                           @"remark": _remarkTf.text,
@@ -392,8 +448,11 @@
 
 -(void)backAction:(UIBarButtonItem *)barButtonItem
 {
-    //[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.navigationController popViewControllerAnimated:YES];    
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
  
 - (void)didReceiveMemoryWarning {

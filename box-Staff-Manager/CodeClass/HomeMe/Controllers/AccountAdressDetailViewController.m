@@ -96,7 +96,7 @@
     }];
     
     UILabel *scanLab = [[UILabel alloc] init];
-    scanLab.text = @"账户地址";
+    scanLab.text = AccountAddress;
     scanLab.textAlignment = NSTextAlignmentLeft;
     scanLab.font = Font(13);
     scanLab.textColor = [UIColor colorWithHexString:@"#333333"];
@@ -122,7 +122,7 @@
     }];
     
     _accountCopyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_accountCopyBtn setTitle:@"复制地址" forState:UIControlStateNormal];
+    [_accountCopyBtn setTitle:CopyAddress forState:UIControlStateNormal];
     [_accountCopyBtn setTitleColor:[UIColor colorWithHexString:@"#4c7afd"] forState:UIControlStateNormal];
     _accountCopyBtn.titleLabel.font = Font(13);
     [_accountCopyBtn addTarget:self action:@selector(accountCopyAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -145,7 +145,7 @@
     }];
     
     _accountSaveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_accountSaveBtn setTitle:@"保存二维码" forState:UIControlStateNormal];
+    [_accountSaveBtn setTitle:PreserveQRCode forState:UIControlStateNormal];
     [_accountSaveBtn setTitleColor:[UIColor colorWithHexString:@"#4c7afd"] forState:UIControlStateNormal];
     _accountSaveBtn.titleLabel.font = Font(13);
     [_accountSaveBtn addTarget:self action:@selector(accountSaveAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -177,7 +177,7 @@
     self.progressHUD.label.textColor = kWhiteColor;
     self.progressHUD.bezelView.backgroundColor=[UIColor blackColor];
     //self.progressHUD.dimBackground = YES; //设置有遮罩
-    self.progressHUD.label.text = @"地址复制成功"; //设置进度框中的提示文字
+    self.progressHUD.label.text = CopyAddressSucceed; //设置进度框中的提示文字
     [self.progressHUD showAnimated:YES];
     
     [self.progressHUD hideAnimated:YES afterDelay:0.5];
@@ -215,10 +215,10 @@
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
     if (error) {
-        [SVProgressHUD showErrorWithStatus:@"保存失败"];
+        [SVProgressHUD showErrorWithStatus:SaveFailure];
         [SVProgressHUD dismissWithDelay:0.8];
     } else {
-        [SVProgressHUD showSuccessWithStatus:@"成功保存到相册"];
+        [SVProgressHUD showSuccessWithStatus:SavePicturesucceed];
         [SVProgressHUD dismissWithDelay:0.8];
     }
 }

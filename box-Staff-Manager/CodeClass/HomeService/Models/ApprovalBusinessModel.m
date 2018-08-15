@@ -30,6 +30,9 @@
         if(![dict[@"single_limit"] isKindOfClass:[NSNull class]]){
             self.single_limit = [dict objectForKey:@"single_limit"];
         }
+        if(![dict[@"flow_limit"] isKindOfClass:[NSNull class]]){
+            self.flow_limit = [dict objectForKey:@"flow_limit"];
+        }
     }
     return self;
 }

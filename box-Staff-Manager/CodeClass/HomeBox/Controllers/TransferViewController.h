@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "CurrencyModel.h"
 
+@protocol TransferViewDelegate <NSObject>
+
+@optional
+- (void)backRefleshTransfer;
+@end
+
 @interface TransferViewController : UIViewController
 
 @property(nonatomic, strong)NSString *titlename;
@@ -16,5 +22,7 @@
 @property(nonatomic, strong)NSString *fromType;
 @property(nonatomic, strong)NSString *address;
 @property(nonatomic, strong)NSString *amount;
+
+@property (nonatomic,weak) id <TransferViewDelegate> delegate;
 
 @end

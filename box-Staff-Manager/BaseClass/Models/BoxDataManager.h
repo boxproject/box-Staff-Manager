@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM (NSInteger, LaunchState){
-    PerfectInformation,  //首次进入，完善信息
-    EnterHomeBox         //直接进入主页
+    PerfectInformation,     //首次进入，完善信息
+    EnterHomeBox,           //直接进入主页
+    LoginState              //token失效或账号锁定进入登录状态
 };
  
 @interface BoxDataManager : NSObject
@@ -24,6 +25,8 @@ typedef NS_ENUM (NSInteger, LaunchState){
 @property(nonatomic, strong)NSString *app_account_id;
 /** 账号扫码注册生成的固定随机值 */
 @property(nonatomic, strong)NSString *app_account_random;
+/** 用来加密登录密码生成的固定的key */
+@property(nonatomic, strong)NSString *encryptKey;
 /** 直属上级唯一识别码 */
 @property(nonatomic, strong)NSString *captain_id;
 /** 新注册员工账号 */
@@ -40,6 +43,12 @@ typedef NS_ENUM (NSInteger, LaunchState){
 @property(nonatomic, assign)LaunchState launchState;
 /** 账户密码 */
 @property(nonatomic, strong)NSString *passWord;
+/** 部门名称 */
+@property(nonatomic, strong)NSString *departMemtName;
+/** 部门ID */
+@property(nonatomic, assign)NSString *ID;
+/** 登录生成的token,token有效期暂定为8小时 */
+@property(nonatomic, strong)NSString *token;
 
 +(instancetype)sharedManager;
 /** 获取本地数据 */
@@ -48,5 +57,6 @@ typedef NS_ENUM (NSInteger, LaunchState){
 -(void)saveDataWithCoding:(NSString *)coding codeValue:(NSString *)codeValue;
 /** 获取启动状态 */
 -(NSInteger)getLaunchState;
+-(void)removeDataWithCoding:(NSString *)coding;
 
 @end

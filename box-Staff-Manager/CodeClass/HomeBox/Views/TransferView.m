@@ -8,24 +8,10 @@
 
 #import "TransferView.h"
 
-#define TransferViewTitle  @"确认转账"
-#define TransferViewApproval  @"审批流"
-#define TransferViewCurrency  @"币种"
-#define TransferViewReceiptAddress  @"收款地址"
-#define TransferViewAmount  @"金额"
-#define TransferViewApplyReason  @"申请理由"
-#define TransferViewMinersFee  @"矿工费"
-#define TransferViewBtnTitle  @"确认"
-#define TransferViewBtnCommit  @"确认提交"
-#define TransferViewInputTitle  @"请输入密码"
-#define TransferViewAchieveTitle  @"提交审批成功"
-#define TransferViewAchieveSubTitle  @"可在转账记录中查看审批进度"
-#define TransferViewAchieveDid  @"完成"
-#define TransferViewPutPassWord  @"请输入密码"
-#define TransferViewPassWordError  @"密码不正确"
-
-
 @interface TransferView ()<UITextFieldDelegate>
+{
+    IQKeyboardReturnKeyHandler *returnKeyHandler;
+}
 /** 密码 */
 @property (nonatomic,strong)UITextField *passwordTf;
 /** 取消 */
@@ -47,31 +33,47 @@
 @property (nonatomic,strong)UILabel *titleTwolab;
 @property (nonatomic,strong)UIView *fullView;
 @property (nonatomic,strong)NSDictionary *dict;
+@property (nonatomic,strong)NSString *contractAddressStr;
 
 @end
 
 @implementation TransferView
 
--(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName{
+-(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic flowName:(NSString *)flowName contractAddress:(NSString *)contractAddress{
     self = [super initWithFrame:frame];
     if (self) {
-        [self createView:dic flowName:flowName];
+        [self createView:dic flowName:flowName contractAddress:contractAddress];
         _dict = dic;
+        _contractAddressStr = contractAddress;
     }
     return self;
 }
 
--(void)createView:(NSDictionary *)dic flowName:(NSString *)flowName
+-(void)dealloc{
+    returnKeyHandler = nil;
+}
+
+-(void)createView:(NSDictionary *)dic flowName:(NSString *)flowName contractAddress:(NSString *)contractAddress
 {
-    _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,  SCREEN_WIDTH, SCREEN_HEIGHT - 417 - 54)];
-    _topView.backgroundColor = [UIColor colorWithHexString:@"#18191c"];
-    _topView.alpha = 0.6;
-    [self addSubview:_topView];
-    
-    _mainView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417 - 54,  SCREEN_WIDTH, 417 + 54)];
-    _mainView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
-    [self addSubview:_mainView];
-    
+    if ([contractAddress isEqualToString:@""]) {
+        _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,  SCREEN_WIDTH, SCREEN_HEIGHT - 417 - 54)];
+        _topView.backgroundColor = [UIColor colorWithHexString:@"#18191c"];
+        _topView.alpha = 0.6;
+        [self addSubview:_topView];
+        
+        _mainView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417 - 54,  SCREEN_WIDTH, 417 + 54)];
+        _mainView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
+        [self addSubview:_mainView];
+    }else{
+        _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,  SCREEN_WIDTH, SCREEN_HEIGHT - 417 - 54)];
+        _topView.backgroundColor = [UIColor colorWithHexString:@"#18191c"];
+        _topView.alpha = 0.6;
+        [self addSubview:_topView];
+        
+        _mainView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 417 - 54 * 2,  SCREEN_WIDTH, 417 + 54 * 2)];
+        _mainView.backgroundColor = [UIColor colorWithHexString:@"#ffffff"];
+        [self addSubview:_mainView];
+    }
     UIView *titleView = [[UIView alloc] init];
     titleView.backgroundColor = [UIColor colorWithHexString:@"#fafaf"];
     [_mainView addSubview:titleView];
@@ -116,43 +118,6 @@
         make.height.offset(1);
     }];
     
-    //审批流
-    UILabel *approvalLab = [[UILabel alloc] init];
-    approvalLab.textAlignment = NSTextAlignmentLeft;
-    approvalLab.font = Font(14);
-    approvalLab.text = TransferViewApproval;
-    approvalLab.textColor = [UIColor colorWithHexString:@"#666666"];
-    [_mainView addSubview:approvalLab];
-    [approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineOne.mas_bottom).offset(0);
-        make.left.offset(16);
-        make.width.offset(60);
-        make.height.offset(53);
-    }];
-    
-    _approvalLab = [[UILabel alloc] init];
-    _approvalLab.textAlignment = NSTextAlignmentRight;
-    _approvalLab.font = Font(14);
-    _approvalLab.text = flowName;
-    _approvalLab.textColor = [UIColor colorWithHexString:@"#333333"];
-    [_mainView addSubview:_approvalLab];
-    [_approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineOne.mas_bottom).offset(0);
-        make.left.equalTo(approvalLab.mas_right).offset(13);
-        make.right.offset(-15);
-        make.height.offset(53);
-    }];
-    
-    UIView *lineZero = [[UIView alloc] init];
-    lineZero.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
-    [_mainView addSubview:lineZero];
-    [lineZero mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_approvalLab.mas_bottom).offset(0);
-        make.left.offset(16);
-        make.width.offset(SCREEN_WIDTH - 31);
-        make.height.offset(1);
-    }];
-    
     //币种
     UILabel *currencyLab = [[UILabel alloc] init];
     currencyLab.textAlignment = NSTextAlignmentLeft;
@@ -161,7 +126,7 @@
     currencyLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_mainView addSubview:currencyLab];
     [currencyLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineZero.mas_bottom).offset(0);
+        make.top.equalTo(lineOne.mas_bottom).offset(0);
         make.left.offset(16);
         make.width.offset(60);
         make.height.offset(53);
@@ -174,7 +139,7 @@
     _currencyInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_currencyInfoLab];
     [_currencyInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineZero.mas_bottom).offset(0);
+        make.top.equalTo(lineOne.mas_bottom).offset(0);
         make.left.equalTo(currencyLab.mas_right).offset(13);
         make.right.offset(-15);
         make.height.offset(53);
@@ -190,6 +155,43 @@
         make.height.offset(1);
     }];
     
+    //审批流
+    UILabel *approvalLab = [[UILabel alloc] init];
+    approvalLab.textAlignment = NSTextAlignmentLeft;
+    approvalLab.font = Font(14);
+    approvalLab.text = TransferViewApproval;
+    approvalLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [_mainView addSubview:approvalLab];
+    [approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.left.offset(16);
+        make.width.offset(60);
+        make.height.offset(53);
+    }];
+    
+    _approvalLab = [[UILabel alloc] init];
+    _approvalLab.textAlignment = NSTextAlignmentRight;
+    _approvalLab.font = Font(14);
+    _approvalLab.text = flowName;
+    _approvalLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_mainView addSubview:_approvalLab];
+    [_approvalLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.left.equalTo(approvalLab.mas_right).offset(13);
+        make.right.offset(-15);
+        make.height.offset(53);
+    }];
+    
+    UIView *lineZero = [[UIView alloc] init];
+    lineZero.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [_mainView addSubview:lineZero];
+    [lineZero mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_approvalLab.mas_bottom).offset(0);
+        make.left.offset(16);
+        make.width.offset(SCREEN_WIDTH - 31);
+        make.height.offset(1);
+    }];
+    
     //收款地址
     UILabel *addressLab = [[UILabel alloc] init];
     addressLab.textAlignment = NSTextAlignmentLeft;
@@ -198,7 +200,7 @@
     addressLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_mainView addSubview:addressLab];
     [addressLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.top.equalTo(lineZero.mas_bottom).offset(0);
         make.left.offset(16);
         make.width.offset(60);
         make.height.offset(53);
@@ -206,12 +208,13 @@
     
     _adressInfoLab = [[UILabel alloc] init];
     _adressInfoLab.textAlignment = NSTextAlignmentRight;
+    _adressInfoLab.numberOfLines = 2;
     _adressInfoLab.font = Font(12);
     _adressInfoLab.text = dic[@"to_address"];;
     _adressInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_adressInfoLab];
     [_adressInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineTwo.mas_bottom).offset(0);
+        make.top.equalTo(lineZero.mas_bottom).offset(0);
         make.left.equalTo(addressLab.mas_right).offset(13);
         make.right.offset(-15);
         make.height.offset(53);
@@ -227,6 +230,48 @@
         make.height.offset(1);
     }];
     
+    //合约地址
+    UILabel *contractLab = [[UILabel alloc] init];
+    contractLab.textAlignment = NSTextAlignmentLeft;
+    contractLab.font = Font(14);
+    contractLab.text = ContractAddress;
+    contractLab.textColor = [UIColor colorWithHexString:@"#666666"];
+    [_mainView addSubview:contractLab];
+    [contractLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineThree.mas_bottom).offset(0);
+        make.left.offset(16);
+        make.width.offset(60);
+        if ([contractAddress isEqualToString:@""]) {
+            make.height.offset(0);
+        }else{
+            make.height.offset(53);
+        }
+    }];
+    
+    UILabel *contractContentLab = [[UILabel alloc] init];
+    contractContentLab.textAlignment = NSTextAlignmentRight;
+    contractContentLab.numberOfLines = 2;
+    contractContentLab.font = Font(12);
+    contractContentLab.text = contractAddress;;
+    contractContentLab.textColor = [UIColor colorWithHexString:@"#333333"];
+    [_mainView addSubview:contractContentLab];
+    [contractContentLab mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lineThree.mas_bottom).offset(0);
+        make.left.equalTo(contractLab.mas_right).offset(13);
+        make.right.offset(-15);
+        make.height.offset(53);
+    }];
+    
+    UIView *contractLine = [[UIView alloc] init];
+    contractLine.backgroundColor = [UIColor colorWithHexString:@"#e8e8e8"];
+    [_mainView addSubview:contractLine];
+    [contractLine mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(contractLab.mas_bottom).offset(-1);
+        make.left.offset(16);
+        make.width.offset(SCREEN_WIDTH - 31);
+        make.height.offset(1);
+    }];
+    
     //金额
     UILabel *amountLab = [[UILabel alloc] init];
     amountLab.textAlignment = NSTextAlignmentLeft;
@@ -235,7 +280,7 @@
     amountLab.textColor = [UIColor colorWithHexString:@"#666666"];
     [_mainView addSubview:amountLab];
     [amountLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineThree.mas_bottom).offset(0);
+        make.top.equalTo(contractLine.mas_bottom).offset(0);
         make.left.offset(16);
         make.width.offset(60);
         make.height.offset(53);
@@ -248,7 +293,7 @@
     _amountInfoLab.textColor = [UIColor colorWithHexString:@"#333333"];
     [_mainView addSubview:_amountInfoLab];
     [_amountInfoLab mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineThree.mas_bottom).offset(0);
+        make.top.equalTo(contractLine.mas_bottom).offset(0);
         make.left.equalTo(amountLab.mas_right).offset(13);
         make.right.offset(-15);
         make.height.offset(53);
@@ -346,6 +391,7 @@
     _commitBtn.titleLabel.font = Font(16);
     _commitBtn.layer.masksToBounds = YES;
     _commitBtn.layer.cornerRadius = 2.0f;
+    _commitBtn.timeInterVal = 1.0;
     [_commitBtn addTarget:self action:@selector(cormfirmAction:) forControlEvents:UIControlEventTouchUpInside];
     [_mainView addSubview:_commitBtn];
     [_commitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -410,7 +456,8 @@
     _passwordTf = [[UITextField alloc] init];
     _passwordTf.delegate = self;
     _passwordTf.font = Font(14);
-    _passwordTf.placeholder = TransferViewInputTitle;
+    _passwordTf.clearButtonMode=UITextFieldViewModeWhileEditing;
+    _passwordTf.placeholder = TransferViewPasswordHolder;
     _passwordTf.keyboardType = UIKeyboardTypeAlphabet;
     _passwordTf.secureTextEntry = YES;
     [_mainTwoView addSubview:_passwordTf];
@@ -439,6 +486,7 @@
     _submitBtn.titleLabel.font = Font(16);
     _submitBtn.layer.masksToBounds = YES;
     _submitBtn.layer.cornerRadius = 2.0f;
+    _submitBtn.timeInterVal = 1.5;
     [_submitBtn addTarget:self action:@selector(submitAction:) forControlEvents:UIControlEventTouchUpInside];
     [_mainTwoView addSubview:_submitBtn];
     [_submitBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -447,6 +495,8 @@
         make.top.equalTo(lineSix.mas_bottom).offset(38);
         make.height.offset(46);
     }];
+    returnKeyHandler = [[IQKeyboardReturnKeyHandler alloc] init];
+    [returnKeyHandler addResponderFromView:self];
 }
 
 -(void)createAchieveView
@@ -520,6 +570,7 @@
 
 -(void)cormfirmAction:(UIButton *)btn
 {
+    _confirmBtn.enabled = NO;
     _mainView.hidden = YES;
     [self createMainTwoView];
 }
@@ -530,12 +581,9 @@
         [WSProgressHUD showErrorWithStatus:TransferViewPutPassWord];
         return;
     }
-    if (![_passwordTf.text isEqualToString:[BoxDataManager sharedManager].passWord]) {
-        [WSProgressHUD showErrorWithStatus:TransferViewPassWordError];
-        return;
-    }
-    if ([self.delegate respondsToSelector:@selector(transferViewDelegate:)]) {
-        [self.delegate transferViewDelegate:_dict];
+    if ([self.delegate respondsToSelector:@selector(transferViewDelegate:password:)]) {
+        [self endEditing:YES];
+        [self.delegate transferViewDelegate:_dict  password:_passwordTf.text];
     }
 }
 

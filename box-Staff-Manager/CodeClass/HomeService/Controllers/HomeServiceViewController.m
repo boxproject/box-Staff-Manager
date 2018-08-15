@@ -12,8 +12,8 @@
 #import "ApprovalBusinessViewController.h"
 #import "OrganizationViewController.h"
 #import "AssetAmountViewController.h"
+#import "DepartmentViewController.h"
 
-#define HomeServiceVCTitle  @"服务"
 #define CellReuseIdentifier  @"HomeService"
 
 @interface HomeServiceViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -34,9 +34,10 @@
     [self createView];
     NSDictionary *dict = @{
                            @"data":@[
-                                   @{@"titleName":@"审批流", @"imgTitle":@"icon_service_shenpi"},
-                                   @{@"titleName":@"组织", @"imgTitle":@"icon_service_zuzhi"},
-                                   @{@"titleName":@"财务", @"imgTitle":@"icon_service_finance"}
+                                   @{@"titleName":HomeServiceVCApprovalWorkflow, @"imgTitle":@"icon_service_shenpi"},
+                                   @{@"titleName":HomeServiceVCAsset, @"imgTitle":@"icon_service_finance"},
+                                   @{@"titleName":HomeServiceVCOrganization, @"imgTitle":@"icon_service_zuzhi"},
+                                   @{@"titleName":HomeServiceVCDepartment, @"imgTitle":@"icon_bumen"}
                                    ]
                            };
     
@@ -45,7 +46,7 @@
         [_sourceArray addObject:model];
     }
     if (![[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
-        [_sourceArray removeObjectAtIndex:2];
+        [_sourceArray removeObjectAtIndex:1];
     }
     [self.tableView reloadData];
 }
@@ -97,18 +98,38 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        ApprovalBusinessViewController *approvalBusinessVc = [[ApprovalBusinessViewController alloc] init];
-        approvalBusinessVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:approvalBusinessVc animated:YES];
-    }else if(indexPath.row == 1){
-        OrganizationViewController *organizationVc = [[OrganizationViewController alloc] init];
-        organizationVc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:organizationVc animated:YES];
-    }else if(indexPath.row == 2){
-        AssetAmountViewController *assetAmount = [[AssetAmountViewController alloc] init];
-        assetAmount.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:assetAmount animated:YES];
+    if ([[BoxDataManager sharedManager].depth isEqualToString:@"0"]) {
+        if (indexPath.row == 0) {
+            ApprovalBusinessViewController *approvalBusinessVc = [[ApprovalBusinessViewController alloc] init];
+            approvalBusinessVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:approvalBusinessVc animated:YES];
+        }else if(indexPath.row == 2){
+            OrganizationViewController *organizationVc = [[OrganizationViewController alloc] init];
+            organizationVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:organizationVc animated:YES];
+        }else if(indexPath.row == 1){
+            AssetAmountViewController *assetAmount = [[AssetAmountViewController alloc] init];
+            assetAmount.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:assetAmount animated:YES];
+        }else if(indexPath.row == 3){
+            DepartmentViewController *departmentVc = [[DepartmentViewController alloc] init];
+            departmentVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:departmentVc animated:YES];
+        }
+    }else{
+        if (indexPath.row == 0) {
+            ApprovalBusinessViewController *approvalBusinessVc = [[ApprovalBusinessViewController alloc] init];
+            approvalBusinessVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:approvalBusinessVc animated:YES];
+        }else if(indexPath.row == 1){
+            OrganizationViewController *organizationVc = [[OrganizationViewController alloc] init];
+            organizationVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:organizationVc animated:YES];
+        }else if(indexPath.row == 2){
+            DepartmentViewController *departmentVc = [[DepartmentViewController alloc] init];
+            departmentVc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:departmentVc animated:YES];
+        }
     }
 }
 

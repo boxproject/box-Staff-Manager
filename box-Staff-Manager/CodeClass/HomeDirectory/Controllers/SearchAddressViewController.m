@@ -66,6 +66,7 @@
     NSMutableDictionary *paramsDic = [[NSMutableDictionary alloc]init];
     [paramsDic setObject:[BoxDataManager sharedManager].app_account_id forKey:@"app_account_id"];
     [paramsDic setObject: _searchField.text forKey:@"key_words"];
+    [paramsDic setObject:[BoxDataManager sharedManager].token forKey:@"token"];
     [[NetworkManager shareInstance] requestWithMethod:GET withUrl:@"/api/v1/capital/currency/list" params:paramsDic success:^(id responseObject)
     {
         [_sourceArray removeAllObjects];
@@ -76,7 +77,7 @@
                 [_sourceArray addObject:model];
             }
         }else{
-            [ProgressHUD showErrorWithStatus:dict[@"message"]];
+            [ProgressHUD showErrorWithStatus:dict[@"message"] code:[dict[@"code"] integerValue]];
         }
         [self.tableView reloadData];
     } fail:^(NSError *error) {
@@ -127,7 +128,7 @@
     [titleSubView addSubview:searchImagePic];
 
     _searchField = [[UITextField alloc] initWithFrame:CGRectMake(searchImagePic.frame.origin.x + 14 + 5, 0, SCREEN_WIDTH - 20 - 65 - 10- 14 -5, 30)];
-    _searchField.placeholder = @"搜索币种";
+    _searchField.placeholder = SearchCurrency;
     _searchField.font = [UIFont systemFontOfSize:14];
     _searchField.delegate = self;
     _searchField.rightViewMode = UITextFieldViewModeWhileEditing;
@@ -136,7 +137,7 @@
     [titleSubView addSubview:self.searchField];
     
     
-    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
+    UIBarButtonItem *buttonRight = [[UIBarButtonItem alloc]initWithTitle:Cancel style:UIBarButtonItemStyleDone target:self action:@selector(cancelButtonAction:)];
     self.navigationItem.rightBarButtonItem = buttonRight;
     //字体大小
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:Font(15),NSFontAttributeName,[UIColor colorWithHexString:@"#666666"],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];

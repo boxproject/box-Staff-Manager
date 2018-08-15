@@ -13,5 +13,6 @@
 -(id)initWithFrame:(CGRect)frame dic:(NSDictionary *)dic;
 
 -(void)setValueWithData:(NSDictionary *)dic;
+-(void)setValueWithtateCancel;
 
 @end
